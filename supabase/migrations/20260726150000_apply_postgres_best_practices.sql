@@ -25,9 +25,9 @@ CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_order_items_menu_item_id ON order_it
 -- guests (hotel_id)
 CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_guests_hotel_id ON public.guests(hotel_id);
 
--- service_requests (hotel_id, room_id)
+-- service_requests (hotel_id, room_number)
 CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_service_requests_hotel_id ON public.service_requests(hotel_id);
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_service_requests_room_id ON public.service_requests(room_id);
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_service_requests_room_number ON public.service_requests(room_number);
 
 -- bookings (hotel_id, room_id)
 CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_bookings_hotel_id ON public.bookings(hotel_id);
@@ -59,12 +59,4 @@ CREATE POLICY "Users can update their own subscriptions" ON public.push_subscrip
 CREATE POLICY "Users can delete their own subscriptions" ON public.push_subscriptions FOR DELETE USING ( (select auth.uid()) = user_id );
 
 
--- Fix allow_staff_request.sql to use subquery caching
-DROP POLICY IF EXISTS "Staff can insert their own requests" ON public.staff_requests;
-DROP POLICY IF EXISTS "Staff can view their own requests" ON public.staff_requests;
 
-CREATE POLICY "Staff can insert their own requests" ON public.staff_requests FOR INSERT
-WITH CHECK ( (select auth.jwt()->>'email') = email );
-
-CREATE POLICY "Staff can view their own requests" ON public.staff_requests FOR SELECT
-USING ( (select auth.jwt()->>'email') = email );

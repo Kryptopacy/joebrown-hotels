@@ -21,13 +21,13 @@ BEGIN
   END IF;
 
   -- Insert Categories
-  INSERT INTO public.menu_categories (hotel_id, name, display_order, type) VALUES (h_id, 'Starters & Grills', 1, 'food') RETURNING id INTO c_starters;
-  INSERT INTO public.menu_categories (hotel_id, name, display_order, type) VALUES (h_id, 'Main Dishes & Swallows', 2, 'food') RETURNING id INTO c_mains;
-  INSERT INTO public.menu_categories (hotel_id, name, display_order, type) VALUES (h_id, 'Beers & Ciders', 3, 'drink') RETURNING id INTO c_beers;
-  INSERT INTO public.menu_categories (hotel_id, name, display_order, type) VALUES (h_id, 'Liquors & Cognac', 4, 'drink') RETURNING id INTO c_liquors;
-  INSERT INTO public.menu_categories (hotel_id, name, display_order, type) VALUES (h_id, 'Wines & Champagnes', 5, 'drink') RETURNING id INTO c_wines;
-  INSERT INTO public.menu_categories (hotel_id, name, display_order, type) VALUES (h_id, 'Cocktails & Mocktails', 6, 'drink') RETURNING id INTO c_cocktails;
-  INSERT INTO public.menu_categories (hotel_id, name, display_order, type) VALUES (h_id, 'Soft Drinks & Water', 7, 'drink') RETURNING id INTO c_softs;
+  INSERT INTO public.menu_categories (hotel_id, name, display_order) VALUES (h_id, 'Starters & Grills', 1) RETURNING id INTO c_starters;
+  INSERT INTO public.menu_categories (hotel_id, name, display_order) VALUES (h_id, 'Main Dishes & Swallows', 2) RETURNING id INTO c_mains;
+  INSERT INTO public.menu_categories (hotel_id, name, display_order) VALUES (h_id, 'Beers & Ciders', 3) RETURNING id INTO c_beers;
+  INSERT INTO public.menu_categories (hotel_id, name, display_order) VALUES (h_id, 'Liquors & Cognac', 4) RETURNING id INTO c_liquors;
+  INSERT INTO public.menu_categories (hotel_id, name, display_order) VALUES (h_id, 'Wines & Champagnes', 5) RETURNING id INTO c_wines;
+  INSERT INTO public.menu_categories (hotel_id, name, display_order) VALUES (h_id, 'Cocktails & Mocktails', 6) RETURNING id INTO c_cocktails;
+  INSERT INTO public.menu_categories (hotel_id, name, display_order) VALUES (h_id, 'Soft Drinks & Water', 7) RETURNING id INTO c_softs;
 
   -- Insert Items
   INSERT INTO public.menu_items (hotel_id, category_id, name, price, display_order) VALUES (h_id, c_starters, 'Special Beef Suya Platter', 8500, 1);

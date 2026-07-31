@@ -14,6 +14,7 @@ const formatMoney = (n: number) => '₦' + Math.round(n).toLocaleString();
 
 // ─── Components ───────────────────────────────────────────────────────────────
 function KPICard({ icon: Icon, label, value, sub, color, delta }: any) {
+  return (
     <div className="bg-[#0D0501] border border-white/10 hover:border-[#D4A373]/50 transition-colors rounded-3xl p-6 shadow-xl relative overflow-hidden group">
       <div className="flex items-start justify-between mb-4">
         <p className="text-xs uppercase tracking-wider text-brown-400 font-bold">{label}</p>

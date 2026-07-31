@@ -3,7 +3,7 @@ DO $$
 DECLARE
   h_id uuid;
 BEGIN
-  SELECT id INTO h_id FROM hotels WHERE slug = 'joebrown-palace-hotel-and-suites' LIMIT 1;
+  SELECT id INTO h_id FROM hotels WHERE slug = 'joebrown' LIMIT 1;
   IF h_id IS NULL THEN
     RAISE EXCEPTION 'Hotel not found';
   END IF;

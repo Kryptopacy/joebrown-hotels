@@ -7,14 +7,15 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-webpush.setVapidDetails(
-  process.env.VAPID_SUBJECT || 'mailto:admin@joebrownhotels.com',
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!
-);
+
 
 export async function POST(request: Request) {
   try {
+    webpush.setVapidDetails(
+      process.env.VAPID_SUBJECT || 'mailto:admin@joebrownhotels.com',
+      process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || '',
+      process.env.VAPID_PRIVATE_KEY || ''
+    );
     const { title, body, url } = await request.json();
 
     if (!title || !body) {
