@@ -1,87 +1,66 @@
-import { execSync } from 'child_process';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import https from 'https';
+import { execSync } from 'child_process'
+import fs from 'fs'
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const dbUrl = process.env.DATABASE_URL
+const projectId = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname.split('.')[0]
+const token = process.env.SUPABASE_ACCESS_TOKEN
 
-const dbUrl = process.env.DATABASE_URL;
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const accessToken = process.env.SUPABASE_ACCESS_TOKEN;
-
-if (!dbUrl || !supabaseUrl || !accessToken) {
-  console.error('Missing required environment variables (DATABASE_URL, NEXT_PUBLIC_SUPABASE_URL, or SUPABASE_ACCESS_TOKEN).');
-  process.exit(1);
+if (!dbUrl || !projectId || !token) {
+  console.error("Missing required environment variables (DATABASE_URL, NEXT_PUBLIC_SUPABASE_URL, SUPABASE_ACCESS_TOKEN)")
+  process.exit(1)
 }
 
-// Extract project ID from Supabase URL (e.g., https://<project_id>.supabase.co)
-const projectIdMatch = supabaseUrl.match(/https:\/\/([^.]+)\.supabase\.co/);
-const projectId = projectIdMatch ? projectIdMatch[1] : null;
+const command = process.argv[2]
 
-if (!projectId) {
-  console.error('Could not extract Project ID from NEXT_PUBLIC_SUPABASE_URL.');
-  process.exit(1);
-}
-
-const action = process.argv[2];
-
-if (action === 'push') {
-  console.log('Pushing migrations to remote database...');
+if (command === 'push') {
+  console.log(`Preparing to push migrations for ${projectId}...`)
   try {
-    // Run supabase db push using the pooler URL
-    execSync(`npx supabase db push --db-url "${dbUrl}"`, {
-      stdio: 'inherit',
-      cwd: path.join(__dirname, '..')
+    const res = await fetch(`https://api.supabase.com/v1/projects/${projectId}`, {
+      headers: { 'Authorization': `Bearer ${token}` }
     });
-    console.log('Migrations pushed successfully.');
-  } catch (error) {
-    console.error('Failed to push migrations.', error.message);
+    if (!res.ok) throw new Error(`Failed to fetch project info: ${res.statusText}`);
+    const projectInfo = await res.json();
+    const region = projectInfo.region;
+
+    const dbUrlParsed = new URL(dbUrl);
+    const password = dbUrlParsed.password;
+    const poolerUrl = `postgresql://postgres.${projectId}:${password}@aws-0-${region}.pooler.supabase.com:5432/postgres`;
+    console.log(`Constructed pooler URL for region ${region} (Session Port 5432)`);
+
+    const migrationsDir = './supabase/migrations';
+    if (fs.existsSync(migrationsDir)) {
+      const files = fs.readdirSync(migrationsDir).filter(f => f.endsWith('.sql'));
+      for (const file of files) {
+        const filePath = `${migrationsDir}/${file}`;
+        let content = fs.readFileSync(filePath, 'utf8');
+        if (content.charCodeAt(0) === 0xFEFF) {
+          content = content.slice(1);
+          fs.writeFileSync(filePath, content, 'utf8');
+        }
+      }
+    }
+
+    console.log(`Pushing migrations to remote database...`);
+    execSync(`echo y | npx supabase db push --db-url "${poolerUrl}"`, { stdio: 'inherit' });
+    console.log("Push successful!");
+  } catch (e) {
+    console.error("Migration failed:", e);
     process.exit(1);
   }
-} else if (action === 'types') {
-  console.log('Fetching latest TypeScript types...');
-  
-  const typesUrl = `https://api.supabase.com/v1/projects/${projectId}/types/typescript`;
-  
-  const options = {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${accessToken}`
-    }
-  };
-
-  const req = https.request(typesUrl, options, (res) => {
-    if (res.statusCode !== 200) {
-      console.error(`Failed to fetch types: HTTP ${res.statusCode}`);
-      res.resume();
-      process.exit(1);
-    }
-    
-    let data = '';
-    res.on('data', (chunk) => { data += chunk; });
-    res.on('end', () => {
-      const typesDir = path.join(__dirname, '../src/types');
-      if (!fs.existsSync(typesDir)) {
-        fs.mkdirSync(typesDir, { recursive: true });
-      }
-      const typesPath = path.join(typesDir, 'database.types.ts');
-      fs.writeFileSync(typesPath, data, 'utf8');
-      console.log(`Types successfully saved to ${typesPath}`);
-    });
-  });
-
-  req.on('error', (e) => {
-    console.error('Error fetching types:', e.message);
+} else if (command === 'types') {
+  console.log(`Fetching types for ${projectId}...`)
+  try {
+    const res = await fetch(`https://api.supabase.com/v1/projects/${projectId}/types/typescript`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+    if (!res.ok) throw new Error(`Failed to fetch types: ${res.statusText}`);
+    const types = await res.text()
+    fs.writeFileSync('./src/types/database.types.ts', types)
+    console.log("Types written to src/types/database.types.ts")
+  } catch (e) {
+    console.error("Failed to fetch types:", e);
     process.exit(1);
-  });
-
-  req.end();
+  }
 } else {
-  console.log(`
-Usage:
-  node --env-file=.env.local scripts/db.mjs push   - Pushes pending local migrations to the remote database
-  node --env-file=.env.local scripts/db.mjs types  - Fetches and updates TypeScript definitions in src/types/database.types.ts
-  `);
+  console.log("Usage: node scripts/db.mjs [push|types]")
 }
