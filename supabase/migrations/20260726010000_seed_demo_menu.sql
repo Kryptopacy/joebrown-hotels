@@ -10,7 +10,7 @@ DECLARE
   c_softs uuid;
 BEGIN
   -- Get hotel ID
-  SELECT id INTO h_id FROM public.hotels WHERE slug = 'dreamsfield' LIMIT 1;
+  SELECT id INTO h_id FROM public.hotels WHERE slug = 'joebrown' LIMIT 1;
   IF h_id IS NULL THEN
     RETURN;
   END IF;
@@ -41,7 +41,7 @@ BEGIN
   INSERT INTO public.menu_items (hotel_id, category_id, name, price, display_order) VALUES (h_id, c_liquors, 'Hennessy VSOP (Full Bottle)', 180000, 1);
   INSERT INTO public.menu_items (hotel_id, category_id, name, price, display_order) VALUES (h_id, c_liquors, 'Martell VS Cognac (Shot)', 8000, 2);
   
-  INSERT INTO public.menu_items (hotel_id, category_id, name, price, display_order) VALUES (h_id, c_cocktails, 'Dreamsfield Special Cocktail', 6500, 1);
+  INSERT INTO public.menu_items (hotel_id, category_id, name, price, display_order) VALUES (h_id, c_cocktails, 'Joebrown Special Cocktail', 6500, 1);
   INSERT INTO public.menu_items (hotel_id, category_id, name, price, display_order) VALUES (h_id, c_cocktails, 'Long Island Iced Tea', 7500, 2);
   
   INSERT INTO public.menu_items (hotel_id, category_id, name, price, display_order) VALUES (h_id, c_softs, 'Coca-Cola / Fanta / Sprite', 1000, 1);

@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS hotels (
   whatsapp_number TEXT,
   bank_name TEXT DEFAULT 'First Bank Nigeria',
   bank_account_number TEXT DEFAULT '0123456789',
-  bank_account_name TEXT DEFAULT 'Dreamsfield Hotel & Lounge',
+  bank_account_name TEXT DEFAULT 'Joebrown Palace Hotel and Suites',
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -76,11 +76,11 @@ CREATE TABLE IF NOT EXISTS order_items (
 -- Initial Hotel Data
 INSERT INTO hotels (slug, name, tagline, description, brand_color_primary)
 VALUES (
-  'dreamsfield', 
-  'Dreamsfield Hotels & Lounge', 
+  'joebrown', 
+  'Joebrown Palace Hotel and Suites', 
   'A Sanctuary of Refined Hospitality & Timeless Luxury',
-  'Experience curated comfort, gourmet dining, and bespoke concierge hospitality at Dreamsfield Hotels & Lounge.',
-  '#F59E0B'
+  'Experience curated comfort, gourmet dining, and bespoke concierge hospitality at Joebrown Palace Hotel and Suites.',
+  '#D4A373'
 ) ON CONFLICT (slug) DO NOTHING;
 
 -- Enable realtime
