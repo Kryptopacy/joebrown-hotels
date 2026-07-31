@@ -316,6 +316,8 @@ export default function MenuClient({ initialCategories, initialItems }: MenuClie
           alt="Lounge Texture Header Backdrop"
           fill
           priority
+          quality={75}
+          sizes="100vw"
           className="object-cover z-0 scale-105"
         />
         {/* Cinematic dark luxury overlay to let the image shine sharply */}
@@ -331,7 +333,7 @@ export default function MenuClient({ initialCategories, initialItems }: MenuClie
               🛎 Room Service — Room #{roomNumber}
             </p>
           )}
-          <h1 className="text-4xl md:text-6xl font-serif mb-3 text-white font-extrabold drop-shadow-lg">Bar &amp; Kitchen Menu</h1>
+          <h1 className="text-4xl md:text-6xl font-serif mb-3 text-white font-extrabold drop-shadow-lg">Restaurant and Lounge</h1>
           <p className="text-white/90 max-w-2xl text-base sm:text-lg font-semibold drop-shadow-md">
             Freshly prepared Nigerian meals, pepper soup, grilled specialties, light snacks, alongside ice-cold beers, fine wines, cognac, and handcrafted cocktails.
           </p>
@@ -369,11 +371,11 @@ export default function MenuClient({ initialCategories, initialItems }: MenuClie
       </section>
 
       {/* CATEGORY FILTER ROW */}
-      <section className="bg-[#1A0A02] border-b border-[#5D3A1A]/30">
-        <div className="container mx-auto max-w-5xl py-3 flex overflow-x-auto hide-scrollbar gap-3 px-4">
+      <section className="bg-[#1A0A02] border-b border-white/5">
+        <div className="container mx-auto max-w-5xl py-4 flex overflow-x-auto hide-scrollbar gap-3 px-4">
           <button
             onClick={() => setActiveCategory('all')}
-            className={`whitespace-nowrap px-4 py-1.5 text-xs font-bold transition-colors ${activeCategory === 'all' ? 'bg-[#3E2723] text-white border-[#3E2723]' : 'bg-[#2C1203]/60 text-[#D4A373] hover:bg-[#3E2723]/60 border border-[#5D3A1A]/50'}`}
+            className={`whitespace-nowrap px-5 py-2 text-sm font-bold rounded-full transition-all border ${activeCategory === 'all' ? 'bg-[#D4A373] text-[#1A0A02] border-[#D4A373] shadow-md' : 'bg-white/5 text-[#E6CCB2] hover:bg-white/10 border-white/10 hover:border-white/20'}`}
           >
             All Items
           </button>
@@ -381,7 +383,7 @@ export default function MenuClient({ initialCategories, initialItems }: MenuClie
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
-              className={`whitespace-nowrap px-4 py-1.5 text-xs font-bold transition-colors ${activeCategory === cat.id ? 'bg-[#3E2723] text-white border-[#3E2723]' : 'bg-[#2C1203]/60 text-[#D4A373] hover:bg-[#3E2723]/60 border border-[#5D3A1A]/50'}`}
+              className={`whitespace-nowrap px-5 py-2 text-sm font-bold rounded-full transition-all border ${activeCategory === cat.id ? 'bg-[#D4A373] text-[#1A0A02] border-[#D4A373] shadow-md' : 'bg-white/5 text-[#E6CCB2] hover:bg-white/10 border-white/10 hover:border-white/20'}`}
             >
               {cat.name}
             </button>
@@ -401,40 +403,40 @@ export default function MenuClient({ initialCategories, initialItems }: MenuClie
               <button
                 key={item.id}
                 onClick={() => setSelectedItem(item)}
-                className={`flex gap-4 p-4 rounded-2xl border-2 transition-all text-left w-full ${
+                className={`flex flex-col sm:flex-row gap-5 p-5 rounded-3xl border transition-all duration-300 text-left w-full overflow-hidden ${
                   item.is_available
-                    ? 'bg-[#2C1203]/60 border-[#5D3A1A]/50 hover:border-brown-500 shadow-md hover:shadow-xl cursor-pointer'
-                    : 'bg-[#1A0A02]/50/70 border-[#5D3A1A]/30 opacity-60 cursor-not-allowed'
+                    ? 'bg-[#1A0A02] border-white/10 hover:border-[#D4A373]/50 hover:-translate-y-1 shadow-xl hover:shadow-[0_10px_30px_rgba(212,163,115,0.1)] cursor-pointer'
+                    : 'bg-[#120701] border-white/5 opacity-60 cursor-not-allowed'
                 }`}
               >
                 {/* Image */}
-                <div className="w-24 h-24 flex-shrink-0 bg-[#2C1203]/40 rounded-xl overflow-hidden relative border border-[#5D3A1A]/30">
+                <div className="w-full sm:w-28 h-40 sm:h-28 flex-shrink-0 bg-white/5 rounded-2xl overflow-hidden relative border border-white/10">
                   {item.image_url ? (
-                    <Image src={item.image_url} alt={item.name} fill className="object-cover text-transparent" />
+                    <Image src={item.image_url} alt={item.name} fill quality={70} sizes="112px" className="object-cover text-transparent" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-[#5D3A1A] bg-[#2C1203]/40">
-                      <UtensilsCrossed size={20} className="opacity-40" />
+                    <div className="w-full h-full flex items-center justify-center text-[#A1887F] bg-white/5">
+                      <UtensilsCrossed size={24} className="opacity-40" />
                     </div>
                   )}
                   {!item.is_available && (
-                    <div className="absolute inset-0 bg-slate-900/60 flex items-center justify-center text-center p-1">
-                      <span className="text-[10px] uppercase font-bold text-red-100">Out of Stock</span>
+                    <div className="absolute inset-0 bg-[#1A0A02]/80 backdrop-blur-sm flex items-center justify-center text-center p-1">
+                      <span className="text-[10px] uppercase font-bold text-[#D4A373] tracking-widest border border-[#D4A373]/30 px-3 py-1 rounded-full">Out of Stock</span>
                     </div>
                   )}
                 </div>
                 {/* Content */}
                 <div className="flex-1 flex flex-col pt-1">
-                  <div className="flex justify-between items-start gap-2 mb-1">
-                    <h4 className={`font-serif text-lg leading-tight font-semibold ${item.is_available ? 'text-[#E6CCB2]' : 'text-[#5D3A1A] line-through'}`}>
+                  <div className="flex justify-between items-start gap-3 mb-2">
+                    <h4 className={`font-serif text-xl leading-tight font-bold ${item.is_available ? 'text-white' : 'text-[#8D6E63] line-through'}`}>
                       {item.name}
                     </h4>
-                    <span className="font-serif text-[#D4A373] font-bold whitespace-nowrap">₦{Number(item.price).toLocaleString()}</span>
+                    <span className="font-sans text-[#D4A373] font-black text-lg whitespace-nowrap">₦{Number(item.price).toLocaleString()}</span>
                   </div>
-                  <p className="text-[#8D6E63] text-xs line-clamp-2 font-medium leading-relaxed flex-grow">{item.description}</p>
+                  <p className="text-[#A1887F] text-sm line-clamp-2 font-light leading-relaxed flex-grow">{item.description}</p>
                   {item.tags?.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5 mt-2">
+                    <div className="flex flex-wrap gap-2 mt-3">
                       {item.tags.map((tag: string) => (
-                        <span key={tag} className="text-[10px] text-[#E6CCB2] font-bold">#{tag}</span>
+                        <span key={tag} className="text-[10px] text-[#1A0A02] font-bold uppercase tracking-wider bg-[#D4A373] px-2.5 py-0.5 rounded-full">#{tag}</span>
                       ))}
                     </div>
                   )}
@@ -482,7 +484,7 @@ export default function MenuClient({ initialCategories, initialItems }: MenuClie
           >
             {selectedItem.image_url && (
               <div className="relative h-52 w-full overflow-hidden rounded-t-2xl">
-                <Image src={selectedItem.image_url} alt={selectedItem.name} fill className="object-cover text-transparent" />
+                <Image src={selectedItem.image_url} alt={selectedItem.name} fill quality={80} sizes="(max-width: 448px) 100vw, 448px" className="object-cover text-transparent" />
               </div>
             )}
             <div className="p-6">

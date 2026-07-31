@@ -11,8 +11,7 @@ import RoomCardCarousel from '@/components/RoomCardCarousel';
 import PremiumGallery from '@/components/PremiumGallery';
 import { BedDouble, Calendar, Users, ArrowRight, Award, CheckCircle2, Utensils } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
-import fs from 'fs';
-import path from 'path';
+
 
 export default async function LandingPage({
   searchParams
@@ -42,18 +41,7 @@ export default async function LandingPage({
     if (roomData && roomData.length > 0) rooms = roomData;
   }
 
-  // Fetch gallery images
-  let galleryImages: string[] = [];
-  try {
-    const galleryDir = path.join(process.cwd(), 'public', 'JB', 'gallery');
-    if (fs.existsSync(galleryDir)) {
-      galleryImages = fs.readdirSync(galleryDir)
-        .filter(f => f.match(/\.(jpg|jpeg|png)$/i))
-        .map(f => `/JB/gallery/${f}`);
-    }
-  } catch (err) {
-    console.error('Error reading gallery:', err);
-  }
+
 
   return (
     <main className="min-h-screen bg-[#FAF9F6] text-[#2C1E16] flex flex-col justify-between overflow-x-hidden">
@@ -63,11 +51,11 @@ export default async function LandingPage({
       <section className="relative min-h-[92vh] flex flex-col justify-between pt-32 md:pt-36 pb-20 px-4 md:px-8 overflow-hidden bg-[#2C1E16]">
         {/* Cinematic Edge-to-Edge Exterior Background */}
         <Image 
-          src="/JB/jb_logo_badge.JPG" 
+          src="/JB/gallery/jb_logo_badge.JPG" 
           alt="Joebrown Palace Hotel and Suites"
           fill
           priority
-          quality={85}
+          quality={75}
           sizes="100vw"
           className="object-cover z-0 opacity-80"
         />
@@ -158,28 +146,32 @@ export default async function LandingPage({
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {rooms.map((room) => (
-              <div key={room.id} className="glass-card group flex flex-col justify-between overflow-hidden">
+              <div key={room.id} className="bg-[#1A0A02] rounded-3xl border border-[#5D3A1A]/40 shadow-2xl group flex flex-col justify-between overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(212,163,115,0.15)] hover:border-[#D4A373]/50">
                 <div className="flex-1 flex flex-col">
-                  <RoomCardCarousel images={room.images || []} roomName={room.name} />
+                  <div className="relative">
+                    <RoomCardCarousel images={room.images || []} roomName={room.name} />
+                    {/* Subtle gradient overlay at bottom of image to blend into the dark card */}
+                    <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#1A0A02] to-transparent pointer-events-none" />
+                  </div>
                   <div className="p-8 flex-1 flex flex-col justify-between">
                     <div>
-                      <h3 className="text-2xl font-serif text-[#2C1E16] mb-3 group-hover:text-brown transition-colors">{room.name}</h3>
-                      <p className="text-[#5C554F] text-sm leading-relaxed line-clamp-2 mb-6 font-light">{room.description}</p>
+                      <h3 className="text-2xl font-serif text-white mb-3 group-hover:text-[#D4A373] transition-colors">{room.name}</h3>
+                      <p className="text-[#A1887F] text-sm leading-relaxed line-clamp-2 mb-6 font-light">{room.description}</p>
                     </div>
-                    <div className="flex items-center gap-6 text-[11px] uppercase tracking-widest text-[#5C554F] pt-6 border-t border-[#E5E1D8]">
-                      <span className="flex items-center gap-2"><BedDouble size={14} className="text-brown" /> {room.max_guests} Guests</span>
-                      <span className="flex items-center gap-2"><Award size={14} className="text-brown" /> {room.size_sqm || 35} m²</span>
+                    <div className="flex items-center gap-6 text-[11px] uppercase tracking-widest text-[#A1887F] pt-6 border-t border-white/10">
+                      <span className="flex items-center gap-2"><BedDouble size={14} className="text-[#D4A373]" /> {room.max_guests} Guests</span>
+                      <span className="flex items-center gap-2"><Award size={14} className="text-[#D4A373]" /> {room.size_sqm || 35} m²</span>
                     </div>
                   </div>
                 </div>
-                <div className="px-8 py-6 border-t border-[#E5E1D8] flex items-center justify-between bg-white/50">
+                <div className="px-8 py-6 border-t border-white/5 flex items-center justify-between bg-white/5 backdrop-blur-md">
                   <div>
-                    <span className="text-[10px] text-[#5C554F] block uppercase tracking-[0.2em] font-semibold mb-1">Rate</span>
-                    <div className="text-brown font-serif text-2xl">
-                      ₦{Number(room.price_per_night).toLocaleString()} <span className="text-xs font-sans text-[#5C554F]">/night</span>
+                    <span className="text-[10px] text-[#A1887F] block uppercase tracking-[0.2em] font-semibold mb-1">Rate</span>
+                    <div className="text-[#D4A373] font-serif text-2xl font-bold">
+                      ₦{Number(room.price_per_night).toLocaleString()} <span className="text-xs font-sans text-[#A1887F] font-normal">/night</span>
                     </div>
                   </div>
-                  <Link href={`/rooms/${room.slug}`} className="btn-secondary text-[10px] px-6 py-2">
+                  <Link href={`/rooms/${room.slug}`} className="bg-[#D4A373] text-[#1A0A02] font-bold tracking-widest uppercase text-[10px] px-6 py-3 rounded-full hover:bg-white transition-colors shadow-[0_0_15px_rgba(212,163,115,0.2)]">
                     Book Room
                   </Link>
                 </div>
@@ -190,7 +182,7 @@ export default async function LandingPage({
       </section>
 
       {/* 4. PREMIUM BENTO BOX GALLERY */}
-      <PremiumGallery initialImages={galleryImages} />
+      <PremiumGallery hotelId={hotel?.id} />
 
       {/* 5. BAR & KITCHEN SECTION */}
       <section className="py-32 px-4 md:px-8 bg-transparent">
@@ -198,9 +190,11 @@ export default async function LandingPage({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="relative h-[550px] rounded-lg overflow-hidden glass-card group">
               <Image 
-                src="/JB/restaurant_brighter.JPG" 
+                src="/JB/gallery/restaurant_brighter.JPG" 
                 alt="Joebrown Restaurant Food and Drinks"
                 fill
+                quality={75}
+                sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover group-hover:scale-105 transition-transform duration-[1.5s]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />

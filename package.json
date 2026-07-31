@@ -6,7 +6,10 @@
     "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "next lint",
+    "db:push": "node --env-file=.env.local scripts/db.mjs push",
+    "db:types": "node --env-file=.env.local scripts/db.mjs types",
+    "db:sync": "npm run db:push && npm run db:types"
   },
   "dependencies": {
     "@ai-sdk/google": "^4.0.24",

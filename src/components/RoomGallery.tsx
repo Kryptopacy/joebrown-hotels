@@ -55,6 +55,8 @@ export default function RoomGallery({ images, roomName }: RoomGalleryProps) {
                 src={imgUrl}
                 alt={`${roomName} — photo ${idx + 2}`}
                 fill
+                quality={75}
+                sizes="(max-width: 640px) 100vw, 50vw"
                 className="object-cover transition-transform duration-500 group-hover:scale-105 text-transparent"
               />
               <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/30 transition-all duration-300 flex items-center justify-center">
@@ -89,6 +91,8 @@ export default function RoomGallery({ images, roomName }: RoomGalleryProps) {
               src={images[lightboxIndex]}
               alt={`${roomName} — photo ${lightboxIndex + 1}`}
               fill
+              quality={90}
+              sizes="(max-width: 1280px) 100vw, 896px"
               className="object-contain"
               priority
             />
@@ -103,7 +107,7 @@ export default function RoomGallery({ images, roomName }: RoomGalleryProps) {
               {images.map((img, i) => (
                 <button key={i} onClick={e => { e.stopPropagation(); setLightboxIndex(i); }}
                   className={`relative w-12 h-9 rounded overflow-hidden border-2 transition-all shrink-0 ${i === lightboxIndex ? 'border-brown-400 scale-110' : 'border-white/20 opacity-60 hover:opacity-100'}`}>
-                  <Image src={img} alt="" fill className="object-cover text-transparent" />
+                  <Image src={img} alt="" fill quality={60} sizes="48px" className="object-cover text-transparent" />
                 </button>
               ))}
             </div>

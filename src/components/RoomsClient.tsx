@@ -111,40 +111,42 @@ export default function RoomsClient({ initialRooms }: RoomsClientProps) {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredRooms.slice(0, visibleCount).map((room) => (
-            <div key={room.id} className="group flex flex-col justify-between overflow-hidden bg-[#1A0A02] border border-[#5D3A1A]/40 rounded-2xl shadow-xl hover:border-[#D4A373]/50 transition-all duration-300">
+            <div key={room.id} className="group flex flex-col justify-between overflow-hidden bg-[#1A0A02] border border-white/10 rounded-3xl shadow-2xl hover:border-[#D4A373]/50 hover:-translate-y-1 transition-all duration-500">
               <div className="flex-1 flex flex-col">
-                <div className="relative shrink-0 border-b border-[#5D3A1A]/40">
+                <div className="relative shrink-0 h-64 border-b border-white/5">
                   <Link href={`/rooms/${room.slug}`} className="block absolute inset-0 z-20" aria-label={`View ${room.name} details`} />
                   <RoomCardCarousel images={room.images || []} roomName={room.name} />
-                  <div className="absolute top-4 right-4 z-30 bg-[#1A0A02]/80 backdrop-blur-sm px-3.5 py-1 text-[10px] text-[#D4A373] uppercase tracking-wider font-bold border border-[#5D3A1A]/40 shadow-md rounded-md">
+                  
+                  {/* Premium availability badge with glassmorphism */}
+                  <div className="absolute top-4 right-4 z-30 bg-[#1A0A02]/60 backdrop-blur-md px-4 py-1.5 text-[10px] text-[#D4A373] uppercase tracking-widest font-bold border border-white/10 shadow-lg rounded-full">
                     {room.is_available ? 'Available' : 'Booked'}
                   </div>
                 </div>
                 
-                <div className="p-6 flex-1 flex flex-col justify-between">
+                <div className="p-8 flex-1 flex flex-col justify-between bg-gradient-to-b from-[#1A0A02] to-[#120701]">
                   <div>
-                    <h3 className="text-2xl font-serif text-[#E6CCB2] mb-2 group-hover:text-[#D4A373] transition-colors font-bold">{room.name}</h3>
-                    <p className="text-[#8D6E63] text-sm line-clamp-2 mb-6 font-medium leading-relaxed">{room.description}</p>
+                    <h3 className="text-3xl font-serif text-white mb-3 group-hover:text-[#D4A373] transition-colors font-bold tracking-wide">{room.name}</h3>
+                    <p className="text-[#A1887F] text-sm line-clamp-2 mb-6 font-light leading-relaxed">{room.description}</p>
                   </div>
                   
-                  <div className="flex items-center gap-4 text-xs text-[#D4A373] border-t border-[#5D3A1A]/40 pt-4">
-                    <span className="flex items-center gap-1.5 font-semibold"><BedDouble size={15} /> {room.max_guests} Guests Max</span>
-                    <span className="flex items-center gap-1.5 font-semibold"><Award size={15} /> {room.size_sqm || 35} m²</span>
+                  <div className="flex items-center gap-6 text-sm text-[#D4A373] pt-6 border-t border-white/5">
+                    <span className="flex items-center gap-2 font-medium"><BedDouble size={18} className="text-[#E6CCB2]" /> {room.max_guests} Guests Max</span>
+                    <span className="flex items-center gap-2 font-medium"><Award size={18} className="text-[#E6CCB2]" /> {room.size_sqm || 35} m²</span>
                   </div>
                 </div>
               </div>
 
-              {/* PERFECTLY PROPORTIONED BOTTOM BAR WITH HIGH CONTRAST & PADDING */}
-              <div className="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between border-t border-[#5D3A1A]/40 gap-4 bg-[#2C1203]/40">
+              {/* BOTTOM BAR WITH GLASSMORPHISM & GOLD BUTTON */}
+              <div className="p-6 md:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between border-t border-white/5 bg-white/5 backdrop-blur-xl gap-4">
                 <div>
-                  <span className="text-[11px] text-[#D4A373] block uppercase tracking-wider font-extrabold">Rate</span>
-                  <div className="text-[#E6CCB2] font-serif text-2xl font-bold leading-tight">
+                  <span className="text-[10px] text-[#A1887F] block uppercase tracking-[0.2em] font-medium mb-1">Rate from</span>
+                  <div className="text-white font-serif text-3xl font-bold leading-none">
                     ₦{Number(room.price_per_night).toLocaleString()}
-                    <span className="text-xs text-[#8D6E63] font-sans font-medium ml-1">/night</span>
+                    <span className="text-sm text-[#A1887F] font-sans font-normal ml-2">/night</span>
                   </div>
                 </div>
-                <Link href={`/rooms/${room.slug}`} className="bg-[#3E2723] hover:bg-[#1A110B] text-white text-[10px] uppercase tracking-[0.25em] px-6 py-3 flex items-center gap-2 justify-center font-extrabold shadow-md w-full sm:w-auto shrink-0 rounded-xl transition-all duration-300">
-                  Book Room <ArrowRight size={14} />
+                <Link href={`/rooms/${room.slug}`} className="bg-[#D4A373] hover:bg-[#E6CCB2] text-[#1A0A02] text-xs uppercase tracking-[0.2em] px-8 py-4 flex items-center gap-2 justify-center font-bold shadow-[0_0_20px_rgba(212,163,115,0.3)] hover:shadow-[0_0_25px_rgba(230,204,178,0.5)] w-full sm:w-auto shrink-0 rounded-full transition-all duration-300">
+                  Book Room <ArrowRight size={16} />
                 </Link>
               </div>
             </div>

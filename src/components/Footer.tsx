@@ -14,10 +14,10 @@ export default function Footer({
   hotelPhone = '+234 800 joebrown',
 }: FooterProps) {
   return (
-    <footer className="relative text-[#E6CCB2] pt-24 pb-32 px-4 md:px-8 overflow-hidden" style={{ backgroundColor: '#1A0A02' }}>
+    <footer className="relative text-white pt-24 pb-32 px-4 md:px-8 overflow-hidden bg-[#0A0401] border-t border-white/5">
       
       {/* Subtle Glowing Brand Aura in Background */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-white/5 blur-[130px] pointer-events-none rounded-full" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-[#D4A373]/5 blur-[130px] pointer-events-none rounded-full" />
 
       {/* Main Grid Content */}
       <div className="container mx-auto max-w-6xl relative z-10 grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
@@ -31,13 +31,13 @@ export default function Footer({
             <span className="text-3xl font-serif text-white font-normal tracking-wide">{hotelName}</span>
           </div>
           
-          <p className="text-[#8D6E63] text-sm max-w-md leading-relaxed font-light">
+          <p className="text-[#A1887F] text-sm max-w-md leading-relaxed font-light">
             Refined accommodations, freshly prepared local & continental kitchen dining, ice-cold lounge drinks, and 24/7 express room service in Lagos, Nigeria.
           </p>
 
           <div className="pt-4 flex flex-wrap gap-6 text-[11px] uppercase tracking-widest text-[#D7D3C8]">
-            <span className="flex items-center gap-2"><Clock size={14} className="text-[#8D6E63]" /> 24/7 Front Desk</span>
-            <span className="flex items-center gap-2"><ShieldCheck size={14} className="text-[#8D6E63]" /> Secure Premises</span>
+            <span className="flex items-center gap-2"><Clock size={14} className="text-[#D4A373]" /> 24/7 Front Desk</span>
+            <span className="flex items-center gap-2"><ShieldCheck size={14} className="text-[#D4A373]" /> Secure Premises</span>
           </div>
         </div>
 
@@ -48,22 +48,22 @@ export default function Footer({
           </h4>
           <ul className="space-y-4 text-[13px] font-light">
             <li>
-              <Link href="/rooms" className="text-[#8D6E63] hover:text-[#D4A373] transition-colors flex items-center gap-3">
+              <Link href="/rooms" className="text-[#A1887F] hover:text-[#D4A373] transition-colors flex items-center gap-3">
                 <BedDouble size={14} className="text-[#D4A373]" /> Rooms & Suites
               </Link>
             </li>
             <li>
-              <Link href="/menu" className="text-[#8D6E63] hover:text-[#D4A373] transition-colors flex items-center gap-3">
+              <Link href="/menu" className="text-[#A1887F] hover:text-[#D4A373] transition-colors flex items-center gap-3">
                 <Utensils size={14} className="text-[#D4A373]" /> Restaurant & Lounge Menu
               </Link>
             </li>
             <li>
-              <Link href="/contact" className="text-[#8D6E63] hover:text-[#D4A373] transition-colors flex items-center gap-3">
+              <Link href="/contact" className="text-[#A1887F] hover:text-[#D4A373] transition-colors flex items-center gap-3">
                 <MapPin size={14} className="text-[#D4A373]" /> Contact & Location
               </Link>
             </li>
             <li>
-              <Link href="/admin" className="text-[#8D6E63] hover:text-[#D4A373] transition-colors flex items-center gap-3">
+              <Link href="/admin" className="text-[#A1887F] hover:text-[#D4A373] transition-colors flex items-center gap-3">
                 <ArrowRight size={14} className="text-[#D4A373]" /> Staff Portal
               </Link>
             </li>
@@ -78,15 +78,15 @@ export default function Footer({
           <ul className="space-y-5 text-[13px] font-light">
             <li className="flex items-start gap-3">
               <Phone size={16} className="text-[#D4A373] shrink-0 mt-0.5" />
-              <span className="text-[#8D6E63]">{hotelPhone}</span>
+              <span className="text-[#A1887F]">{hotelPhone}</span>
             </li>
             <li className="flex items-start gap-3">
               <Mail size={16} className="text-[#D4A373] shrink-0 mt-0.5" />
-              <span className="text-[#8D6E63]">info@joebrownhotels.com</span>
+              <span className="text-[#A1887F]">info@joebrownhotels.com</span>
             </li>
             <li className="flex items-start gap-3">
               <MapPin size={16} className="text-[#D4A373] shrink-0 mt-0.5" />
-              <span className="text-[#8D6E63] leading-relaxed">{hotelAddress}</span>
+              <span className="text-[#A1887F] leading-relaxed">{hotelAddress}</span>
             </li>
           </ul>
         </div>
@@ -94,13 +94,13 @@ export default function Footer({
       </div>
 
       {/* COPYRIGHT ROW SHIFTED SAFELY ABOVE DIVIDER WITH pb-32 OVERLAP CLEARANCE */}
-      <div className="container mx-auto max-w-6xl relative z-10 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-[11px] tracking-widest text-[#5C554F] font-medium gap-4 uppercase">
+      <div className="container mx-auto max-w-6xl relative z-10 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-[11px] tracking-widest text-[#737373] font-medium gap-4 uppercase">
         <p>© {new Date().getFullYear()} {hotelName}. All rights reserved.</p>
         <p className="flex items-center gap-2">
           Need a custom platform?{' '}
           <Link 
             href="/build-with-us" 
-            className="text-brown-400 hover:text-white hover:underline font-semibold transition-colors"
+            className="text-[#D4A373] hover:text-white font-bold transition-colors"
           >
             Build With Us (Pacy Labs)
           </Link>

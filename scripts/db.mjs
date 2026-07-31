@@ -24,7 +24,8 @@ if (command === 'push') {
 
     const dbUrlParsed = new URL(dbUrl);
     const password = dbUrlParsed.password;
-    const poolerUrl = `postgresql://postgres.${projectId}:${password}@aws-0-${region}.pooler.supabase.com:5432/postgres`;
+    const encodedPassword = encodeURIComponent(password);
+    const poolerUrl = `postgresql://postgres.${projectId}:${encodedPassword}@aws-0-${region}.pooler.supabase.com:5432/postgres`;
     console.log(`Constructed pooler URL for region ${region} (Session Port 5432)`);
 
     const migrationsDir = './supabase/migrations';
@@ -41,7 +42,7 @@ if (command === 'push') {
     }
 
     console.log(`Pushing migrations to remote database...`);
-    execSync(`echo y | npx supabase db push --db-url "${poolerUrl}"`, { stdio: 'inherit' });
+    execSync(`npx supabase db push --db-url "${poolerUrl}" --yes`, { stdio: 'inherit' });
     console.log("Push successful!");
   } catch (e) {
     console.error("Migration failed:", e);
@@ -61,6 +62,37 @@ if (command === 'push') {
     console.error("Failed to fetch types:", e);
     process.exit(1);
   }
+} else if (command === 'run-sql') {
+  // Run a specific SQL file directly via Supabase REST
+  const sqlFile = process.argv[3]
+  if (!sqlFile) {
+    console.error("Usage: node scripts/db.mjs run-sql <path-to-sql-file>")
+    process.exit(1)
+  }
+  let sql = fs.readFileSync(sqlFile, 'utf8')
+  if (sql.charCodeAt(0) === 0xFEFF) sql = sql.slice(1)
+
+  console.log(`Running SQL file: ${sqlFile}`)
+  try {
+    const res = await fetch(`https://api.supabase.com/v1/projects/${projectId}/database/query`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ query: sql })
+    })
+    const result = await res.text()
+    if (!res.ok) {
+      console.error("SQL failed:", result)
+      process.exit(1)
+    }
+    console.log("SQL executed successfully!")
+    console.log(result)
+  } catch (e) {
+    console.error("Failed to run SQL:", e)
+    process.exit(1)
+  }
 } else {
-  console.log("Usage: node scripts/db.mjs [push|types]")
+  console.log("Usage: node scripts/db.mjs [push|types|run-sql <file>]")
 }

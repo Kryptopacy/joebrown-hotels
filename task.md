@@ -1,0 +1,8 @@
+- [x] Fix broken image paths in `src/app/(public)/page.tsx`
+- [x] Fix broken image paths and text in `src/components/MenuClient.tsx`
+- [x] Fix broken image paths in `src/app/rooms/page.tsx`
+- [x] Fix broken image paths in `src/app/admin/login/page.tsx`
+- [x] Update `PremiumGallery.tsx` for 6-image layout, shuffle animation, and curated image pool
+- [x] Apply Vercel image optimizations across modified files
+- [ ] Run local build test to verify changes
+- [ ] Push to Github

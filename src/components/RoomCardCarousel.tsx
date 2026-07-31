@@ -32,6 +32,8 @@ export default function RoomCardCarousel({ images, roomName }: RoomCardCarouselP
         src={currentImage} 
         alt={roomName}
         fill
+        quality={75}
+        sizes="(max-width: 768px) 100vw, 33vw"
         className="object-cover group-hover:scale-105 transition-transform duration-700 text-transparent"
       />
       

@@ -53,7 +53,7 @@ export default function AdminLogin() {
       {/* LEFT — Hotel Hero Image Panel */}
       <div className="hidden lg:flex lg:w-1/2 relative flex-col justify-end">
         <img
-          src="/JB/others/P1160458.JPG"
+          src="/JB/gallery/P1160458.JPG"
           alt="Joebrown Palace Hotel and Suites"
           className="absolute inset-0 w-full h-full object-cover"
         />
