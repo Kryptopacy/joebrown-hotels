@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import WhatsAppButton from '@/components/WhatsAppButton';
@@ -13,8 +14,18 @@ export default function ContactPage() {
 
   return (
     <main className="min-h-screen relative text-white flex flex-col justify-between overflow-x-hidden bg-[#0A0401]">
-      <div className="fixed inset-0 z-0 pointer-events-none" style={{ backgroundImage: "url('/images/wellness_texture.jpg')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed' }} />
-      <div className="fixed inset-0 z-0 bg-black/60 pointer-events-none" />
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <Image
+          src="/images/wellness_texture.jpg"
+          alt="Joebrown Wellness Texture"
+          fill
+          priority
+          quality={85}
+          sizes="100vw"
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-black/70" />
+      </div>
       <div className="relative z-10 flex flex-col min-h-screen justify-between">
         <Navbar />
 

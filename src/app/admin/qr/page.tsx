@@ -205,7 +205,7 @@ export default function AdminQRPage() {
       {/* Output Grid */}
       <div id="print-area" className={`grid gap-6 animate-fade-in-up ${simpleMode ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'}`}>
         {tables.length === 0 && (
-          <div className="col-span-full py-12 text-center text-white/40 font-medium border border-dashed border--500/30 rounded-xl no-print bg-white/50">
+          <div className="col-span-full py-12 text-center text-white/40 font-medium border border-dashed border-brown-500/30 rounded-xl no-print bg-white/50">
             Generate your first QR code to see it here.
           </div>
         )}
@@ -216,10 +216,10 @@ export default function AdminQRPage() {
             <div key={item.id} className="relative group bg-white border border-brown-100 rounded-xl p-3 flex flex-col items-center gap-2 print-break shadow-sm">
               {/* Actions */}
               <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity no-print">
-                <button onClick={() => downloadQR(item)} className="p-1.5 bg--500/20 text-[#D4A373] rounded-lg hover:bg--500/20 transition-colors" title="Download PNG">
+                <button onClick={() => downloadQR(item)} className="p-1.5 bg-brown-500/20 text-[#D4A373] rounded-lg hover:bg-brown-500/20 transition-colors" title="Download PNG">
                   <Download size={13} />
                 </button>
-                <button onClick={() => removeTable(item.id)} className="p-1.5 bg--500/20 text-red-600 rounded-lg hover:bg--500/20 transition-colors" title="Remove">
+                <button onClick={() => removeTable(item.id)} className="p-1.5 bg-brown-500/20 text-red-600 rounded-lg hover:bg-brown-500/20 transition-colors" title="Remove">
                   <Trash2 size={13} />
                 </button>
               </div>
@@ -238,14 +238,14 @@ export default function AdminQRPage() {
             </div>
           ) : (
             // ── BRANDED MODE CARD ───────────────────────────────
-            <div key={item.id} className="bg-white border-2 border--500/30 shadow-md rounded-2xl p-8 flex flex-col items-center justify-center print-break relative group overflow-hidden">
+            <div key={item.id} className="bg-white border-2 border-brown-500/30 shadow-md rounded-2xl p-8 flex flex-col items-center justify-center print-break relative group overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-brown-400 to-brown-600" />
               {/* Actions */}
               <div className="absolute top-4 right-4 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity no-print">
-                <button onClick={() => downloadQR(item)} className="p-2 bg--500/20 text-[#D4A373] rounded-lg hover:bg--500/20 transition-colors" title="Download PNG">
+                <button onClick={() => downloadQR(item)} className="p-2 bg-brown-500/20 text-[#D4A373] rounded-lg hover:bg-brown-500/20 transition-colors" title="Download PNG">
                   <Download size={14} />
                 </button>
-                <button onClick={() => removeTable(item.id)} className="p-2 bg--500/20 text-red-600 rounded-lg hover:bg--500/200 hover:text-white transition-colors" title="Remove">
+                <button onClick={() => removeTable(item.id)} className="p-2 bg-brown-500/20 text-red-600 rounded-lg hover:bg-brown-500/200 hover:text-white transition-colors" title="Remove">
                   <Trash2 size={14} />
                 </button>
               </div>
@@ -254,7 +254,7 @@ export default function AdminQRPage() {
                 <img src="/jb_logo_transparent.PNG" alt="Joebrown Logo" className="w-full h-full object-contain" />
               </div>
               {item.section && (
-                <p className="text-[10px] font-sans text-brown-600 uppercase tracking-widest mb-5 font-bold bg--500/20 px-3 py-1 rounded-full">{item.section}</p>
+                <p className="text-[10px] font-sans text-brown-600 uppercase tracking-widest mb-5 font-bold bg-brown-500/20 px-3 py-1 rounded-full">{item.section}</p>
               )}
               {/* QR */}
               <div className="bg-white p-3 border-[3px] border-brown-600 shadow-sm rounded-xl relative mt-4">

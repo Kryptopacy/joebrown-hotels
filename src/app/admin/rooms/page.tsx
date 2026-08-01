@@ -131,6 +131,9 @@ export default function AdminRoomsPage() {
     };
 
     if (editingRoom) {
+      // Find removed images
+      const removedImages = editingRoom.images?.filter((img: string) => !formData.images.includes(img)) || [];
+
       // Update
       const { data, error } = await supabase
         .from('rooms')
@@ -141,6 +144,20 @@ export default function AdminRoomsPage() {
         
       if (error) toast.error(error.message);
       else {
+        // Delete removed images from storage
+        if (removedImages.length > 0) {
+          const pathsToDelete = removedImages
+            .map((url: string) => {
+              const parts = url.split('/hotel-assets/');
+              return parts.length > 1 ? parts[1] : null;
+            })
+            .filter(Boolean) as string[];
+            
+          if (pathsToDelete.length > 0) {
+            await supabase.storage.from('hotel-assets').remove(pathsToDelete);
+          }
+        }
+        
         toast.success('Room updated successfully');
         setRooms(rooms.map(r => r.id === editingRoom.id ? data : r));
         setIsModalOpen(false);
@@ -178,10 +195,26 @@ export default function AdminRoomsPage() {
     const confirmDelete = window.confirm('Are you sure you want to delete this room? This cannot be undone.');
     if (!confirmDelete) return;
 
+    const roomToDelete = rooms.find(r => r.id === id);
+
     const { error } = await supabase.from('rooms').delete().eq('id', id);
     if (error) {
       toast.error('Failed to delete room');
     } else {
+      // Delete images from storage
+      if (roomToDelete?.images && roomToDelete.images.length > 0) {
+        const pathsToDelete = roomToDelete.images
+          .map((url: string) => {
+            const parts = url.split('/hotel-assets/');
+            return parts.length > 1 ? parts[1] : null;
+          })
+          .filter(Boolean) as string[];
+          
+        if (pathsToDelete.length > 0) {
+          await supabase.storage.from('hotel-assets').remove(pathsToDelete);
+        }
+      }
+      
       toast.success('Room deleted');
       setRooms(rooms.filter(r => r.id !== id));
     }
@@ -301,8 +334,8 @@ export default function AdminRoomsPage() {
                       onClick={() => toggleAvailability(room.id, room.is_available)}
                       className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold rounded-full border transition-all ${
                         room.is_available 
-                          ? 'bg--500/200/20 text-emerald-300 border-emerald-500/30 hover:bg--500/200/30' 
-                          : 'bg--500/200/20 text-red-300 border-red-500/30 hover:bg--500/200/30'
+                          ? 'bg-brown-500/200/20 text-emerald-300 border-emerald-500/30 hover:bg-brown-500/200/30' 
+                          : 'bg-brown-500/200/20 text-red-300 border-red-500/30 hover:bg-brown-500/200/30'
                       }`}
                     >
                       {room.is_available ? <CheckCircle2 size={14} /> : <XCircle size={14} />}
@@ -320,7 +353,7 @@ export default function AdminRoomsPage() {
                         </button>
                         <button 
                         onClick={() => deleteRoom(room.id)}
-                        className="text-white/40 hover:text-red-600 transition-colors p-2 rounded-lg hover:bg--500/20" 
+                        className="text-white/40 hover:text-red-600 transition-colors p-2 rounded-lg hover:bg-brown-500/20" 
                         aria-label="Delete room"
                         >
                         <Trash2 size={16} />
@@ -341,7 +374,7 @@ export default function AdminRoomsPage() {
           <div className="relative bg-[#0D0501] border border-white/10 rounded-3xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto animate-fade-in-up">
             <div className="sticky top-0 bg-[#0D0501] z-10 p-6 border-b border-white/10 flex justify-between items-center">
               <h2 className="text-2xl font-serif text-white font-bold">{editingRoom ? 'Edit Room' : 'Add New Room'}</h2>
-              <button onClick={() => setIsModalOpen(false)} className="text-white/40 hover:text-white/60 bg-white/5 hover:bg--500/20 rounded-full p-2 transition-colors">
+              <button onClick={() => setIsModalOpen(false)} className="text-white/40 hover:text-white/60 bg-white/5 hover:bg-brown-500/20 rounded-full p-2 transition-colors">
                 <X size={20} />
               </button>
             </div>
@@ -407,7 +440,7 @@ export default function AdminRoomsPage() {
                       <div key={idx} className="relative aspect-video rounded-lg overflow-hidden border border-white/10 shadow-sm group">
                         <img src={img} alt="Room preview" className="w-full h-full object-cover" />
                         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <button type="button" onClick={() => removeImage(idx)} className="bg--500/200 text-white p-2 rounded hover:bg-red-600"><Trash2 size={16} /></button>
+                          <button type="button" onClick={() => removeImage(idx)} className="bg-brown-500/200 text-white p-2 rounded hover:bg-red-600"><Trash2 size={16} /></button>
                         </div>
                       </div>
                     ))}

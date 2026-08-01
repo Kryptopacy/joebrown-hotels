@@ -23,13 +23,7 @@ export default async function MenuPage() {
     categories = catRes.data || [];
     items = itemRes.data || [];
     
-    // DEBUG — remove after fix
-    console.log('[MENU DEBUG] hotel:', hotel?.id);
-    console.log('[MENU DEBUG] catRes error:', catRes.error);
-    console.log('[MENU DEBUG] itemRes error:', itemRes.error);
-    console.log('[MENU DEBUG] categories count:', categories.length);
-    console.log('[MENU DEBUG] items count:', items.length);
-    if (categories.length > 0) console.log('[MENU DEBUG] first cat:', JSON.stringify(categories[0]));
+
   }
 
 

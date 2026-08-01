@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export const revalidate = 3600;
 import Navbar from '@/components/Navbar';
@@ -32,9 +33,19 @@ export default async function RoomsPage() {
 
   return (
     <main className="min-h-screen relative text-[#E6CCB2] flex flex-col justify-between overflow-x-hidden bg-[#0A0401]">
-      <div className="fixed inset-0 z-0 pointer-events-none" style={{ backgroundImage: "url('/JB/gallery/towel_monogram.JPG')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed' }} />
-      {/* Sharp Cinematic Luxury Dark Overlay to make the background pop without whitewashing */}
-      <div className="fixed inset-0 z-0 bg-gradient-to-b from-black/70 via-[#0A0401]/60 to-[#0A0401] pointer-events-none" />
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <Image
+          src="/JB/gallery/towel_monogram.JPG"
+          alt="Rooms Background"
+          fill
+          priority
+          quality={85}
+          sizes="100vw"
+          className="object-cover"
+        />
+        {/* Sharp Cinematic Luxury Dark Overlay to make the background pop without whitewashing */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-[#0A0401]/60 to-[#0A0401]" />
+      </div>
       <div className="relative z-10 flex flex-col min-h-screen justify-between">
         <Navbar />
 

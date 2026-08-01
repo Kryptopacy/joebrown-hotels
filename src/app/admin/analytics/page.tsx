@@ -237,29 +237,29 @@ export default function AnalyticsPage() {
           )}
           {(activeTab === 'overview' || activeTab === 'bookings') && (
             <>
-              <KPICard icon={BedDouble} label="Room Revenue" value={formatMoney(curr.roomRev)} sub={`${curr.nightsSold} nights`} color="bg--500/200" delta={deltas.roomRev} />
-              <KPICard icon={Percent} label="Occupancy" value={`${curr.occ.toFixed(1)}%`} sub="Avg fill rate" color="bg--500/200" delta={deltas.occ} />
-              <KPICard icon={DollarSign} label="RevPAR" value={formatMoney(curr.revpar)} sub="Per available room" color="bg--500/200" delta={deltas.revpar} />
+              <KPICard icon={BedDouble} label="Room Revenue" value={formatMoney(curr.roomRev)} sub={`${curr.nightsSold} nights`} color="bg-brown-500/200" delta={deltas.roomRev} />
+              <KPICard icon={Percent} label="Occupancy" value={`${curr.occ.toFixed(1)}%`} sub="Avg fill rate" color="bg-brown-500/200" delta={deltas.occ} />
+              <KPICard icon={DollarSign} label="RevPAR" value={formatMoney(curr.revpar)} sub="Per available room" color="bg-brown-500/200" delta={deltas.revpar} />
             </>
           )}
           {(activeTab === 'overview' || activeTab === 'restaurant') && (
             <>
-              <KPICard icon={Utensils} label="Restaurant Rev" value={formatMoney(curr.restRev)} sub="Total sales" color="bg--500/200" delta={deltas.restRev} />
+              <KPICard icon={Utensils} label="Restaurant Rev" value={formatMoney(curr.restRev)} sub="Total sales" color="bg-brown-500/200" delta={deltas.restRev} />
               {activeTab === 'restaurant' && (
                 <>
                   <KPICard icon={Utensils} label="Food Sales" value={formatMoney(curr.restFoodRev)} sub="In Restaurant" color="bg-emerald-400" />
-                  <KPICard icon={GlassWater} label="Drink Sales" value={formatMoney(curr.restDrinkRev)} sub="In Restaurant" color="bg--500/200" />
+                  <KPICard icon={GlassWater} label="Drink Sales" value={formatMoney(curr.restDrinkRev)} sub="In Restaurant" color="bg-brown-500/200" />
                 </>
               )}
             </>
           )}
           {(activeTab === 'overview' || activeTab === 'lounge') && (
             <>
-              <KPICard icon={GlassWater} label="Lounge Rev" value={formatMoney(curr.loungeRev)} sub="Total sales" color="bg--500/200" delta={deltas.loungeRev} />
+              <KPICard icon={GlassWater} label="Lounge Rev" value={formatMoney(curr.loungeRev)} sub="Total sales" color="bg-brown-500/200" delta={deltas.loungeRev} />
               {activeTab === 'lounge' && (
                 <>
                   <KPICard icon={Utensils} label="Food Sales" value={formatMoney(curr.loungeFoodRev)} sub="In Lounge" color="bg-amber-400" />
-                  <KPICard icon={GlassWater} label="Drink Sales" value={formatMoney(curr.loungeDrinkRev)} sub="In Lounge" color="bg--500/200" />
+                  <KPICard icon={GlassWater} label="Drink Sales" value={formatMoney(curr.loungeDrinkRev)} sub="In Lounge" color="bg-brown-500/200" />
                 </>
               )}
             </>
@@ -318,8 +318,8 @@ export default function AnalyticsPage() {
                       <td className="p-5 text-sm font-mono text-white font-medium">{row.id}</td>
                       <td className="p-5 text-sm">
                         <span className={`px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                          row.stream === 'bookings' ? 'bg--500/200/20 text-blue-300' :
-                          row.stream === 'restaurant' ? 'bg--500/200/20 text-emerald-300' : 'bg--500/200/20 text-amber-300'
+                          row.stream === 'bookings' ? 'bg-brown-500/200/20 text-blue-300' :
+                          row.stream === 'restaurant' ? 'bg-brown-500/200/20 text-emerald-300' : 'bg-brown-500/200/20 text-amber-300'
                         }`}>
                           {row.stream}
                         </span>

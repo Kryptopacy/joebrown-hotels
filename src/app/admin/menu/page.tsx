@@ -140,6 +140,10 @@ export default function AdminMenuPage() {
     };
 
     if (editingItem) {
+      // Check if image changed
+      const oldImage = editingItem.image_url;
+      const newImage = formData.image_url;
+
       // Update
       const { data, error } = await supabase
         .from('menu_items')
@@ -150,6 +154,14 @@ export default function AdminMenuPage() {
         
       if (error) toast.error(error.message);
       else {
+        // Delete old image if changed
+        if (oldImage && oldImage !== newImage) {
+          const parts = oldImage.split('/hotel-assets/');
+          if (parts.length > 1) {
+            await supabase.storage.from('hotel-assets').remove([parts[1]]);
+          }
+        }
+        
         toast.success('Item updated');
         setItems(items.map(i => i.id === editingItem.id ? data : i));
         setIsModalOpen(false);
@@ -173,8 +185,19 @@ export default function AdminMenuPage() {
 
   const handleDelete = async (id: string) => {
     if (!window.confirm('Delete this menu item?')) return;
+    
+    const itemToDelete = items.find(i => i.id === id);
+    
     const { error } = await supabase.from('menu_items').delete().eq('id', id);
     if (!error) {
+      // Delete image from storage
+      if (itemToDelete?.image_url) {
+        const parts = itemToDelete.image_url.split('/hotel-assets/');
+        if (parts.length > 1) {
+          await supabase.storage.from('hotel-assets').remove([parts[1]]);
+        }
+      }
+      
       toast.success('Deleted item');
       setItems(items.filter(i => i.id !== id));
     } else {
@@ -372,7 +395,7 @@ export default function AdminMenuPage() {
                               onClick={() => toggleCategoryStatus(categoryObj.id, categoryObj.is_active)}
                               className={`inline-flex items-center gap-1.5 px-3 py-1 text-[10px] font-bold rounded-full border transition-all ${
                                 categoryObj.is_active 
-                                  ? 'bg--500/200/20 text-emerald-300 border-emerald-500/30 hover:bg--500/200/30' 
+                                  ? 'bg-brown-500/200/20 text-emerald-300 border-emerald-500/30 hover:bg-brown-500/200/30' 
                                   : 'bg-slate-900/50 text-white/50 border-white/10 hover:bg-slate-800'
                               }`}
                               title={categoryObj.is_active ? "Click to hide from public menu" : "Click to show on public menu"}
@@ -405,8 +428,8 @@ export default function AdminMenuPage() {
                             onClick={() => toggleStock(item.id, item.is_available)}
                             className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold rounded-full border transition-all ${
                               item.is_available 
-                                ? 'bg--500/200/20 text-emerald-300 border-emerald-500/30 hover:bg--500/200/30' 
-                                : 'bg--500/200/20 text-red-300 border-red-500/30 hover:bg--500/200/30'
+                                ? 'bg-brown-500/200/20 text-emerald-300 border-emerald-500/30 hover:bg-brown-500/200/30' 
+                                : 'bg-brown-500/200/20 text-red-300 border-red-500/30 hover:bg-brown-500/200/30'
                             }`}
                           >
                             {item.is_available ? <CheckCircle2 size={14} /> : <XCircle size={14} />}
@@ -418,7 +441,7 @@ export default function AdminMenuPage() {
                               <button onClick={() => handleOpenModal(item)} className="text-white/40 hover:text-[#D4A373] transition-colors p-2 rounded hover:bg-[#1A0A02]" aria-label="Edit item">
                               <Edit size={16} />
                               </button>
-                              <button onClick={() => handleDelete(item.id)} className="text-white/40 hover:text-red-600 transition-colors p-2 rounded hover:bg--500/20" aria-label="Delete item">
+                              <button onClick={() => handleDelete(item.id)} className="text-white/40 hover:text-red-600 transition-colors p-2 rounded hover:bg-brown-500/20" aria-label="Delete item">
                               <Trash2 size={16} />
                               </button>
                           </div>

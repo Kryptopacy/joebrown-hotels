@@ -41,14 +41,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const SidebarContent = () => (
     <>
-      <a href="/" target="_blank" rel="noopener noreferrer" className="block p-6 border-b border-brown-500/30 flex items-center gap-3 relative hover:bg-white/5 transition-colors group cursor-pointer" title="Open public site in new tab">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120px] h-[60px] bg-brown-500/10 blur-[30px] pointer-events-none rounded-full group-hover:bg-brown-500/20 transition-all" />
+      <a href="/" target="_blank" rel="noopener noreferrer" className="block p-6 border-b border-white/10 flex items-center gap-3 relative hover:bg-white/5 transition-colors group cursor-pointer" title="Open public site in new tab">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120px] h-[60px] bg-brown-light/20 blur-[30px] pointer-events-none rounded-full group-hover:bg-brown-light/30 transition-all" />
         <div className="w-12 h-12 flex items-center justify-center shrink-0">
           <Image src="/jb_logo_transparent.PNG" alt="Joebrown Logo" width={48} height={48} className="w-full h-full object-contain" />
         </div>
         <div className="relative z-10">
-          <h2 className="text-xl font-serif text-white tracking-tight font-bold group-hover:text-brown-100 transition-colors">Joebrown</h2>
-          <p className="text-[10px] text-brown-400 uppercase tracking-widest font-bold font-sans">Staff Portal</p>
+          <h2 className="text-xl font-serif text-white tracking-tight font-bold group-hover:text-[#D4A373] transition-colors">Joebrown</h2>
+          <p className="text-[10px] text-[#D4A373] uppercase tracking-widest font-bold font-sans">Staff Portal</p>
         </div>
       </a>
       <nav className="flex-1 p-4 overflow-y-auto w-full">
@@ -75,10 +75,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           })}
         </ul>
       </nav>
-      <div className="p-4 border-t border-brown-500/30 w-full relative">
+      <div className="p-4 border-t border-white/10 w-full relative">
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-4 py-2.5 w-full text-left text-red-400 hover:bg--500/200/10 font-semibold rounded-lg transition-colors text-sm"
+          className="flex items-center gap-3 px-4 py-2.5 w-full text-left text-red-400 hover:bg-red-500/10 hover:text-red-300 font-semibold rounded-lg transition-colors text-sm"
         >
           <LogOut size={18} /> Logout Staff Session
         </button>
@@ -122,9 +122,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Main Content Area */}
       <main className="flex-1 md:ml-64 flex flex-col min-h-screen bg-transparent">
         {/* Desktop Top Header Bar (Only visible on md and up) */}
-        <div className="hidden md:flex justify-end p-6 pb-0 w-full z-30 pointer-events-auto">
-          <AdminNotifications />
-        </div>
+        <header className="hidden md:flex items-center justify-between px-10 py-4 w-full z-30 bg-[#1A0A02] border-b border-white/10 shadow-sm">
+          <div className="flex items-center gap-4">
+             <h1 className="text-xl font-serif text-white tracking-wide">Staff Portal Dashboard</h1>
+          </div>
+          <div className="flex items-center gap-4">
+            <AdminNotifications />
+          </div>
+        </header>
         
         {/* Page Content */}
         <div className="pt-24 md:pt-4 p-6 md:p-10 flex-1 overflow-x-hidden">

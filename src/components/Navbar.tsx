@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useHotel } from '@/contexts/HotelContext';
 import { Menu, X } from 'lucide-react';
 
@@ -37,7 +38,9 @@ export default function Navbar() {
         <div className="px-5 md:px-8 flex justify-between items-center gap-4">
           {/* Brand */}
           <Link href="/" className="flex items-center gap-3 shrink-0 group">
-            <img src="/jb_logo_transparent.PNG" alt="Joebrown Logo" className="h-8 md:h-10 w-auto object-contain" />
+            <div className="relative h-8 md:h-10 w-8 md:w-10">
+              <Image src="/jb_logo_transparent.PNG" alt="Joebrown Logo" fill className="object-contain" sizes="(max-width: 768px) 32px, 40px" />
+            </div>
             <div className="flex flex-col shrink-0">
               <span className="text-[20px] md:text-[22px] font-serif tracking-tight whitespace-nowrap leading-none mb-1 text-[#E6CCB2]">
                 Joebrown

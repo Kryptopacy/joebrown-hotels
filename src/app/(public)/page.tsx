@@ -27,8 +27,8 @@ export default async function LandingPage({
     .maybeSingle();
 
   const hotelName = hotel?.name || 'Joebrown Palace Hotel and Suites';
-  const hotelAddress = hotel?.address || 'Your Hotel Address Here, City, State, Country';
-  const hotelPhone = hotel?.whatsapp_number || '+1234567890';
+  const hotelAddress = hotel?.address || 'Lagos, Nigeria';
+  const hotelPhone = hotel?.whatsapp_number || '+2348000000000';
 
   let rooms: any[] = [];
   if (hotel) {

@@ -45,21 +45,21 @@ export default async function AdminDashboard() {
   }
 
   const kpis = [
-    { title: 'Est. Revenue', value: `₦${stats.totalRevenue.toLocaleString()}`, change: 'Total', icon: DollarSign, color: 'border-brown-300 bg-[#1A0A02] text--300' },
-    { title: 'Est. Occupancy', value: `${stats.occupancyRate}%`, change: 'Current', icon: TrendingUp, color: 'border-emerald-300 bg-[#1A0A02] text--300' },
-    { title: 'Total Bookings', value: stats.bookings.toString(), change: 'Lifetime', icon: BookOpen, color: 'border-purple-300 bg-[#1A0A02] text--300' },
-    { title: 'Intercom Inquiries', value: stats.intercomCalls.toString(), change: 'Real-time', icon: Headset, color: 'border-red-300 bg-[#1A0A02] text--300' },
-    { title: 'Pending Orders', value: stats.pendingOrders.toString(), change: 'Live', icon: ShoppingBag, color: 'border-orange-300 bg-[#1A0A02] text--300' },
+    { title: 'Est. Revenue', value: `₦${stats.totalRevenue.toLocaleString()}`, change: 'Total', icon: DollarSign, color: 'border-brown-300 bg-[#1A0A02] text-brown-300' },
+    { title: 'Est. Occupancy', value: `${stats.occupancyRate}%`, change: 'Current', icon: TrendingUp, color: 'border-emerald-300 bg-[#1A0A02] text-brown-300' },
+    { title: 'Total Bookings', value: stats.bookings.toString(), change: 'Lifetime', icon: BookOpen, color: 'border-purple-300 bg-[#1A0A02] text-brown-300' },
+    { title: 'Intercom Inquiries', value: stats.intercomCalls.toString(), change: 'Real-time', icon: Headset, color: 'border-red-300 bg-[#1A0A02] text-brown-300' },
+    { title: 'Pending Orders', value: stats.pendingOrders.toString(), change: 'Live', icon: ShoppingBag, color: 'border-orange-300 bg-[#1A0A02] text-brown-300' },
   ];
 
   const quickLinks = [
-    { title: 'Intercom Hub', icon: Headset, href: '/admin/intercom', desc: `${stats.intercomCalls} Live guest inquiries`, bg: 'bg--500/20 text--300 border--500/30' },
-    { title: 'Staff Roles (RBAC)', icon: Shield, href: '/admin/staff', desc: 'Role-based access permissions', bg: 'bg--500/20 text--300 border--500/30' },
-    { title: 'Bookings Tracker', icon: BookOpen, href: '/admin/bookings', desc: `${stats.bookings} Reservations total`, bg: 'bg--500/20 text--300 border--500/30' },
-    { title: 'Restaurant & Lounge Orders', icon: ShoppingBag, href: '/admin/orders', desc: `${stats.pendingOrders} Pending orders`, bg: 'bg--500/20 text--300 border--500/30' },
-    { title: 'Rooms & Suites', icon: BedDouble, href: '/admin/rooms', desc: `${stats.rooms} Configured rooms`, bg: 'bg--500/20 text--300 border--500/30' },
-    { title: 'Restaurant & Lounge Menu', icon: UtensilsCrossed, href: '/admin/menu', desc: `${stats.menuItems} F&B Items`, bg: 'bg--500/20 text--300 border--500/30' },
-    { title: 'Table QR Codes', icon: QrCode, href: '/admin/qr', desc: `${stats.tables} Tables configured`, bg: 'bg--500/20 text--300 border--500/30' },
+    { title: 'Intercom Hub', icon: Headset, href: '/admin/intercom', desc: `${stats.intercomCalls} Live guest inquiries`, bg: 'bg-brown-500/20 text-brown-300 border-brown-500/30' },
+    { title: 'Staff Roles (RBAC)', icon: Shield, href: '/admin/staff', desc: 'Role-based access permissions', bg: 'bg-brown-500/20 text-brown-300 border-brown-500/30' },
+    { title: 'Bookings Tracker', icon: BookOpen, href: '/admin/bookings', desc: `${stats.bookings} Reservations total`, bg: 'bg-brown-500/20 text-brown-300 border-brown-500/30' },
+    { title: 'Restaurant & Lounge Orders', icon: ShoppingBag, href: '/admin/orders', desc: `${stats.pendingOrders} Pending orders`, bg: 'bg-brown-500/20 text-brown-300 border-brown-500/30' },
+    { title: 'Rooms & Suites', icon: BedDouble, href: '/admin/rooms', desc: `${stats.rooms} Configured rooms`, bg: 'bg-brown-500/20 text-brown-300 border-brown-500/30' },
+    { title: 'Restaurant & Lounge Menu', icon: UtensilsCrossed, href: '/admin/menu', desc: `${stats.menuItems} F&B Items`, bg: 'bg-brown-500/20 text-brown-300 border-brown-500/30' },
+    { title: 'Table QR Codes', icon: QrCode, href: '/admin/qr', desc: `${stats.tables} Tables configured`, bg: 'bg-brown-500/20 text-brown-300 border-brown-500/30' },
   ];
 
   return (

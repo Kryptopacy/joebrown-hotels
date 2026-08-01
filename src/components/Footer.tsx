@@ -2,6 +2,8 @@ import React from 'react';
 import Link from 'next/link';
 import { Phone, Mail, MapPin, ArrowRight, ShieldCheck, Clock, Utensils, BedDouble } from 'lucide-react';
 
+import Image from 'next/image';
+
 interface FooterProps {
   hotelName?: string;
   hotelAddress?: string;
@@ -25,8 +27,8 @@ export default function Footer({
         {/* Col 1: Brand & Tagline */}
         <div className="md:col-span-2 space-y-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-lg p-1.5 shrink-0">
-              <img src="/jb_logo_transparent.PNG" alt="Joebrown Logo" className="w-full h-full object-contain" />
+            <div className="relative w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-lg p-1.5 shrink-0 overflow-hidden">
+              <Image src="/jb_logo_transparent.PNG" alt="Joebrown Logo" fill className="object-contain p-1.5" sizes="48px" />
             </div>
             <span className="text-3xl font-serif text-white font-normal tracking-wide">{hotelName}</span>
           </div>

@@ -14,7 +14,18 @@ module.exports = {
     extend: {
       colors: {
         brown: {
-          DEFAULT: '#5D4037', // Chocolate color
+          50: '#fdf8f4',
+          100: '#f9eee3',
+          200: '#f1dac0',
+          300: '#e7bf97',
+          400: '#dca06b',
+          500: '#D4A373', // Main Accent
+          600: '#b4672e',
+          700: '#964f27',
+          800: '#5D4037', // Chocolate
+          900: '#3E2723', // Dark
+          950: '#231513',
+          DEFAULT: '#5D4037',
           light: '#8D6E63',
           dark: '#3E2723',
         },

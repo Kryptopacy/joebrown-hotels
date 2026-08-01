@@ -55,36 +55,47 @@ const outfit = Outfit({
   variable: "--font-sans",
 });
 
-export default function RootLayout({
+import { createClient } from "@/lib/supabase/server";
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const supabase = await createClient();
+  const { data: hotel } = await supabase
+    .from('hotels')
+    .select('*')
+    .eq('slug', 'joebrown')
+    .maybeSingle();
+
+  const hotelName = hotel?.name || "Joebrown Palace Hotel and Suites";
+  const hotelDesc = hotel?.description || "Experience the best hotel, lounge, and bar. Enjoy luxury rooms, 24/7 room service, cold drinks, and delicious meals.";
   
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Hotel",
-    "name": "Joebrown Palace Hotel and Suites",
-    "description": "Experience the best hotel, lounge, and bar. Enjoy luxury rooms, 24/7 room service, cold drinks, and delicious meals.",
+    "name": hotelName,
+    "description": hotelDesc,
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "Your Hotel Address Here",
-      "addressLocality": "Your City",
-      "addressRegion": "Your State",
-      "addressCountry": "Your Country"
+      "streetAddress": hotel?.address || "Lagos, Nigeria",
+      "addressLocality": "Lagos",
+      "addressRegion": "Lagos State",
+      "addressCountry": "Nigeria"
     },
     "geo": {
       "@type": "GeoCoordinates",
-      "latitude": "0.0000",
-      "longitude": "0.0000"
+      "latitude": "6.5244",
+      "longitude": "3.3792"
     },
     "areaServed": [
       {
         "@type": "City",
-        "name": "Your City"
+        "name": "Lagos"
       }
     ],
-    "telephone": "+1234567890",
+    "telephone": hotel?.whatsapp_number || "+2348000000000",
     "priceRange": "₦₦₦",
     "image": "https://joebrownhotels.com/jb_logo_background.jpg",
     "amenityFeature": [

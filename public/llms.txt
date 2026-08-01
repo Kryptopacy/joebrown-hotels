@@ -1,19 +1,16 @@
-# Dreamsfield Hotel & Lounge
+# Joebrown Palace Hotel and Suites
 
-Dreamsfield Hotel & Lounge is a luxury destination in Ibadan offering premium accommodation, nightlife, and culinary experiences.
+Joebrown Palace Hotel and Suites is a premier luxury destination located in Lagos, offering refined accommodation, gourmet dining, and bespoke concierge hospitality.
 
 ## Core Offerings
-- **Luxury Rooms**: Standard, Deluxe, Executive Suites, and Penthouse Suites.
-- **Bar & Lounge**: Exclusive nightlife, signature cocktails, and a vibrant atmosphere.
-- **Kitchen**: Local Nigerian delicacies and intercontinental cuisine.
+- **Luxury Rooms**: Standard, Deluxe, Executive Suites, and Penthouse Suites with premium amenities and stylish aesthetics.
+- **Restaurant & Lounge**: Freshly prepared Nigerian specialties, pepper soup, grilled meals, savory snacks, fine wines, cognac, and handcrafted cocktails.
+- **Smart Hospitality**: Guests can order online directly from their phones using room or table QR codes for 24/7 room delivery or table service.
+- **Intercom Hub & Concierge**: Real-time guest request fulfillment.
 
 ## Location
-Akala Express, Ibadan, Oyo State, Nigeria.
+Lagos, Nigeria.
 
-## Contact
-- Phone: +234 800 DREAMSFIELD
-- General inquiries: info@dreamsfieldhotels.com
-- Reservations: reservations@dreamsfieldhotels.com
-
-## Online Ordering
-Guests can place food and drink orders online at https://dreamsfieldhotels.com/menu for dine-in (room service / table service) or takeaway.
+## Online Services
+Guests can place food and drink orders online at https://joebrownhotels.com/menu for dine-in (room service / table service).
+Bookings can be made at https://joebrownhotels.com/rooms
