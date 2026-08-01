@@ -42,9 +42,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const SidebarContent = () => (
     <>
       <a href="/" target="_blank" rel="noopener noreferrer" className="block p-6 border-b border-brown-500/30 flex items-center gap-3 relative hover:bg-white/5 transition-colors group cursor-pointer" title="Open public site in new tab">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120px] h-[60px] bg--500/200/10 blur-[30px] pointer-events-none rounded-full group-hover:bg--500/200/20 transition-all" />
-        <div className="h-14 flex items-center justify-center mb-10 shrink-0">
-          <Image src="/jb_logo_transparent.PNG" alt="Joebrown Logo" width={40} height={40} className="w-full h-full object-contain" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120px] h-[60px] bg-brown-500/10 blur-[30px] pointer-events-none rounded-full group-hover:bg-brown-500/20 transition-all" />
+        <div className="w-12 h-12 flex items-center justify-center shrink-0">
+          <Image src="/jb_logo_transparent.PNG" alt="Joebrown Logo" width={48} height={48} className="w-full h-full object-contain" />
         </div>
         <div className="relative z-10">
           <h2 className="text-xl font-serif text-white tracking-tight font-bold group-hover:text-brown-100 transition-colors">Joebrown</h2>

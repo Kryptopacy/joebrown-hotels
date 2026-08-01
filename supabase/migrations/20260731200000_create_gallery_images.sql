@@ -13,10 +13,12 @@ CREATE TABLE IF NOT EXISTS public.gallery_images (
 ALTER TABLE public.gallery_images ENABLE ROW LEVEL SECURITY;
 
 -- Public read (anyone can see active gallery images)
+DROP POLICY IF EXISTS "gallery_public_read" ON public.gallery_images;
 CREATE POLICY "gallery_public_read" ON public.gallery_images
   FOR SELECT USING (is_active = true);
 
 -- Admin full access (use same email-based pattern as is_approved_staff())
+DROP POLICY IF EXISTS "gallery_admin_all" ON public.gallery_images;
 CREATE POLICY "gallery_admin_all" ON public.gallery_images
   FOR ALL USING (
     EXISTS (

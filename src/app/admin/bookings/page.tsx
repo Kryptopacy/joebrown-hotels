@@ -342,7 +342,7 @@ export default function AdminBookingsPage() {
 
   // --- VIEWS COMPONENTS ---
   const TableView = () => (
-    <div className="glass-card bg-[#0D0501] border border-white/10 rounded-3xl shadow-sm overflow-x-auto min-h-[500px]">
+    <div className="bg-[#0D0501] border border-white/10 rounded-3xl shadow-sm overflow-x-auto min-h-[500px]">
       <table className="w-full text-left min-w-[900px]">
         <thead className="bg-[#1A0A02] border-b border-white/10">
           <tr>
@@ -433,7 +433,7 @@ export default function AdminBookingsPage() {
     for (let i = 1; i <= daysInMonth; i++) days.push(new Date(calMonth.getFullYear(), calMonth.getMonth(), i));
 
     return (
-      <div className="glass-card bg-[#0D0501] border border-white/10 rounded-3xl shadow-sm p-6 min-h-[500px]">
+      <div className="bg-[#0D0501] border border-white/10 rounded-3xl shadow-sm p-6 min-h-[500px]">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-serif font-bold text-white">
             {calMonth.toLocaleString('default', { month: 'long', year: 'numeric' })}
@@ -505,7 +505,7 @@ export default function AdminBookingsPage() {
     }
 
     return (
-      <div className="glass-card bg-[#0D0501] border border-white/10 rounded-3xl shadow-sm overflow-hidden min-h-[500px] flex flex-col">
+      <div className="bg-[#0D0501] border border-white/10 rounded-3xl shadow-sm overflow-hidden min-h-[500px] flex flex-col">
         <div className="flex justify-between items-center p-4 border-b border-white/10 bg-white/5">
           <h2 className="font-serif font-semibold text-white">Tape Chart (14 Days)</h2>
           <div className="flex gap-2">
@@ -616,7 +616,7 @@ export default function AdminBookingsPage() {
 
       {/* TODAY PANEL */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div className="glass-card bg-[#0D0501] border border-white/10 rounded-3xl p-4 flex items-center gap-4 shadow-sm relative overflow-hidden">
+        <div className="bg-[#0D0501] border border-white/10 rounded-3xl p-4 flex items-center gap-4 shadow-sm relative overflow-hidden">
           <div className="absolute top-0 right-0 p-4 opacity-5"><CalendarCheck size={80}/></div>
           <div className="p-3 bg-[#1A0A02] rounded-xl text-[#D4A373]"><CalendarCheck size={24}/></div>
           <div>
@@ -624,7 +624,7 @@ export default function AdminBookingsPage() {
             <div className="text-xs font-medium text-white/50 uppercase tracking-wider">Arrivals Today</div>
           </div>
         </div>
-        <div className="glass-card bg-[#0D0501] border border-white/10 rounded-3xl p-4 flex items-center gap-4 shadow-sm relative overflow-hidden">
+        <div className="bg-[#0D0501] border border-white/10 rounded-3xl p-4 flex items-center gap-4 shadow-sm relative overflow-hidden">
           <div className="absolute top-0 right-0 p-4 opacity-5"><CalendarX size={80}/></div>
           <div className="p-3 bg-[#1A0A02] rounded-xl text-[#D4A373]"><CalendarX size={24}/></div>
           <div>
@@ -632,7 +632,7 @@ export default function AdminBookingsPage() {
             <div className="text-xs font-medium text-white/50 uppercase tracking-wider">Departures Today</div>
           </div>
         </div>
-        <div className="glass-card bg-[#0D0501] border border-white/10 rounded-3xl p-4 flex items-center gap-4 shadow-sm relative overflow-hidden">
+        <div className="bg-[#0D0501] border border-white/10 rounded-3xl p-4 flex items-center gap-4 shadow-sm relative overflow-hidden">
           <div className="absolute top-0 right-0 p-4 opacity-5"><BedDouble size={80}/></div>
           <div className="p-3 bg-[#1A0A02] rounded-xl text-[#D4A373]"><BedDouble size={24}/></div>
           <div>
@@ -640,7 +640,7 @@ export default function AdminBookingsPage() {
             <div className="text-xs font-medium text-white/50 uppercase tracking-wider">In-House Now</div>
           </div>
         </div>
-        <div className="glass-card bg-[#0D0501] border border-white/10 rounded-3xl p-4 flex items-center gap-4 shadow-sm relative overflow-hidden">
+        <div className="bg-[#0D0501] border border-white/10 rounded-3xl p-4 flex items-center gap-4 shadow-sm relative overflow-hidden">
           <div className="absolute top-0 right-0 p-4 opacity-5"><Clock size={80}/></div>
           <div className="p-3 bg-[#1A0A02] rounded-xl text-[#D4A373]"><Clock size={24}/></div>
           <div>
