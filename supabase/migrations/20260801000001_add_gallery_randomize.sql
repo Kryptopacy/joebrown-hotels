@@ -1,0 +1,1 @@
+ALTER TABLE hotels ADD COLUMN IF NOT EXISTS gallery_randomize BOOLEAN DEFAULT true;

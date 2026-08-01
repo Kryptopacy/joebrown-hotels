@@ -42,6 +42,7 @@ export default function PremiumGallery({ hotelId }: { hotelId?: string }) {
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
   const [pool, setPool] = useState<{ url: string; title: string }[]>([]);
   const [fadeSlot, setFadeSlot] = useState<number | null>(null);
+  const [isRandomizing, setIsRandomizing] = useState(true);
 
   useEffect(() => {
     const load = async () => {
@@ -51,6 +52,12 @@ export default function PremiumGallery({ hotelId }: { hotelId?: string }) {
       if (hotelId) {
         try {
           const supabase = createClient();
+          
+          // Fetch settings
+          const { data: hotelData } = await supabase.from('hotels').select('gallery_randomize').eq('id', hotelId).maybeSingle();
+          const shouldRandomize = hotelData?.gallery_randomize ?? true;
+          setIsRandomizing(shouldRandomize);
+
           const { data } = await supabase
             .from('gallery_images')
             .select('url, title')
@@ -71,10 +78,19 @@ export default function PremiumGallery({ hotelId }: { hotelId?: string }) {
         allImages = FALLBACK_IMAGES;
       }
 
-      // Shuffle the full pool
-      const shuffled = [...allImages].sort(() => Math.random() - 0.5);
-      const display = shuffled.slice(0, 6);
-      const remaining = shuffled.slice(6);
+      let display = [];
+      let remaining = [];
+
+      if (isRandomizing) {
+        // Shuffle the full pool
+        const shuffled = [...allImages].sort(() => Math.random() - 0.5);
+        display = shuffled.slice(0, 6);
+        remaining = shuffled.slice(6);
+      } else {
+        // Use exact display order
+        display = allImages.slice(0, 6);
+        remaining = allImages.slice(6);
+      }
 
       setGalleryItems(
         display.map((img, idx) => ({
@@ -88,10 +104,11 @@ export default function PremiumGallery({ hotelId }: { hotelId?: string }) {
     };
 
     load();
-  }, [hotelId]);
+  }, [hotelId, isRandomizing]);
 
   // Auto-shuffle every 5 seconds
   useEffect(() => {
+    if (!isRandomizing) return;
     if (galleryItems.length === 0 || pool.length === 0) return;
 
     const interval = setInterval(() => {

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { LayoutDashboard, BedDouble, UtensilsCrossed, Settings, QrCode, BookOpen, LogOut, Menu, X, Headset, Shield, ShoppingBag, BarChart3, Users, Bell } from 'lucide-react';
+import { LayoutDashboard, BedDouble, UtensilsCrossed, Settings, QrCode, BookOpen, LogOut, Menu, X, Headset, Shield, ShoppingBag, BarChart3, Users, Bell, Image as ImageIcon } from 'lucide-react';
 import AdminNotifications from '@/components/AdminNotifications';
 import AdminAssistantWidget from '@/components/AdminAssistantWidget';
 
@@ -20,6 +20,7 @@ const ADMIN_LINKS = [
   { name: 'Restaurant & Lounge', href: '/admin/orders', icon: ShoppingBag },
   { name: 'Rooms', href: '/admin/rooms', icon: BedDouble },
   { name: 'Menu Items', href: '/admin/menu', icon: UtensilsCrossed },
+  { name: 'Gallery', href: '/admin/gallery', icon: ImageIcon },
   { name: 'QR Codes', href: '/admin/qr', icon: QrCode },
   { name: 'Settings', href: '/admin/settings', icon: Settings },
 ];
