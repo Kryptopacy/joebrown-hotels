@@ -372,7 +372,7 @@ export default function AdminMenuPage() {
                               onClick={() => toggleCategoryStatus(categoryObj.id, categoryObj.is_active)}
                               className={`inline-flex items-center gap-1.5 px-3 py-1 text-[10px] font-bold rounded-full border transition-all ${
                                 categoryObj.is_active 
-                                  ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30 hover:bg-emerald-500/30' 
+                                  ? 'bg--500/200/20 text-emerald-300 border-emerald-500/30 hover:bg--500/200/30' 
                                   : 'bg-slate-900/50 text-white/50 border-white/10 hover:bg-slate-800'
                               }`}
                               title={categoryObj.is_active ? "Click to hide from public menu" : "Click to show on public menu"}
@@ -391,7 +391,7 @@ export default function AdminMenuPage() {
                             <div className="w-12 h-12 rounded bg-white/5 overflow-hidden border border-white/10 flex items-center justify-center shrink-0">
                               {item.image_url ? 
                                 <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" /> : 
-                                <UtensilsCrossed size={16} className="text-slate-300" />
+                                <UtensilsCrossed size={16} className="text-white/80" />
                               }
                             </div>
                             <div>
@@ -405,8 +405,8 @@ export default function AdminMenuPage() {
                             onClick={() => toggleStock(item.id, item.is_available)}
                             className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold rounded-full border transition-all ${
                               item.is_available 
-                                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30 hover:bg-emerald-500/30' 
-                                : 'bg-red-500/20 text-red-300 border-red-500/30 hover:bg-red-500/30'
+                                ? 'bg--500/200/20 text-emerald-300 border-emerald-500/30 hover:bg--500/200/30' 
+                                : 'bg--500/200/20 text-red-300 border-red-500/30 hover:bg--500/200/30'
                             }`}
                           >
                             {item.is_available ? <CheckCircle2 size={14} /> : <XCircle size={14} />}
@@ -418,7 +418,7 @@ export default function AdminMenuPage() {
                               <button onClick={() => handleOpenModal(item)} className="text-white/40 hover:text-[#D4A373] transition-colors p-2 rounded hover:bg-[#1A0A02]" aria-label="Edit item">
                               <Edit size={16} />
                               </button>
-                              <button onClick={() => handleDelete(item.id)} className="text-white/40 hover:text-red-600 transition-colors p-2 rounded hover:bg-red-50" aria-label="Delete item">
+                              <button onClick={() => handleDelete(item.id)} className="text-white/40 hover:text-red-600 transition-colors p-2 rounded hover:bg--500/20" aria-label="Delete item">
                               <Trash2 size={16} />
                               </button>
                           </div>

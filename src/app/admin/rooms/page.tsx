@@ -26,7 +26,8 @@ export default function AdminRoomsPage() {
     max_guests: '2',
     size_sqm: '',
     amenities: '', // Will be stored as comma separated string in form, JSON in DB
-    images: [] as string[]
+    images: [] as string[],
+    is_featured: false
   });
 
   const supabase = createClient();
@@ -89,7 +90,8 @@ export default function AdminRoomsPage() {
         max_guests: room.max_guests?.toString() || '2',
         size_sqm: room.size_sqm?.toString() || '',
         amenities: room.amenities ? room.amenities.join(', ') : '',
-        images: room.images || []
+        images: room.images || [],
+        is_featured: room.is_featured || false
       });
     } else {
       setEditingRoom(null);
@@ -101,7 +103,8 @@ export default function AdminRoomsPage() {
         max_guests: '2',
         size_sqm: '',
         amenities: '',
-        images: []
+        images: [],
+        is_featured: false
       });
     }
     setIsModalOpen(true);
@@ -123,7 +126,8 @@ export default function AdminRoomsPage() {
       max_guests: parseInt(formData.max_guests),
       size_sqm: parseInt(formData.size_sqm) || null,
       amenities: amenitiesList,
-      images: formData.images
+      images: formData.images,
+      is_featured: formData.is_featured
     };
 
     if (editingRoom) {
@@ -297,8 +301,8 @@ export default function AdminRoomsPage() {
                       onClick={() => toggleAvailability(room.id, room.is_available)}
                       className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold rounded-full border transition-all ${
                         room.is_available 
-                          ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30 hover:bg-emerald-500/30' 
-                          : 'bg-red-500/20 text-red-300 border-red-500/30 hover:bg-red-500/30'
+                          ? 'bg--500/200/20 text-emerald-300 border-emerald-500/30 hover:bg--500/200/30' 
+                          : 'bg--500/200/20 text-red-300 border-red-500/30 hover:bg--500/200/30'
                       }`}
                     >
                       {room.is_available ? <CheckCircle2 size={14} /> : <XCircle size={14} />}
@@ -316,7 +320,7 @@ export default function AdminRoomsPage() {
                         </button>
                         <button 
                         onClick={() => deleteRoom(room.id)}
-                        className="text-white/40 hover:text-red-600 transition-colors p-2 rounded-lg hover:bg-red-50" 
+                        className="text-white/40 hover:text-red-600 transition-colors p-2 rounded-lg hover:bg--500/20" 
                         aria-label="Delete room"
                         >
                         <Trash2 size={16} />
@@ -337,7 +341,7 @@ export default function AdminRoomsPage() {
           <div className="relative bg-[#0D0501] border border-white/10 rounded-3xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto animate-fade-in-up">
             <div className="sticky top-0 bg-[#0D0501] z-10 p-6 border-b border-white/10 flex justify-between items-center">
               <h2 className="text-2xl font-serif text-white font-bold">{editingRoom ? 'Edit Room' : 'Add New Room'}</h2>
-              <button onClick={() => setIsModalOpen(false)} className="text-white/40 hover:text-white/60 bg-white/5 hover:bg-slate-100 rounded-full p-2 transition-colors">
+              <button onClick={() => setIsModalOpen(false)} className="text-white/40 hover:text-white/60 bg-white/5 hover:bg--500/20 rounded-full p-2 transition-colors">
                 <X size={20} />
               </button>
             </div>
@@ -368,6 +372,18 @@ export default function AdminRoomsPage() {
                 </div>
               </div>
 
+              <div className="flex items-center gap-3">
+                <input 
+                  type="checkbox" 
+                  id="is_featured" 
+                  checked={formData.is_featured} 
+                  onChange={(e) => setFormData({...formData, is_featured: e.target.checked})}
+                  className="w-5 h-5 accent-brown-500 rounded focus:ring-brown-500 bg-white/5 border-white/10"
+                />
+                <label htmlFor="is_featured" className="text-sm font-bold text-white">Feature on Landing Page</label>
+                <span className="text-xs text-white/50 ml-2">(Check this to display this room on the main home page)</span>
+              </div>
+
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-white/50 mb-2">Description</label>
                 <textarea className="w-full bg-white/5 border border-white/10 focus:border-brown-500 text-white text-sm px-4 py-3 rounded-xl outline-none transition-all shadow-sm min-h-[100px]" value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} placeholder="A highly descriptive text bringing the room to life..."></textarea>
@@ -391,7 +407,7 @@ export default function AdminRoomsPage() {
                       <div key={idx} className="relative aspect-video rounded-lg overflow-hidden border border-white/10 shadow-sm group">
                         <img src={img} alt="Room preview" className="w-full h-full object-cover" />
                         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <button type="button" onClick={() => removeImage(idx)} className="bg-red-500 text-white p-2 rounded hover:bg-red-600"><Trash2 size={16} /></button>
+                          <button type="button" onClick={() => removeImage(idx)} className="bg--500/200 text-white p-2 rounded hover:bg-red-600"><Trash2 size={16} /></button>
                         </div>
                       </div>
                     ))}

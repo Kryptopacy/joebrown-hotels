@@ -207,7 +207,7 @@ export default function AdminStaffPage() {
                     <td className="p-4 text-right">
                       <button 
                         onClick={() => removeStaff(staff.id)}
-                        className="px-3 py-1.5 text-xs font-bold bg-red-500/20 text-red-300 hover:bg-red-500/30 rounded-lg border border-red-500/30 transition-colors"
+                        className="px-3 py-1.5 text-xs font-bold bg--500/200/20 text-red-300 hover:bg--500/200/30 rounded-lg border border-red-500/30 transition-colors"
                       >
                         Remove Access
                       </button>

@@ -105,10 +105,10 @@ export default function AdminBookingsPage() {
 
   const getStatusColor = (status: string) => {
     switch(status) {
-      case 'confirmed': return 'bg-blue-500/20 text-blue-300 border-blue-500/30';
-      case 'checked_in': return 'bg-purple-500/20 text-purple-300 border-purple-500/30';
-      case 'completed': return 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
-      case 'cancelled': return 'bg-red-500/20 text-red-300 border-red-500/30';
+      case 'confirmed': return 'bg--500/200/20 text-blue-300 border-blue-500/30';
+      case 'checked_in': return 'bg--500/200/20 text-purple-300 border-purple-500/30';
+      case 'completed': return 'bg--500/200/20 text-emerald-300 border-emerald-500/30';
+      case 'cancelled': return 'bg--500/200/20 text-red-300 border-red-500/30';
       case 'maintenance': return 'bg-white/10 text-white/80 border-white/20';
       default: return 'bg-[#1A0A02] text-[#D4A373] border-white/10'; // pending
     }
@@ -116,9 +116,9 @@ export default function AdminBookingsPage() {
 
   const getPaymentStatusBadge = (status: string) => {
     switch(status) {
-      case 'paid': return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-emerald-500/20 text-emerald-800 border border-emerald-200">Paid</span>;
-      case 'unpaid': return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-red-500/20 text-red-800 border border-red-200">Unpaid</span>;
-      default: return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-white/10 text-brown-800 border border-white/10">Pending</span>;
+      case 'paid': return <span className="px-2 py-1 text-xs font-semibold rounded-full bg--500/200/20 text--300 border border--500/30">Paid</span>;
+      case 'unpaid': return <span className="px-2 py-1 text-xs font-semibold rounded-full bg--500/200/20 text--300 border border--500/30">Unpaid</span>;
+      default: return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-white/10 text--300 border border-white/10">Pending</span>;
     }
   };
 
@@ -460,11 +460,11 @@ export default function AdminBookingsPage() {
                 <div className="flex flex-col gap-1">
                   {dayBookings.slice(0, 3).map((b, i) => {
                     let dotColor = 'bg-slate-400';
-                    if (b.status === 'confirmed') dotColor = 'bg-blue-500';
-                    if (b.status === 'checked_in') dotColor = 'bg-purple-500';
+                    if (b.status === 'confirmed') dotColor = 'bg--500/200';
+                    if (b.status === 'checked_in') dotColor = 'bg--500/200';
                     if (b.status === 'pending') dotColor = 'bg-[#D4A373]';
-                    if (b.status === 'completed') dotColor = 'bg-emerald-500';
-                    if (b.status === 'cancelled') dotColor = 'bg-red-500 opacity-50';
+                    if (b.status === 'completed') dotColor = 'bg--500/200';
+                    if (b.status === 'cancelled') dotColor = 'bg--500/200 opacity-50';
                     if (b.status === 'maintenance') dotColor = 'bg-white/40';
 
                     return (
@@ -554,11 +554,11 @@ export default function AdminBookingsPage() {
 
                     // Determine colors
                     let bgCol = 'bg-white/20', textCol = 'text-white', borderCol = 'border-white/20';
-                    if (booking.status === 'confirmed') { bgCol = 'bg-blue-500/20'; textCol = 'text-blue-300'; borderCol = 'border-blue-500/30'; }
-                    if (booking.status === 'checked_in') { bgCol = 'bg-purple-500/20'; textCol = 'text-purple-300'; borderCol = 'border-purple-500/30'; }
+                    if (booking.status === 'confirmed') { bgCol = 'bg--500/200/20'; textCol = 'text-blue-300'; borderCol = 'border-blue-500/30'; }
+                    if (booking.status === 'checked_in') { bgCol = 'bg--500/200/20'; textCol = 'text-purple-300'; borderCol = 'border-purple-500/30'; }
                     if (booking.status === 'pending') { bgCol = 'bg-[#D4A373]/20'; textCol = 'text-[#D4A373]'; borderCol = 'border-[#D4A373]/30'; }
-                    if (booking.status === 'completed') { bgCol = 'bg-emerald-500/20'; textCol = 'text-emerald-800'; borderCol = 'border-emerald-500/30'; }
-                    if (booking.status === 'cancelled') { bgCol = 'bg-red-500/20 opacity-50'; textCol = 'text-red-800'; borderCol = 'border-red-500/30'; }
+                    if (booking.status === 'completed') { bgCol = 'bg--500/200/20'; textCol = 'text--300'; borderCol = 'border-emerald-500/30'; }
+                    if (booking.status === 'cancelled') { bgCol = 'bg--500/200/20 opacity-50'; textCol = 'text--300'; borderCol = 'border-red-500/30'; }
                     if (booking.status === 'maintenance') { bgCol = 'bg-white/20'; textCol = 'text-white'; borderCol = 'border-white/30'; }
 
                     return (

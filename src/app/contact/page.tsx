@@ -12,8 +12,9 @@ export default function ContactPage() {
   const hotelPhone = '+234 800 joebrown';
 
   return (
-    <main className="min-h-screen relative text-[#2C1E16] flex flex-col justify-between overflow-x-hidden bg-[#FAF9F6]">
-      <div className="fixed inset-0 z-0 opacity-[0.15] pointer-events-none" style={{ backgroundImage: "url('/images/wellness_texture.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }} />
+    <main className="min-h-screen relative text-white flex flex-col justify-between overflow-x-hidden bg-[#0A0401]">
+      <div className="fixed inset-0 z-0 pointer-events-none" style={{ backgroundImage: "url('/images/wellness_texture.jpg')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed' }} />
+      <div className="fixed inset-0 z-0 bg-black/60 pointer-events-none" />
       <div className="relative z-10 flex flex-col min-h-screen justify-between">
         <Navbar />
 

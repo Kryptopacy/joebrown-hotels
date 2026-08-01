@@ -220,7 +220,7 @@ export default function AnalyticsPage() {
             <div className="flex bg-[#0D0501] border border-white/10 rounded-2xl p-1.5 gap-1 shadow-xl">
               {(['7d', '30d', '90d', 'all'] as const).map(p => (
                 <button key={p} onClick={() => setPeriod(p)}
-                  className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all ${period === p ? 'bg-white text-[#1A0A02]' : 'text-white/50 hover:text-white'}`}>
+                  className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all ${period === p ? 'bg-[#1A0A02] text-[#1A0A02]' : 'text-white/50 hover:text-white'}`}>
                   {p === '7d' ? '7 Days' : p === '30d' ? '30 Days' : p === '90d' ? '90 Days' : 'All Time'}
                 </button>
               ))}
@@ -237,29 +237,29 @@ export default function AnalyticsPage() {
           )}
           {(activeTab === 'overview' || activeTab === 'bookings') && (
             <>
-              <KPICard icon={BedDouble} label="Room Revenue" value={formatMoney(curr.roomRev)} sub={`${curr.nightsSold} nights`} color="bg-blue-500" delta={deltas.roomRev} />
-              <KPICard icon={Percent} label="Occupancy" value={`${curr.occ.toFixed(1)}%`} sub="Avg fill rate" color="bg-purple-500" delta={deltas.occ} />
-              <KPICard icon={DollarSign} label="RevPAR" value={formatMoney(curr.revpar)} sub="Per available room" color="bg-indigo-500" delta={deltas.revpar} />
+              <KPICard icon={BedDouble} label="Room Revenue" value={formatMoney(curr.roomRev)} sub={`${curr.nightsSold} nights`} color="bg--500/200" delta={deltas.roomRev} />
+              <KPICard icon={Percent} label="Occupancy" value={`${curr.occ.toFixed(1)}%`} sub="Avg fill rate" color="bg--500/200" delta={deltas.occ} />
+              <KPICard icon={DollarSign} label="RevPAR" value={formatMoney(curr.revpar)} sub="Per available room" color="bg--500/200" delta={deltas.revpar} />
             </>
           )}
           {(activeTab === 'overview' || activeTab === 'restaurant') && (
             <>
-              <KPICard icon={Utensils} label="Restaurant Rev" value={formatMoney(curr.restRev)} sub="Total sales" color="bg-emerald-500" delta={deltas.restRev} />
+              <KPICard icon={Utensils} label="Restaurant Rev" value={formatMoney(curr.restRev)} sub="Total sales" color="bg--500/200" delta={deltas.restRev} />
               {activeTab === 'restaurant' && (
                 <>
                   <KPICard icon={Utensils} label="Food Sales" value={formatMoney(curr.restFoodRev)} sub="In Restaurant" color="bg-emerald-400" />
-                  <KPICard icon={GlassWater} label="Drink Sales" value={formatMoney(curr.restDrinkRev)} sub="In Restaurant" color="bg-teal-500" />
+                  <KPICard icon={GlassWater} label="Drink Sales" value={formatMoney(curr.restDrinkRev)} sub="In Restaurant" color="bg--500/200" />
                 </>
               )}
             </>
           )}
           {(activeTab === 'overview' || activeTab === 'lounge') && (
             <>
-              <KPICard icon={GlassWater} label="Lounge Rev" value={formatMoney(curr.loungeRev)} sub="Total sales" color="bg-amber-500" delta={deltas.loungeRev} />
+              <KPICard icon={GlassWater} label="Lounge Rev" value={formatMoney(curr.loungeRev)} sub="Total sales" color="bg--500/200" delta={deltas.loungeRev} />
               {activeTab === 'lounge' && (
                 <>
                   <KPICard icon={Utensils} label="Food Sales" value={formatMoney(curr.loungeFoodRev)} sub="In Lounge" color="bg-amber-400" />
-                  <KPICard icon={GlassWater} label="Drink Sales" value={formatMoney(curr.loungeDrinkRev)} sub="In Lounge" color="bg-orange-500" />
+                  <KPICard icon={GlassWater} label="Drink Sales" value={formatMoney(curr.loungeDrinkRev)} sub="In Lounge" color="bg--500/200" />
                 </>
               )}
             </>
@@ -318,8 +318,8 @@ export default function AnalyticsPage() {
                       <td className="p-5 text-sm font-mono text-white font-medium">{row.id}</td>
                       <td className="p-5 text-sm">
                         <span className={`px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                          row.stream === 'bookings' ? 'bg-blue-500/20 text-blue-300' :
-                          row.stream === 'restaurant' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'
+                          row.stream === 'bookings' ? 'bg--500/200/20 text-blue-300' :
+                          row.stream === 'restaurant' ? 'bg--500/200/20 text-emerald-300' : 'bg--500/200/20 text-amber-300'
                         }`}>
                           {row.stream}
                         </span>

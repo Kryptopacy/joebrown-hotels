@@ -367,7 +367,7 @@ export default function AdminSettingsPage() {
 
       {/* ── Danger Zone ── */}
       <div className="bg-red-950/20 border border-red-900/30 rounded-3xl p-6 md:p-8 shadow-sm">
-        <h2 className="text-lg font-bold text-red-300 mb-2 border-b border-red-200 pb-3 flex items-center gap-2">
+        <h2 className="text-lg font-bold text-red-300 mb-2 border-b border--500/30 pb-3 flex items-center gap-2">
           <Wrench size={18} className="text-red-400" /> Danger Zone
         </h2>
         <p className="text-sm text-red-400 font-medium mb-5">

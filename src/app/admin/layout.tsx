@@ -42,7 +42,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const SidebarContent = () => (
     <>
       <a href="/" target="_blank" rel="noopener noreferrer" className="block p-6 border-b border-brown-500/30 flex items-center gap-3 relative hover:bg-white/5 transition-colors group cursor-pointer" title="Open public site in new tab">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120px] h-[60px] bg-brown-500/10 blur-[30px] pointer-events-none rounded-full group-hover:bg-brown-500/20 transition-all" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120px] h-[60px] bg--500/200/10 blur-[30px] pointer-events-none rounded-full group-hover:bg--500/200/20 transition-all" />
         <div className="h-14 flex items-center justify-center mb-10 shrink-0">
           <Image src="/jb_logo_transparent.PNG" alt="Joebrown Logo" width={40} height={40} className="w-full h-full object-contain" />
         </div>
@@ -78,7 +78,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <div className="p-4 border-t border-brown-500/30 w-full relative">
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-4 py-2.5 w-full text-left text-red-400 hover:bg-red-500/10 font-semibold rounded-lg transition-colors text-sm"
+          className="flex items-center gap-3 px-4 py-2.5 w-full text-left text-red-400 hover:bg--500/200/10 font-semibold rounded-lg transition-colors text-sm"
         >
           <LogOut size={18} /> Logout Staff Session
         </button>
@@ -87,7 +87,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   );
 
   return (
-    <div className="flex min-h-screen text-slate-900 bg-transparent">
+    <div className="flex min-h-screen text-white bg-[#0A0401]">
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex flex-col w-64 fixed h-full z-40 transition-all bg-[#1A0A02] border-r border-white/10 shadow-[4px_0_24px_-12px_rgba(0,0,0,0.5)]">
         <SidebarContent />

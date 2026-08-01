@@ -36,6 +36,7 @@ export default async function LandingPage({
       .from('rooms')
       .select('*')
       .eq('hotel_id', hotel.id)
+      .eq('is_featured', true)
       .order('display_order', { ascending: true })
       .limit(3);
     if (roomData && roomData.length > 0) rooms = roomData;

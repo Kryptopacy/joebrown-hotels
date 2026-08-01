@@ -16,21 +16,21 @@ const BAR_CATEGORIES = ['Beers & Ciders', 'Liquors & Cognac', 'Wines & Champagne
 
 const getOrderStatusColor = (status: string) => {
   switch (status) {
-    case 'confirmed':  return 'bg-blue-500/10 text-blue-400 border-blue-500/30';
-    case 'preparing':  return 'bg-purple-500/10 text-purple-400 border-purple-500/30';
-    case 'ready':      return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
-    case 'delivered':  return 'bg-green-500/10 text-green-400 border-green-500/30';
-    case 'cancelled':  return 'bg-red-500/10 text-red-400 border-red-500/30';
-    default:           return 'bg-orange-500/10 text-orange-400 border-orange-500/30';
+    case 'confirmed':  return 'bg--500/200/10 text-blue-400 border-blue-500/30';
+    case 'preparing':  return 'bg--500/200/10 text-purple-400 border-purple-500/30';
+    case 'ready':      return 'bg--500/200/10 text-emerald-400 border-emerald-500/30';
+    case 'delivered':  return 'bg--500/200/10 text-green-400 border-green-500/30';
+    case 'cancelled':  return 'bg--500/200/10 text-red-400 border-red-500/30';
+    default:           return 'bg--500/200/10 text-orange-400 border-orange-500/30';
   }
 };
 
 const getPaymentStatusColor = (status: string) => {
   switch (status) {
-    case 'paid':               return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
+    case 'paid':               return 'bg--500/200/10 text-emerald-400 border-emerald-500/30';
     case 'transfer_submitted': return 'bg-[#D4A373]/10 text-[#D4A373] border-[#D4A373]/30';
-    case 'refunded':           return 'bg-slate-500/10 text-white/40 border-slate-500/30';
-    default:                   return 'bg-red-500/10 text-red-400 border-red-500/30';
+    case 'refunded':           return 'bg--500/200/10 text-white/40 border-white/10';
+    default:                   return 'bg--500/200/10 text-red-400 border-red-500/30';
   }
 };
 
@@ -280,7 +280,7 @@ export default function AdminOrdersPage() {
                     </td>
                     <td className="p-4 text-white/60 font-medium text-sm">{order.room_or_table || '—'}</td>
                     <td className="p-4 text-center">
-                      <span className="bg-brown-100 text-brown-900 border border-white/10 rounded-full w-7 h-7 flex items-center justify-center text-xs font-bold mx-auto">
+                      <span className="bg--500/20 text--300 border border-white/10 rounded-full w-7 h-7 flex items-center justify-center text-xs font-bold mx-auto">
                         {order.order_items?.length || 0}
                       </span>
                     </td>
@@ -390,7 +390,7 @@ export default function AdminOrdersPage() {
                                 href={`/orders/${order.order_number}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-bold text-sm underline"
+                                className="flex items-center gap-2 text-blue-600 hover:text--300 font-bold text-sm underline"
                               >
                                 <ExternalLink size={14} /> /orders/{order.order_number}
                               </a>

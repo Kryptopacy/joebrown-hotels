@@ -65,7 +65,7 @@ export default function AdminLogin() {
           <h1 className="text-5xl font-serif text-white font-bold leading-tight mb-3">
             Joebrown<br />Hotel & Lounge
           </h1>
-          <p className="text-brown-300/80 text-sm font-medium tracking-wide uppercase">
+          <p className="text-[#D4A373]/80 text-sm font-medium tracking-wide uppercase">
             Staff Management Portal
           </p>
         </div>

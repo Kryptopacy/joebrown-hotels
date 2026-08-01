@@ -121,7 +121,7 @@ export default function AdminConciergePage() {
             {requests.map((req) => (
               <div key={req.id} className={`p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors ${req.status === 'fulfilled' ? 'bg-white/5 opacity-70' : 'hover:bg-white/5'}`}>
                 <div className="flex items-start gap-4">
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg ${req.status === 'fulfilled' ? 'bg-slate-100 text-white/40' : 'bg-[#1A0A02] border border-[#D4A373]/30 text-[#D4A373]'}`}>
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg ${req.status === 'fulfilled' ? 'bg--500/20 text-white/40' : 'bg-[#1A0A02] border border-[#D4A373]/30 text-[#D4A373]'}`}>
                     {req.room_number}
                   </div>
                   <div>
@@ -129,7 +129,7 @@ export default function AdminConciergePage() {
                     <div className="flex items-center gap-2 text-xs font-medium text-white/50 mt-1">
                       <Clock size={12} /> {formatTime(req.created_at)}
                       <span className="mx-1">•</span>
-                      <span className={`px-2 py-0.5 rounded-full ${req.status === 'fulfilled' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-[#1A0A02] border border-[#D4A373]/30 text-[#D4A373]'} capitalize`}>
+                      <span className={`px-2 py-0.5 rounded-full ${req.status === 'fulfilled' ? 'bg--500/200/20 text-emerald-300' : 'bg-[#1A0A02] border border-[#D4A373]/30 text-[#D4A373]'} capitalize`}>
                         {req.status}
                       </span>
                     </div>

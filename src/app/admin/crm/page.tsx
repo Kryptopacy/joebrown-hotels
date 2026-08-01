@@ -186,9 +186,9 @@ export default function CRMPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { icon: Users,     label: 'Total Unique Guests', value: guestProfiles.length.toString(),      color: 'bg-brown-600' },
-          { icon: RefreshCw, label: 'Returning Guests',    value: repeatGuests.length.toString(),       color: 'bg-blue-500' },
-          { icon: TrendingUp,label: 'Lifetime Revenue',    value: `₦${totalRevenue.toLocaleString()}`,  color: 'bg-emerald-500' },
-          { icon: Star,      label: 'Avg Spend / Guest',   value: `₦${guestProfiles.length > 0 ? Math.round(totalRevenue / guestProfiles.length).toLocaleString() : 0}`, color: 'bg-purple-500' },
+          { icon: RefreshCw, label: 'Returning Guests',    value: repeatGuests.length.toString(),       color: 'bg--500/200' },
+          { icon: TrendingUp,label: 'Lifetime Revenue',    value: `₦${totalRevenue.toLocaleString()}`,  color: 'bg--500/200' },
+          { icon: Star,      label: 'Avg Spend / Guest',   value: `₦${guestProfiles.length > 0 ? Math.round(totalRevenue / guestProfiles.length).toLocaleString() : 0}`, color: 'bg--500/200' },
         ].map(({ icon: Icon, label, value, color }) => (
           <div key={label} className="bg-[#0D0501] border border-white/10 rounded-3xl p-5 shadow-sm">
             <div className="flex items-start justify-between mb-3">
@@ -267,14 +267,14 @@ export default function CRMPage() {
                     <div className="flex items-center gap-1.5 flex-wrap">
                       <p className="font-bold text-white text-sm truncate">{guest.name}</p>
                       {guest.types.has('Hotel') && guest.types.has('Restaurant & Lounge') ? (
-                        <span className="shrink-0 text-[9px] bg-purple-50 text-purple-600 border border-purple-200 font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wide">Both</span>
+                        <span className="shrink-0 text-[9px] bg--500/20 text-purple-600 border border--500/30 font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wide">Both</span>
                       ) : guest.types.has('Hotel') ? (
-                        <span className="shrink-0 text-[9px] bg-blue-50 text-blue-600 border border-blue-200 font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wide">Hotel</span>
+                        <span className="shrink-0 text-[9px] bg--500/20 text-blue-600 border border--500/30 font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wide">Hotel</span>
                       ) : (
-                        <span className="shrink-0 text-[9px] bg-orange-50 text-orange-600 border border-orange-200 font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wide">Restaurant & Lounge</span>
+                        <span className="shrink-0 text-[9px] bg--500/20 text-orange-600 border border--500/30 font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wide">Restaurant & Lounge</span>
                       )}
                       {isRepeat && (
-                        <span className="shrink-0 text-[9px] bg-emerald-50 text-emerald-600 border border-emerald-200 font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wide">Returning</span>
+                        <span className="shrink-0 text-[9px] bg--500/20 text-emerald-600 border border--500/30 font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wide">Returning</span>
                       )}
                     </div>
                   </div>
@@ -304,7 +304,7 @@ export default function CRMPage() {
                     <div className="flex items-center gap-2 mb-1">
                       <h2 className="text-xl font-serif font-bold text-white">{selected.name}</h2>
                       {selected.visits.length > 1 && (
-                        <span className="text-[10px] bg-blue-50 text-blue-600 border border-blue-200 font-bold px-2 py-0.5 rounded-full uppercase">Returning Guest</span>
+                        <span className="text-[10px] bg--500/20 text-blue-600 border border--500/30 font-bold px-2 py-0.5 rounded-full uppercase">Returning Guest</span>
                       )}
                     </div>
                     <div className="flex flex-col gap-1">
@@ -326,7 +326,7 @@ export default function CRMPage() {
                   <a
                     href={`https://wa.me/${selected.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Hello ${selected.name}! Thank you for choosing Joebrown Palace Hotels & Lounge.`)}`}
                     target="_blank" rel="noreferrer"
-                    className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-colors shadow-sm"
+                    className="flex items-center gap-2 bg--500/200 hover:bg-emerald-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-colors shadow-sm"
                   >
                     <svg viewBox="0 0 24 24" className="w-4 h-4 fill-white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.132.558 4.13 1.535 5.868L0 24l6.271-1.521A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.807 9.807 0 01-5.032-1.378l-.36-.214-3.724.977.993-3.63-.234-.374A9.786 9.786 0 012.182 12C2.182 6.58 6.58 2.182 12 2.182c5.42 0 9.818 4.398 9.818 9.818 0 5.421-4.398 9.818-9.818 9.818z"/></svg>
                     Message Guest
@@ -359,11 +359,11 @@ export default function CRMPage() {
                     {selected.visits.map((v: any) => {
                       const statusMeta: Record<string, string> = {
                         pending: 'bg-[#1A0A02] text-[#D4A373] border-white/10',
-                        confirmed: 'bg-blue-50 text-blue-700 border-blue-200',
-                        checked_in: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-                        checked_out: 'bg-slate-50 text-slate-700 border-white/10',
+                        confirmed: 'bg--500/20 text--300 border--500/30',
+                        checked_in: 'bg--500/20 text--300 border--500/30',
+                        checked_out: 'bg--500/20 text--300 border-white/10',
                       };
-                      const color = statusMeta[v.status] || 'bg-slate-50 text-slate-700 border-white/10';
+                      const color = statusMeta[v.status] || 'bg--500/20 text--300 border-white/10';
                       
                       return (
                         <div key={v.id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-[#1A0A02]/30 transition-colors">
@@ -418,7 +418,7 @@ export default function CRMPage() {
                 <div className="text-right">
                   <p className="font-serif font-bold text-[#D4A373]">₦{guest.totalSpend.toLocaleString()}</p>
                   <p className="text-[10px] uppercase tracking-widest text-white/40 font-bold">{guest.visits.length} stays</p>
-                  <span className="text-xs font-bold text-blue-600 bg-blue-50 border border-blue-200 rounded-full px-2 py-0.5 inline-block mt-0.5">↩ Returning</span>
+                  <span className="text-xs font-bold text-blue-600 bg--500/20 border border--500/30 rounded-full px-2 py-0.5 inline-block mt-0.5">↩ Returning</span>
                 </div>
               </div>
             ))}

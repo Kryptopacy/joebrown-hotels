@@ -118,7 +118,6 @@ export default function ConciergePage() {
       </section>
 
       <Footer hotelName={hotel?.name || 'Joebrown'} hotelAddress={hotel?.address || ''} hotelPhone={hotel?.whatsapp_number || ''} />
-      <CustomerIntercom />
       <WhatsAppButton />
     </main>
   );

@@ -337,7 +337,7 @@ export default function AdminIntercomPage() {
                       <div className="flex items-center gap-2 font-bold text-white text-sm">
                         {t.guest_name}{' '}
                         {t.room_or_table && (
-                          <span className="text-[10px] px-2 py-0.5 bg-red-50 text-red-700 border border-red-200 rounded-full">
+                          <span className="text-[10px] px-2 py-0.5 bg--500/20 text--300 border border--500/30 rounded-full">
                             {t.room_or_table}
                           </span>
                         )}
@@ -367,8 +367,8 @@ export default function AdminIntercomPage() {
                       {guestThreads.find((t) => t.session_id === activeSessionId)?.room_or_table || 'Lobby/Web'}
                     </p>
                   </div>
-                  <span className="text-xs text-emerald-300 bg-emerald-500/20 border border-emerald-500/30 px-3 py-1 rounded-full flex items-center gap-1 font-bold">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500/200 animate-ping"></span> Live Channel
+                  <span className="text-xs text-emerald-300 bg--500/200/20 border border-emerald-500/30 px-3 py-1 rounded-full flex items-center gap-1 font-bold">
+                    <span className="w-2 h-2 rounded-full bg--500/200/200 animate-ping"></span> Live Channel
                   </span>
                 </div>
 
