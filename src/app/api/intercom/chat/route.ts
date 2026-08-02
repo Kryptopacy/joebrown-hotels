@@ -8,16 +8,26 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 const client = new GoogleGenAI({});
 
+import { z } from 'zod';
+
+const ChatRequestSchema = z.object({
+  sessionId: z.string().min(1, 'Session ID is required'),
+});
+
 export async function POST(req: Request) {
   try {
     if (!process.env.GEMINI_API_KEY) {
       return NextResponse.json({ status: 'offline', message: 'AI key not configured' });
     }
 
-    const { sessionId } = await req.json();
-    if (!sessionId) {
-      return NextResponse.json({ error: 'Missing sessionId' }, { status: 400 });
+    const body = await req.json();
+    const parsed = ChatRequestSchema.safeParse(body);
+    
+    if (!parsed.success) {
+      return NextResponse.json({ error: parsed.error.format() }, { status: 400 });
     }
+    
+    const { sessionId } = parsed.data;
 
     // 1. Fetch Chat History
     const { data: messages, error: msgError } = await supabase

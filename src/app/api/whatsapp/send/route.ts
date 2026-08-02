@@ -1,13 +1,22 @@
 import { NextResponse } from 'next/server';
 
+import { z } from 'zod';
+
+const RequestSchema = z.object({
+  to: z.string().min(1, 'Phone number is required'),
+  message: z.string().min(1, 'Message is required'),
+});
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { to, message } = body;
-
-    if (!to || !message) {
-      return NextResponse.json({ error: 'Missing "to" or "message" in request body' }, { status: 400 });
+    const parsed = RequestSchema.safeParse(body);
+    
+    if (!parsed.success) {
+      return NextResponse.json({ error: parsed.error.format() }, { status: 400 });
     }
+    
+    const { to, message } = parsed.data;
 
     // TODO: Connect this to Twilio / Meta WhatsApp Cloud API / Infobip
     // Example Twilio Implementation:

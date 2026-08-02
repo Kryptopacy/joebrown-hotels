@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/client';
 import { 
   BookOpen, Search, Calendar as CalendarIcon, User, Phone, Mail, 
   CalendarCheck, CalendarX, BedDouble, Clock, Plus, 
-  ChevronLeft, ChevronRight, X, BarChart3, List, Wrench, CreditCard, Award, Info
+  ChevronLeft, ChevronRight, X, BarChart3, List, Wrench, CreditCard, Award, Info, LayoutList
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -16,7 +16,7 @@ export default function AdminBookingsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [hotelId, setHotelId] = useState<string | null>(null);
 
-  const [activeView, setActiveView] = useState<'table' | 'calendar' | 'timeline'>('table');
+  const [activeView, setActiveView] = useState<'table' | 'calendar' | 'timeline' | 'agenda'>('table');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [dateRange, setDateRange] = useState<'week' | 'month' | 'all'>('month');
   
@@ -341,6 +341,43 @@ export default function AdminBookingsPage() {
 
 
   // --- VIEWS COMPONENTS ---
+  const AgendaView = () => (
+    <div className="space-y-4">
+      {filteredBookings.length === 0 ? (
+        <div className="text-center p-12 bg-[#0D0501] border border-white/10 rounded-2xl shadow-sm">
+          <BookOpen className="mx-auto text-white/20 mb-4" size={48} />
+          <p className="text-white/60">No bookings found for this period.</p>
+        </div>
+      ) : (
+        filteredBookings.map(b => (
+          <div key={b.id} onClick={() => setSelectedBooking(b)} className="bg-[#0D0501] border border-white/10 rounded-2xl p-4 flex flex-col md:flex-row justify-between gap-4 cursor-pointer hover:border-[#D4A373]/50 transition-colors shadow-sm">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider ${
+                  b.status === 'confirmed' ? 'bg-green-500/10 text-green-400 border border-green-500/20' :
+                  b.status === 'pending' ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20' :
+                  b.status === 'checked_in' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' :
+                  b.status === 'completed' ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20' :
+                  'bg-red-500/10 text-red-400 border border-red-500/20'
+                }`}>{b.status}</span>
+                <span className="text-white/40 text-sm font-medium">{new Date(b.check_in).toLocaleDateString()} &rarr; {new Date(b.check_out).toLocaleDateString()}</span>
+              </div>
+              <h3 className="text-white font-bold text-lg">{b.guest_name}</h3>
+              <p className="text-white/60 text-sm mt-1">{b.rooms?.name || 'Unassigned'} • {b.guests_count} Guests</p>
+            </div>
+            <div className="flex md:flex-col items-center md:items-end justify-between md:justify-center gap-2">
+               <span className="text-[#D4A373] font-bold text-lg">${b.total_amount}</span>
+               <div className="text-white/40 text-sm flex gap-3">
+                 {b.guest_phone && <Phone size={16}/>}
+                 {b.guest_email && <Mail size={16}/>}
+               </div>
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  );
+
   const TableView = () => (
     <div className="bg-[#0D0501] border border-white/10 rounded-3xl shadow-sm overflow-x-auto min-h-[500px]">
       <table className="w-full text-left min-w-[900px]">
@@ -433,9 +470,19 @@ export default function AdminBookingsPage() {
     for (let i = 1; i <= daysInMonth; i++) days.push(new Date(calMonth.getFullYear(), calMonth.getMonth(), i));
 
     return (
-      <div className="bg-[#0D0501] border border-white/10 rounded-3xl shadow-sm p-6 min-h-[500px]">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-serif font-bold text-white">
+      <>
+        {/* Mobile Graceful Degradation */}
+        <div className="flex flex-col items-center justify-center p-8 text-center bg-[#0D0501] border border-white/10 rounded-3xl shadow-sm min-h-[300px] md:hidden">
+          <CalendarIcon size={48} className="text-[#D4A373] mb-4 opacity-50" />
+          <h3 className="text-xl font-serif text-white font-bold mb-2">Calendar View</h3>
+          <p className="text-white/60 mb-6 max-w-xs">Rotate your device or use a larger screen for the best Calendar experience.</p>
+          <button onClick={() => setActiveView('agenda')} className="px-5 py-2.5 bg-[#D4A373] text-[#1A0A02] rounded-xl font-medium transition-colors hover:bg-[#b0875c]">
+            Use Agenda View instead
+          </button>
+        </div>
+        <div className="hidden md:block bg-[#0D0501] border border-white/10 rounded-3xl shadow-sm p-6 min-h-[500px]">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-serif font-bold text-white">
             {calMonth.toLocaleString('default', { month: 'long', year: 'numeric' })}
           </h2>
           <div className="flex gap-2">
@@ -481,6 +528,7 @@ export default function AdminBookingsPage() {
           })}
         </div>
       </div>
+      </>
     );
   };
 
@@ -505,9 +553,19 @@ export default function AdminBookingsPage() {
     }
 
     return (
-      <div className="bg-[#0D0501] border border-white/10 rounded-3xl shadow-sm overflow-hidden min-h-[500px] flex flex-col">
-        <div className="flex justify-between items-center p-4 border-b border-white/10 bg-white/5">
-          <h2 className="font-serif font-semibold text-white">Tape Chart (14 Days)</h2>
+      <>
+        {/* Mobile Graceful Degradation */}
+        <div className="flex flex-col items-center justify-center p-8 text-center bg-[#0D0501] border border-white/10 rounded-3xl shadow-sm min-h-[300px] md:hidden">
+          <BarChart3 size={48} className="text-[#D4A373] mb-4 opacity-50 rotate-90" />
+          <h3 className="text-xl font-serif text-white font-bold mb-2">Timeline View</h3>
+          <p className="text-white/60 mb-6 max-w-xs">Rotate your device or use a larger screen for the best Timeline experience.</p>
+          <button onClick={() => setActiveView('agenda')} className="px-5 py-2.5 bg-[#D4A373] text-[#1A0A02] rounded-xl font-medium transition-colors hover:bg-[#b0875c]">
+            Use Agenda View instead
+          </button>
+        </div>
+        <div className="hidden md:flex flex-col bg-[#0D0501] border border-white/10 rounded-3xl shadow-sm overflow-hidden min-h-[500px]">
+          <div className="flex justify-between items-center p-4 border-b border-white/10 bg-white/5">
+            <h2 className="font-serif font-semibold text-white">Tape Chart (14 Days)</h2>
           <div className="flex gap-2">
             <button onClick={prevWindow} className="p-1.5 border border-white/10 rounded-lg hover:bg-[#1A0A02] text-white/80 transition-colors bg-[#0D0501]"><ChevronLeft size={18}/></button>
             <button onClick={() => setTlStartDate(new Date())} className="px-3 py-1.5 border border-white/10 rounded-lg hover:bg-[#1A0A02] text-white/80 transition-colors text-sm font-medium bg-[#0D0501]">Today</button>
@@ -587,6 +645,7 @@ export default function AdminBookingsPage() {
           </table>
         </div>
       </div>
+      </>
     )
   };
 
@@ -703,8 +762,9 @@ export default function AdminBookingsPage() {
           </div>
 
           {/* View Toggle */}
-          <div className="flex bg-[#0D0501] border border-white/10 rounded-xl p-1 shadow-sm w-full md:w-auto hidden md:flex">
+          <div className="flex bg-[#0D0501] border border-white/10 rounded-xl p-1 shadow-sm w-full md:w-auto">
              <button onClick={() => setActiveView('table')} className={`p-1.5 rounded-lg transition-colors ${activeView === 'table' ? 'bg-[#D4A373] text-[#1A0A02]' : 'text-white/40 hover:text-white/60'}`} title="Table View"><List size={18}/></button>
+             <button onClick={() => setActiveView('agenda')} className={`p-1.5 rounded-lg transition-colors ${activeView === 'agenda' ? 'bg-[#D4A373] text-[#1A0A02]' : 'text-white/40 hover:text-white/60'}`} title="Agenda View"><LayoutList size={18}/></button>
              <button onClick={() => setActiveView('calendar')} className={`p-1.5 rounded-lg transition-colors ${activeView === 'calendar' ? 'bg-[#D4A373] text-[#1A0A02]' : 'text-white/40 hover:text-white/60'}`} title="Calendar View"><CalendarIcon size={18}/></button>
              <button onClick={() => setActiveView('timeline')} className={`p-1.5 rounded-lg transition-colors ${activeView === 'timeline' ? 'bg-[#D4A373] text-[#1A0A02]' : 'text-white/40 hover:text-white/60'}`} title="Timeline View"><BarChart3 size={18} className="rotate-90"/></button>
           </div>
@@ -713,6 +773,7 @@ export default function AdminBookingsPage() {
 
       {/* CONTENT AREA */}
       {activeView === 'table' && <TableView />}
+      {activeView === 'agenda' && <AgendaView />}
       {activeView === 'calendar' && <CalendarView />}
       {activeView === 'timeline' && <TimelineView />}
 

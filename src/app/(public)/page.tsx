@@ -3,13 +3,22 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 export const dynamic = 'force-dynamic';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Home',
+  description: 'Welcome to Joebrown Palace Hotel and Suites, offering premium rooms and exquisite dining.',
+  alternates: {
+    canonical: 'https://joebrownhotels.com'
+  }
+};
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import WhatsAppButton from '@/components/WhatsAppButton';
 import CustomerIntercom from '@/components/CustomerIntercom';
 import RoomCardCarousel from '@/components/RoomCardCarousel';
 import PremiumGallery from '@/components/PremiumGallery';
-import { BedDouble, Calendar, Users, ArrowRight, Award, CheckCircle2, Utensils } from 'lucide-react';
+import { BedDouble, Calendar, Users, ArrowRight, Award, CheckCircle2, Utensils, ShieldCheck, Dumbbell, Waves } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 
 
@@ -78,7 +87,7 @@ export default async function LandingPage({
             <Link href="/rooms" className="btn-primary">
               View Rooms & Book Stay <ArrowRight size={16} />
             </Link>
-            <Link href="/menu" className="btn-secondary text-white border-white hover:bg-white hover:text-[#2C1E16]">
+            <Link href="/menu" className="flex items-center justify-center gap-2 px-8 py-3 bg-white/10 backdrop-blur-md text-white font-semibold text-[0.8rem] uppercase tracking-[2px] rounded border border-white hover:bg-white hover:text-[#2C1E16] transition-all duration-300">
               <Utensils size={16} /> Restaurant & Lounge Menu
             </Link>
           </div>
@@ -129,6 +138,84 @@ export default async function LandingPage({
               Check Availability
             </button>
           </form>
+        </div>
+      </section>
+
+      {/* 2.5. OUR FACILITIES SECTION */}
+      <section className="py-24 md:py-32 px-4 md:px-8 bg-[#0a0604]">
+        <div className="container mx-auto max-w-6xl">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 mb-16">
+            <div className="max-w-2xl">
+              <h2 className="text-3xl md:text-5xl font-serif text-white mb-4">
+                Discover Our Exceptional<br />Hotel Facilities
+              </h2>
+              <p className="text-[#A1887F] text-sm md:text-base leading-relaxed max-w-xl">
+                We provide unmatched comfort, personalized service, and amenities that make every guest feel truly special.
+              </p>
+            </div>
+            <Link href="/contact" className="btn-primary self-start lg:self-center px-8">
+              Contact Us
+            </Link>
+          </div>
+
+          {/* Facilities Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+            {/* Card 1: Rooms & Suites */}
+            <div className="bg-[#1A0A02] rounded-[2rem] text-center flex flex-col items-center border border-[#5D3A1A]/40 shadow-2xl transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(212,163,115,0.15)] hover:border-[#D4A373]/50 relative overflow-hidden pb-10 group">
+              <div className="absolute top-0 left-0 right-0 h-[120px] bg-[#0D0501] rounded-b-[100%] scale-x-150 origin-top border-b border-[#5D3A1A]/30 transition-colors group-hover:border-[#D4A373]/30"></div>
+              <div className="relative z-10 w-[100px] h-[100px] bg-[#1A0A02] rounded-full flex items-center justify-center mt-[70px] mb-6 border-[6px] border-[#1A0A02] mx-auto shadow-[0_10px_30px_rgba(0,0,0,0.5)] group-hover:shadow-[0_10px_30px_rgba(212,163,115,0.15)] transition-shadow duration-300">
+                <BedDouble size={40} className="text-[#D4A373] group-hover:scale-110 transition-transform duration-300" strokeWidth={1.5} />
+              </div>
+              <div className="relative z-10 px-8">
+                <h3 className="text-2xl font-serif text-white mb-4 group-hover:text-[#D4A373] transition-colors">Rooms and Suites</h3>
+                <p className="text-[#A1887F] text-sm leading-relaxed font-light">
+                  Relax in elegantly designed rooms and suites offering modern comfort, luxury amenities, and scenic views.
+                </p>
+              </div>
+            </div>
+
+            {/* Card 2: 24-Hour Security */}
+            <div className="bg-[#1A0A02] rounded-[2rem] text-center flex flex-col items-center border border-[#5D3A1A]/40 shadow-2xl transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(212,163,115,0.15)] hover:border-[#D4A373]/50 relative overflow-hidden pb-10 group">
+              <div className="absolute top-0 left-0 right-0 h-[120px] bg-[#0D0501] rounded-b-[100%] scale-x-150 origin-top border-b border-[#5D3A1A]/30 transition-colors group-hover:border-[#D4A373]/30"></div>
+              <div className="relative z-10 w-[100px] h-[100px] bg-[#1A0A02] rounded-full flex items-center justify-center mt-[70px] mb-6 border-[6px] border-[#1A0A02] mx-auto shadow-[0_10px_30px_rgba(0,0,0,0.5)] group-hover:shadow-[0_10px_30px_rgba(212,163,115,0.15)] transition-shadow duration-300">
+                <ShieldCheck size={40} className="text-[#D4A373] group-hover:scale-110 transition-transform duration-300" strokeWidth={1.5} />
+              </div>
+              <div className="relative z-10 px-8">
+                <h3 className="text-2xl font-serif text-white mb-4 group-hover:text-[#D4A373] transition-colors">24-Hour Security</h3>
+                <p className="text-[#A1887F] text-sm leading-relaxed font-light">
+                  Enjoy peace of mind with our 24-hour security ensuring your safety and comfort throughout your stay.
+                </p>
+              </div>
+            </div>
+
+            {/* Card 3: Fitness Center */}
+            <div className="bg-[#1A0A02] rounded-[2rem] text-center flex flex-col items-center border border-[#5D3A1A]/40 shadow-2xl transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(212,163,115,0.15)] hover:border-[#D4A373]/50 relative overflow-hidden pb-10 group">
+              <div className="absolute top-0 left-0 right-0 h-[120px] bg-[#0D0501] rounded-b-[100%] scale-x-150 origin-top border-b border-[#5D3A1A]/30 transition-colors group-hover:border-[#D4A373]/30"></div>
+              <div className="relative z-10 w-[100px] h-[100px] bg-[#1A0A02] rounded-full flex items-center justify-center mt-[70px] mb-6 border-[6px] border-[#1A0A02] mx-auto shadow-[0_10px_30px_rgba(0,0,0,0.5)] group-hover:shadow-[0_10px_30px_rgba(212,163,115,0.15)] transition-shadow duration-300">
+                <Dumbbell size={40} className="text-[#D4A373] group-hover:scale-110 transition-transform duration-300" strokeWidth={1.5} />
+              </div>
+              <div className="relative z-10 px-8">
+                <h3 className="text-2xl font-serif text-white mb-4 group-hover:text-[#D4A373] transition-colors">Fitness Center</h3>
+                <p className="text-[#A1887F] text-sm leading-relaxed font-light">
+                  Stay active during your trip with our modern fitness center equipped with premium machines and trainers.
+                </p>
+              </div>
+            </div>
+
+            {/* Card 4: Swimming Pool */}
+            <div className="bg-[#1A0A02] rounded-[2rem] text-center flex flex-col items-center border border-[#5D3A1A]/40 shadow-2xl transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(212,163,115,0.15)] hover:border-[#D4A373]/50 relative overflow-hidden pb-10 group">
+              <div className="absolute top-0 left-0 right-0 h-[120px] bg-[#0D0501] rounded-b-[100%] scale-x-150 origin-top border-b border-[#5D3A1A]/30 transition-colors group-hover:border-[#D4A373]/30"></div>
+              <div className="relative z-10 w-[100px] h-[100px] bg-[#1A0A02] rounded-full flex items-center justify-center mt-[70px] mb-6 border-[6px] border-[#1A0A02] mx-auto shadow-[0_10px_30px_rgba(0,0,0,0.5)] group-hover:shadow-[0_10px_30px_rgba(212,163,115,0.15)] transition-shadow duration-300">
+                <Waves size={40} className="text-[#D4A373] group-hover:scale-110 transition-transform duration-300" strokeWidth={1.5} />
+              </div>
+              <div className="relative z-10 px-8">
+                <h3 className="text-2xl font-serif text-white mb-4 group-hover:text-[#D4A373] transition-colors">Swimming Pool</h3>
+                <p className="text-[#A1887F] text-sm leading-relaxed font-light">
+                  Relax and unwind in our crystal-clear swimming pool, perfect for leisure, fun, and refreshing moments.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

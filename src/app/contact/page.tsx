@@ -6,6 +6,15 @@ import Footer from '@/components/Footer';
 import WhatsAppButton from '@/components/WhatsAppButton';
 import CustomerIntercom from '@/components/CustomerIntercom';
 import { MapPin, Phone, Mail, Clock, Send } from 'lucide-react';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Contact Us',
+  description: 'Get in touch with Joebrown Palace Hotel. Find our location in Lagos, direct lines, and email for reservations and inquiries.',
+  alternates: {
+    canonical: 'https://joebrownhotels.com/contact'
+  }
+};
 
 export default function ContactPage() {
   const hotelName = 'Joebrown Palace Hotel and Suites';

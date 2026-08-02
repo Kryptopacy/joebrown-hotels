@@ -121,7 +121,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       )}
 
       {/* Main Content Area */}
-      <main className="flex-1 md:ml-64 flex flex-col min-h-screen bg-transparent">
+      <main className="flex-1 md:ml-64 flex flex-col min-h-screen bg-transparent min-w-0">
         {/* Desktop Top Header Bar (Only visible on md and up) */}
         <header className="hidden md:flex items-center justify-between px-10 py-4 w-full z-30 bg-[#1A0A02] border-b border-white/10 shadow-sm">
           <div className="flex items-center gap-4">

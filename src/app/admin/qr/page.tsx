@@ -28,7 +28,7 @@ export default function AdminQRPage() {
     let url = '';
     if (type === 'page') {
       const rootUrl = BASE_URL.replace('/menu', '');
-      url = `${rootUrl}${num.startsWith('/') ? num : '/' + num}`;
+      url = `${rootUrl}${num}`; // Assumes num is already properly formatted with leading slash
     } else {
       url = `${BASE_URL}?${type}=${encodeURIComponent(num)}`;
     }
@@ -36,18 +36,25 @@ export default function AdminQRPage() {
   };
 
   const addTable = async () => {
-    if (!newTableNum.trim()) return;
+    let finalNum = newTableNum.trim();
+    if (!finalNum) return;
     
-    if (tables.some(t => t.num === newTableNum && t.type === qrType)) {
+    // Normalize page slugs so 'menu' becomes '/menu'
+    if (qrType === 'page') {
+      finalNum = finalNum.toLowerCase();
+      if (!finalNum.startsWith('/')) finalNum = '/' + finalNum;
+    }
+
+    if (tables.some(t => t.num === finalNum && t.type === qrType)) {
       toast.error(`This ${qrType} identifier already exists in session.`);
       return;
     }
 
-    const qrUrl = generateQRCode(newTableNum, qrType);
+    const qrUrl = generateQRCode(finalNum, qrType);
     
     setTables(prev => [...prev, { 
       id: Math.random().toString(36).substring(7), 
-      num: newTableNum.trim(), 
+      num: finalNum, 
       section: newSection.trim(), 
       url: qrUrl,
       type: qrType
@@ -78,13 +85,22 @@ export default function AdminQRPage() {
   const handlePrint = () => window.print();
 
   const labelFor = (item: QRItem) => {
-    if (item.type === 'page') return 'Scan to Visit';
+    if (item.type === 'page') {
+      if (item.num === '/menu') return 'Restaurant Menu';
+      if (item.num === '/rooms') return 'Rooms & Suites';
+      if (item.num === '/contact') return 'Contact Us';
+      return 'Scan to Visit';
+    }
     if (item.type === 'desk') return 'Desk Payment';
     return `${item.type === 'table' ? 'Table' : 'Room'} ${item.num}`;
   };
 
   const subLabelFor = (item: QRItem) => {
-    if (item.type === 'page') return `Visit ${item.num}`;
+    if (item.type === 'page') {
+      if (item.num === '/menu') return 'Scan to view menu & order';
+      if (item.num === '/rooms') return 'Scan to book your stay';
+      return 'Scan to visit our website';
+    }
     if (item.type === 'desk') return 'Scan to pay at desk';
     return 'Scan to view menu & order';
   };
@@ -108,13 +124,22 @@ export default function AdminQRPage() {
             <QrCode size={28} className="text-[#D4A373]" />
             <h1 className="text-3xl font-serif text-white font-bold">QR Code Generator</h1>
           </div>
-          <button 
-            onClick={handlePrint}
-            disabled={tables.length === 0}
-            className="flex items-center gap-2 text-sm bg-[#D4A373] text-[#1A0A02] hover:bg-[#b45309] font-bold px-6 py-2.5 rounded-xl shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Printer size={16} /> Print Sheet
-          </button>
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={() => setTables([])}
+              disabled={tables.length === 0}
+              className="flex items-center gap-2 text-sm bg-white/10 text-white hover:bg-white/20 font-bold px-6 py-2.5 rounded-xl shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Trash2 size={16} /> Clear All
+            </button>
+            <button 
+              onClick={handlePrint}
+              disabled={tables.length === 0}
+              className="flex items-center gap-2 text-sm bg-[#D4A373] text-[#1A0A02] hover:bg-[#b45309] font-bold px-6 py-2.5 rounded-xl shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Printer size={16} /> Print Sheet
+            </button>
+          </div>
         </div>
 
         {/* Mode Toggle */}
@@ -152,8 +177,13 @@ export default function AdminQRPage() {
           <div className="w-full md:w-auto">
             <label className="block text-xs font-bold uppercase tracking-wider text-white/50 mb-2">Type</label>
             <select 
+              id="qr-type-select"
               value={qrType} 
-              onChange={(e) => setQrType(e.target.value as 'table' | 'room' | 'page' | 'desk')}
+              onChange={(e) => {
+                setQrType(e.target.value as 'table' | 'room' | 'page' | 'desk');
+                setNewTableNum('');
+                setNewSection('');
+              }}
               className="w-full md:w-36 bg-black/60 border border-white/10 focus:border-brown-500 text-white text-sm px-4 py-3 rounded-xl outline-none transition-all shadow-sm font-bold"
             >
               <option value="table">Table</option>
@@ -167,7 +197,9 @@ export default function AdminQRPage() {
               {qrType === 'room' ? 'Room Name / Num' : qrType === 'table' ? 'Table Name / Num' : qrType === 'desk' ? 'Desk Name' : 'Page Slug'}
             </label>
             <input 
+              id="qr-target-input"
               type="text" 
+              autoComplete="off"
               list={qrType === 'page' ? "page-slug-presets" : undefined}
               className="w-full bg-black/60 border border-white/10 focus:border-brown-500 text-white text-sm px-4 py-3 rounded-xl outline-none transition-all shadow-sm" 
               placeholder={qrType === 'room' ? "e.g. Presidential Suite or 304" : qrType === 'table' ? "e.g. 12 or VIP Lounge" : qrType === 'desk' ? "e.g. Front Desk" : "e.g. /spa"} 
@@ -188,7 +220,9 @@ export default function AdminQRPage() {
           <div className="flex-1 w-full">
             <label className="block text-xs font-bold uppercase tracking-wider text-white/50 mb-2">Section (Optional)</label>
             <input 
+              id="qr-section-input"
               type="text" 
+              autoComplete="off"
               className="w-full bg-black/60 border border-white/10 focus:border-brown-500 text-white text-sm px-4 py-3 rounded-xl outline-none transition-all shadow-sm" 
               placeholder="e.g. Garden Lounge"
               value={newSection}

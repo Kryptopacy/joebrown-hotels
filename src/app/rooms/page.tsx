@@ -3,6 +3,15 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 export const revalidate = 3600;
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Rooms & Suites',
+  description: 'Book luxury rooms and suites at Joebrown Palace Hotel. Enjoy 24/7 room service, free Wi-Fi, and comfort.',
+  alternates: {
+    canonical: 'https://joebrownhotels.com/rooms'
+  }
+};
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import WhatsAppButton from '@/components/WhatsAppButton';

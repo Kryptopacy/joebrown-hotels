@@ -62,6 +62,58 @@ CREATE TABLE IF NOT EXISTS bookings (
     created_at timestamp with time zone DEFAULT now()
 );
 
+-- Atomic Booking RPC to prevent race conditions
+CREATE OR REPLACE FUNCTION public.book_room_atomically(
+    p_hotel_id uuid,
+    p_room_id uuid,
+    p_guest_name text,
+    p_guest_phone text,
+    p_guest_email text,
+    p_check_in date,
+    p_check_out date,
+    p_guests_count integer,
+    p_special_requests text,
+    p_total_amount numeric,
+    p_status text
+) RETURNS uuid AS $$
+DECLARE
+    v_conflict_id uuid;
+    v_booking_id uuid;
+BEGIN
+    -- Lock room for serialization
+    PERFORM id FROM rooms WHERE id = p_room_id FOR UPDATE;
+
+    SELECT id INTO v_conflict_id
+    FROM bookings
+    WHERE room_id = p_room_id
+      AND check_in < p_check_out
+      AND check_out > p_check_in
+      AND status != 'cancelled';
+
+    IF v_conflict_id IS NOT NULL THEN
+        RAISE EXCEPTION 'Room is already booked for these dates.';
+    END IF;
+
+    INSERT INTO bookings (hotel_id, room_id, guest_name, guest_phone, guest_email, check_in, check_out, guests_count, special_requests, total_price, status)
+    VALUES (p_hotel_id, p_room_id, p_guest_name, p_guest_phone, p_guest_email, p_check_in, p_check_out, p_guests_count, p_special_requests, p_total_amount, p_status)
+    RETURNING id INTO v_booking_id;
+
+    RETURN v_booking_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Safe RPC to fetch blocked dates without exposing PII
+CREATE OR REPLACE FUNCTION public.get_blocked_dates(p_room_id uuid)
+RETURNS TABLE (check_in date, check_out date) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT b.check_in, b.check_out
+    FROM bookings b
+    WHERE b.room_id = p_room_id
+      AND b.status != 'cancelled';
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
 -- Menu Categories
 CREATE TABLE IF NOT EXISTS menu_categories (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),

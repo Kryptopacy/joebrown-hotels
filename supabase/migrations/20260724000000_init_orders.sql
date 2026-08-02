@@ -101,8 +101,10 @@ CREATE POLICY "Allow all hotels" ON hotels FOR ALL USING (true) WITH CHECK (true
 CREATE POLICY "Allow all site_settings" ON site_settings FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all menu_categories" ON menu_categories FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all menu_items" ON menu_items FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "Allow all orders" ON orders FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "Allow all order_items" ON order_items FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Anyone can create an order" ON orders FOR INSERT WITH CHECK (true);
+CREATE POLICY "Admin full access to orders" ON orders FOR ALL USING (public.is_staff());
+CREATE POLICY "Anyone can insert order items" ON order_items FOR INSERT WITH CHECK (true);
+CREATE POLICY "Admin full access to order items" ON order_items FOR ALL USING (public.is_staff());
 
 -- Create payment-screenshots bucket
 INSERT INTO storage.buckets (id, name, public) 

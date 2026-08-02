@@ -38,11 +38,7 @@ export default function BookingModal({ room }: BookingModalProps) {
   useEffect(() => {
     const fetchBlocked = async () => {
       const supabase = createClient();
-      const { data } = await supabase
-        .from('bookings')
-        .select('check_in, check_out')
-        .eq('room_id', room.id)
-        .neq('status', 'cancelled');
+      const { data } = await supabase.rpc('get_blocked_dates', { p_room_id: room.id });
       if (data) setBlockedRanges(data);
     };
     fetchBlocked();
@@ -107,24 +103,24 @@ export default function BookingModal({ room }: BookingModalProps) {
     const supabase = createClient();
     const initialStatus = settings?.payment_enabled ? 'pending_payment' : 'pending';
 
-    const { data: bookingData, error } = await supabase.from('bookings').insert({
-      hotel_id: hotel.id,
-      room_id: room.id,
-      guest_name: name,
-      guest_phone: phone,
-      guest_email: email || null,
-      check_in: checkIn,
-      check_out: checkOut,
-      guests_count: guests,
-      special_requests: requests || null,
-      total_amount: totalPrice,
-      status: initialStatus,
-    }).select('id').maybeSingle();
+    const { data: bookingId, error } = await supabase.rpc('book_room_atomically', {
+      p_hotel_id: hotel.id,
+      p_room_id: room.id,
+      p_guest_name: name,
+      p_guest_phone: phone,
+      p_guest_email: email || null,
+      p_check_in: checkIn,
+      p_check_out: checkOut,
+      p_guests_count: guests,
+      p_special_requests: requests || null,
+      p_total_amount: totalPrice,
+      p_status: initialStatus,
+    });
 
     setIsSubmitting(false);
 
     if (error) {
-      toast.error('Failed to submit booking. Please try again.');
+      toast.error(error.message || 'Failed to submit booking. Please try again.');
       return;
     }
 
@@ -139,7 +135,7 @@ export default function BookingModal({ room }: BookingModalProps) {
             to: email,
             payload: {
               guestName: name,
-              bookingRef: bookingData?.id?.substring(0, 8).toUpperCase() || 'BKG-001',
+              bookingRef: typeof bookingId === 'string' ? bookingId.substring(0, 8).toUpperCase() : 'BKG-001',
               checkIn,
               checkOut,
               roomName: room.name,

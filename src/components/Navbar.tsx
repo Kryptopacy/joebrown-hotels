@@ -42,7 +42,7 @@ export default function Navbar() {
               <Image src="/jb_logo_transparent.PNG" alt="Joebrown Logo" fill className="object-contain" sizes="(max-width: 768px) 32px, 40px" />
             </div>
             <div className="flex flex-col shrink-0">
-              <span className="text-[20px] md:text-[22px] font-serif tracking-tight whitespace-nowrap leading-none mb-1 text-[#E6CCB2]">
+              <span className="text-[20px] md:text-[22px] font-serif tracking-tight whitespace-nowrap leading-none mb-1 text-white">
                 Joebrown
               </span>
               <span className="text-[9px] tracking-[0.28em] uppercase font-sans font-bold whitespace-nowrap leading-none text-[#D4A373]">
@@ -84,35 +84,38 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile Dropdown */}
-      {mobileMenuOpen && (
-        <div
-          className="lg:hidden fixed z-40 animate-fade-in-up"
-          style={{ top: scrolled ? '76px' : '92px', left: '50%', transform: 'translateX(-50%)', width: '95%', maxWidth: '600px' }}
+      {/* Mobile Menu Overlay */}
+      <div
+        className={`lg:hidden fixed inset-0 z-40 bg-[#1A0A02]/98 backdrop-blur-3xl transition-all duration-500 flex flex-col justify-center items-center ${
+          mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+      >
+        <div 
+          className={`flex flex-col items-center gap-8 w-full px-6 transition-all duration-500 delay-100 ${
+            mobileMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+          }`}
         >
-          <div className="bg-[#1A0A02]/95 backdrop-blur-2xl rounded-3xl border border-[#5D3A1A]/50 shadow-[0_20px_60px_rgba(0,0,0,0.4)] py-6 px-6 flex flex-col gap-1">
-            <Link href="/rooms" onClick={() => setMobileMenuOpen(false)} className="text-[11px] uppercase tracking-[0.22em] text-[#E6CCB2] font-bold hover:text-[#D4A373] py-3.5 border-b border-[#5D3A1A]/30 transition-colors">
-              Rooms & Suites
-            </Link>
-            <Link href="/menu" onClick={() => setMobileMenuOpen(false)} className="text-[11px] uppercase tracking-[0.22em] text-[#E6CCB2] font-bold hover:text-[#D4A373] py-3.5 border-b border-[#5D3A1A]/30 transition-colors">
-              Restaurant & Lounge
-            </Link>
-            <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="text-[11px] uppercase tracking-[0.22em] text-[#E6CCB2] font-bold hover:text-[#D4A373] py-3.5 border-b border-[#5D3A1A]/30 transition-colors">
-              Contact
-            </Link>
-            <Link href="/admin" onClick={() => setMobileMenuOpen(false)} className="text-[11px] uppercase tracking-[0.22em] text-[#8D6E63] font-bold py-3.5 border-b border-[#5D3A1A]/30 transition-colors">
-              Staff Portal
-            </Link>
-            <Link
-              href="/rooms"
-              onClick={() => setMobileMenuOpen(false)}
-              className="bg-[#D4A373] hover:bg-[#E6CCB2] text-[#1A0A02] w-full text-center mt-4 py-3.5 rounded-full text-[10px] uppercase tracking-[0.25em] font-extrabold transition-all duration-300 shadow-md hover:shadow-lg"
-            >
-              Book Stay
-            </Link>
-          </div>
+          <Link href="/rooms" onClick={() => setMobileMenuOpen(false)} className="text-lg uppercase tracking-[0.25em] text-[#E6CCB2] font-bold hover:text-[#D4A373] transition-colors">
+            Rooms & Suites
+          </Link>
+          <Link href="/menu" onClick={() => setMobileMenuOpen(false)} className="text-lg uppercase tracking-[0.25em] text-[#E6CCB2] font-bold hover:text-[#D4A373] transition-colors">
+            Restaurant & Lounge
+          </Link>
+          <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="text-lg uppercase tracking-[0.25em] text-[#E6CCB2] font-bold hover:text-[#D4A373] transition-colors">
+            Contact
+          </Link>
+          <Link href="/admin" onClick={() => setMobileMenuOpen(false)} className="text-lg uppercase tracking-[0.25em] text-[#8D6E63] font-bold transition-colors">
+            Staff Portal
+          </Link>
+          <Link
+            href="/rooms"
+            onClick={() => setMobileMenuOpen(false)}
+            className="bg-[#D4A373] hover:bg-[#E6CCB2] text-[#1A0A02] w-[80%] max-w-[300px] text-center mt-6 py-4 rounded-full text-sm uppercase tracking-[0.25em] font-extrabold transition-all duration-300 shadow-md hover:shadow-lg"
+          >
+            Book Stay
+          </Link>
         </div>
-      )}
+      </div>
     </>
   );
 }

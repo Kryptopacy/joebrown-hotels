@@ -6,6 +6,15 @@ import CustomerIntercom from '@/components/CustomerIntercom';
 import { createClient } from '@/lib/supabase/server';
 
 export const revalidate = 3600;
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Restaurant & Lounge Menu',
+  description: 'Explore the exquisite menu at Joebrown Palace Hotel. Order local dishes, grills, cocktails, and drinks online for delivery to your room or table.',
+  alternates: {
+    canonical: 'https://joebrownhotels.com/menu'
+  }
+};
 
 export default async function MenuPage() {
   const supabase = await createClient();
