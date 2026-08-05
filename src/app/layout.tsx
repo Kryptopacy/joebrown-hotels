@@ -124,6 +124,7 @@ export default async function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        <script dangerouslySetInnerHTML={{ __html: `try{sessionStorage.removeItem('chunk_failed_reload');}catch(e){}` }} />
         {children}
         <Toaster position="top-right" />
       </body>

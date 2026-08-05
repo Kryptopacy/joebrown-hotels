@@ -13,6 +13,17 @@ export default function GlobalError({
   useEffect(() => {
     // Log the error to an error reporting service
     console.error('Global Application Error:', error);
+    
+    // Attempt to recover from ChunkLoadError by reloading the page
+    const isChunkLoadError = error.name === 'ChunkLoadError' || (error.message && error.message.includes('ChunkLoadError'));
+    
+    if (isChunkLoadError) {
+      const isReloaded = sessionStorage.getItem('chunk_failed_reload');
+      if (!isReloaded) {
+        sessionStorage.setItem('chunk_failed_reload', 'true');
+        window.location.reload();
+      }
+    }
   }, [error]);
 
   return (
