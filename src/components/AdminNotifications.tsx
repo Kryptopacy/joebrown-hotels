@@ -58,6 +58,12 @@ export default function AdminNotifications() {
         .eq('hotel_id', hotel.id)
         .eq('requires_human', true);
 
+      const { data: pendingBookings } = await supabase
+        .from('bookings')
+        .select('id, guest_name, check_in, check_out, created_at')
+        .eq('hotel_id', hotel.id)
+        .eq('status', 'pending');
+
       // We only want to show unique sessions for chats
       const uniquePendingChats = pendingChats ? Array.from(new Map(pendingChats.map(item => [item.guest_name, item])).values()) : [];
 
@@ -68,6 +74,7 @@ export default function AdminNotifications() {
       const canSeeRequests = ['admin', 'reception', 'concierge'].includes(role);
       const canSeeStaffSignups = ['admin'].includes(role);
       const canSeeChats = ['admin', 'reception', 'concierge'].includes(role);
+      const canSeeBookings = ['admin', 'reception'].includes(role);
 
       if (canSeeOrders && pendingOrders) {
         pendingOrders.forEach(o => notifs.push({
@@ -93,6 +100,12 @@ export default function AdminNotifications() {
         }));
       }
 
+      if (canSeeBookings && pendingBookings) {
+        pendingBookings.forEach(b => notifs.push({
+          id: `booking_${b.id}`, type: 'booking', title: `New Booking Request`, desc: `${b.guest_name} (${b.check_in})`, time: b.created_at, link: '/admin/bookings'
+        }));
+      }
+
       notifs.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
       setNotifications(notifs);
     };
@@ -105,6 +118,7 @@ export default function AdminNotifications() {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'service_requests' }, fetchNotifications)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'staff' }, fetchNotifications)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'customer_intercom_messages' }, fetchNotifications)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, fetchNotifications)
       .subscribe();
 
     return () => {
