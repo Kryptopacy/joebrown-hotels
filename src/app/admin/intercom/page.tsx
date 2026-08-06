@@ -234,12 +234,31 @@ export default function AdminIntercomPage() {
     const { error } = await supabase.from('customer_intercom_messages').insert(payload);
 
     if (!error) {
-      await supabase.from('customer_intercom_messages').update({ requires_human: false }).eq('session_id', activeSessionId);
       setGuestReplyText('');
       scrollGuestBottom();
     } else {
       toast.error('Failed to dispatch reply');
     }
+  };
+
+  const resolveHandoff = async () => {
+    if (!activeSessionId) return;
+    const activeThread = guestThreads.find((t) => t.session_id === activeSessionId);
+    
+    await supabase.from('customer_intercom_messages').update({ requires_human: false }).eq('session_id', activeSessionId);
+    
+    const payload = {
+      hotel_id: hotelId,
+      session_id: activeSessionId,
+      guest_name: 'System',
+      room_or_table: activeThread?.room_or_table || 'Lobby',
+      sender_type: 'system',
+      message: 'The staff has marked this request as resolved. The AI Assistant is back to help you with anything else!',
+      is_read: true,
+      requires_human: false
+    };
+    await supabase.from('customer_intercom_messages').insert(payload);
+    toast.success('Handoff resolved, AI is back in control.');
   };
 
   const fetchStaffMessages = async () => {
@@ -460,9 +479,19 @@ export default function AdminIntercomPage() {
                       {guestThreads.find((t) => t.session_id === activeSessionId)?.room_or_table || 'Lobby/Web'}
                     </p>
                   </div>
-                  <span className="text-xs text-emerald-300 bg-brown-500/200/20 border border-emerald-500/30 px-3 py-1 rounded-full flex items-center gap-1 font-bold">
-                    <span className="w-2 h-2 rounded-full bg-brown-500/200/200 animate-ping"></span> Live Channel
-                  </span>
+                  <div className="flex items-center gap-3">
+                    {guestThreads.find((t) => t.session_id === activeSessionId)?.requires_human && (
+                      <button
+                        onClick={resolveHandoff}
+                        className="text-xs bg-[#D4A373] hover:bg-[#b45309] text-[#1A0A02] px-3 py-1 rounded-full font-bold shadow-sm transition-colors"
+                      >
+                        Resolve Handoff (Return to AI)
+                      </button>
+                    )}
+                    <span className="text-xs text-emerald-300 bg-brown-500/200/20 border border-emerald-500/30 px-3 py-1 rounded-full flex items-center gap-1 font-bold">
+                      <span className="w-2 h-2 rounded-full bg-brown-500/200/200 animate-ping"></span> Live Channel
+                    </span>
+                  </div>
                 </div>
 
                 <div className="flex-1 p-6 overflow-y-auto space-y-4">
