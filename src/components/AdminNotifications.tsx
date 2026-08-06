@@ -47,10 +47,19 @@ export default function AdminNotifications() {
         .eq('role', 'pending');
 
       const { data: pendingRequests } = await supabase
-        .from('concierge_requests')
+        .from('service_requests')
         .select('id, request_type, room_number, created_at')
         .eq('hotel_id', hotel.id)
         .eq('status', 'pending');
+
+      const { data: pendingChats } = await supabase
+        .from('customer_intercom_messages')
+        .select('id, guest_name, room_or_table, created_at')
+        .eq('hotel_id', hotel.id)
+        .eq('requires_human', true);
+
+      // We only want to show unique sessions for chats
+      const uniquePendingChats = pendingChats ? Array.from(new Map(pendingChats.map(item => [item.guest_name, item])).values()) : [];
 
       const notifs: any[] = [];
       
@@ -58,6 +67,7 @@ export default function AdminNotifications() {
       const canSeeOrders = ['admin', 'kitchen', 'reception', 'bar'].includes(role);
       const canSeeRequests = ['admin', 'reception', 'concierge'].includes(role);
       const canSeeStaffSignups = ['admin'].includes(role);
+      const canSeeChats = ['admin', 'reception', 'concierge'].includes(role);
 
       if (canSeeOrders && pendingOrders) {
         pendingOrders.forEach(o => notifs.push({
@@ -77,17 +87,24 @@ export default function AdminNotifications() {
         }));
       }
 
+      if (canSeeChats && uniquePendingChats) {
+        uniquePendingChats.forEach(c => notifs.push({
+          id: `chat_${c.id}`, type: 'chat', title: `Human Assistance Needed`, desc: `${c.guest_name} at ${c.room_or_table}`, time: c.created_at, link: '/admin/intercom'
+        }));
+      }
+
       notifs.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
       setNotifications(notifs);
     };
 
     fetchNotifications();
 
-    // Subscribe to realtime updates for all three tables
+    // Subscribe to realtime updates for all tables
     const channel = supabase.channel('admin_notifications')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, fetchNotifications)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'concierge_requests' }, fetchNotifications)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'service_requests' }, fetchNotifications)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'staff' }, fetchNotifications)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'customer_intercom_messages' }, fetchNotifications)
       .subscribe();
 
     return () => {
