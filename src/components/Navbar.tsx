@@ -52,14 +52,14 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-7 xl:gap-9 shrink-0">
+          <div className="hidden lg:flex items-center gap-4 xl:gap-9 shrink-0">
             {(['Rooms & Suites', 'Restaurant & Lounge', 'Contact', 'Staff Portal'] as const).map((label) => {
               const href = label === 'Rooms & Suites' ? '/rooms' : label === 'Restaurant & Lounge' ? '/menu' : label === 'Contact' ? '/contact' : '/admin';
               return (
                 <Link
                   key={label}
                   href={href}
-                  className="text-[10px] uppercase tracking-[0.25em] font-extrabold transition-colors whitespace-nowrap text-[#E6CCB2] hover:text-[#D4A373]"
+                  className="text-[9px] xl:text-[10px] uppercase tracking-[0.15em] xl:tracking-[0.25em] font-extrabold transition-colors whitespace-nowrap text-[#E6CCB2] hover:text-[#D4A373]"
                 >
                   {label}
                 </Link>
@@ -67,7 +67,7 @@ export default function Navbar() {
             })}
             <Link
               href="/rooms"
-              className="px-6 py-2.5 rounded-full text-[9.5px] uppercase tracking-[0.25em] font-extrabold transition-all duration-300 shadow-sm hover:shadow-md ml-1 bg-[#D4A373] hover:bg-[#E6CCB2] text-[#1A0A02]"
+              className="px-4 xl:px-6 py-2 xl:py-2.5 rounded-full text-[8.5px] xl:text-[9.5px] uppercase tracking-[0.15em] xl:tracking-[0.25em] font-extrabold transition-all duration-300 shadow-sm hover:shadow-md ml-1 bg-[#D4A373] hover:bg-[#E6CCB2] text-[#1A0A02]"
             >
               Book Stay
             </Link>
