@@ -525,7 +525,7 @@ export default function AdminIntercomPage() {
                   <input
                     type="text"
                     className="w-full bg-white/5 border border-white/10 focus:border-brown-500 text-white text-sm px-4 py-2.5 rounded-xl outline-none transition-all flex-1 shadow-sm"
-                    placeholder="Type dispatch response to guest..."
+                    placeholder="Type reply to guest..."
                     value={guestReplyText}
                     onChange={(e) => setGuestReplyText(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && sendGuestReply()}
@@ -534,7 +534,7 @@ export default function AdminIntercomPage() {
                     onClick={sendGuestReply}
                     className="bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-6 rounded-xl transition-colors flex items-center gap-2 shadow-sm"
                   >
-                    <Send size={16} /> Dispatch Reply
+                    <Send size={16} /> Send Reply
                   </button>
                 </div>
               </>
@@ -631,7 +631,7 @@ export default function AdminIntercomPage() {
             <input
               type="text"
               className="w-full bg-[#0D0501] border border-white/10 focus:border-brown-500 text-white text-sm px-4 py-2.5 rounded-xl outline-none transition-all flex-1 shadow-sm"
-              placeholder={`Broadcast message to #${staffDeptFilter.replace('_', ' ')} channel...`}
+              placeholder={`Type message to #${staffDeptFilter.replace('_', ' ')} channel...`}
               value={staffInputText}
               onChange={(e) => handleStaffInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && sendStaffMessage()}
@@ -640,7 +640,7 @@ export default function AdminIntercomPage() {
               onClick={sendStaffMessage}
               className="bg-[#D4A373] text-[#1A0A02] hover:bg-[#b45309] font-bold py-2.5 px-8 rounded-xl transition-colors shadow-sm flex items-center gap-2"
             >
-              <Send size={16} /> Broadcast
+              <Send size={16} /> Send Message
             </button>
           </div>
         </div>
