@@ -124,10 +124,17 @@ export default function AdminIntercomPage() {
             last_message: msg.message,
             created_at: msg.created_at,
             unread: !msg.is_read && msg.sender_type === 'guest',
+            requires_human: msg.requires_human || false,
           };
+        } else if (msg.requires_human) {
+          sessionsMap[msg.session_id].requires_human = true;
         }
       });
-      const threadsArray = Object.values(sessionsMap);
+      const threadsArray = Object.values(sessionsMap).sort((a: any, b: any) => {
+        if (a.requires_human && !b.requires_human) return -1;
+        if (!a.requires_human && b.requires_human) return 1;
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      });
       setGuestThreads(threadsArray);
       if (!activeSessionId && threadsArray.length > 0) {
         selectGuestThread(threadsArray[0].session_id);
@@ -167,6 +174,7 @@ export default function AdminIntercomPage() {
     const { error } = await supabase.from('customer_intercom_messages').insert(payload);
 
     if (!error) {
+      await supabase.from('customer_intercom_messages').update({ requires_human: false }).eq('session_id', activeSessionId);
       setGuestReplyText('');
       scrollGuestBottom();
     } else {
@@ -200,6 +208,17 @@ export default function AdminIntercomPage() {
     const { error } = await supabase.from('staff_intercom_messages').insert(payload);
 
     if (!error) {
+      try {
+        await fetch('/api/push/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: `Staff Intercom: #${payload.department}`,
+            body: `${payload.sender_name}: ${payload.message}`,
+            url: '/admin/intercom'
+          })
+        });
+      } catch (err) {}
       setStaffInputText('');
       scrollStaffBottom();
     } else {
@@ -343,6 +362,11 @@ export default function AdminIntercomPage() {
                         )}
                       </div>
                       <p className="text-xs text-white/60 line-clamp-1 mt-1">{t.last_message}</p>
+                      {t.requires_human && (
+                        <div className="mt-2 inline-flex items-center gap-1 text-[10px] uppercase tracking-widest font-bold bg-red-600 text-white px-2 py-0.5 rounded-full animate-pulse border border-red-400">
+                          <AlertCircle size={10} /> Human Assistance Req
+                        </div>
+                      )}
                     </div>
                     <span className="text-[10px] text-white/40 font-medium whitespace-nowrap">
                       {new Date(t.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -482,8 +506,9 @@ export default function AdminIntercomPage() {
                     </span>
                   </div>
                   <p className="text-sm text-white/80 font-medium">{m.message}</p>
-                  <span className="text-[10px] text-white/40 font-semibold mt-2">
+                  <span className="text-[10px] text-white/40 font-semibold mt-2 flex items-center gap-1">
                     {new Date(m.created_at || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    <CheckCircle size={10} className="text-emerald-500 ml-1" />
                   </span>
                 </div>
               ))

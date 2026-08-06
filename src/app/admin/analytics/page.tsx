@@ -208,10 +208,10 @@ export default function AnalyticsPage() {
           </div>
           <div className="flex items-center gap-3 flex-wrap">
             {/* Tabs */}
-            <div className="flex bg-[#0D0501] border border-white/10 rounded-2xl p-1.5 gap-1 shadow-xl">
+            <div className="flex flex-wrap bg-[#0D0501] border border-white/10 rounded-2xl p-1.5 gap-1 shadow-xl">
               {(['overview', 'bookings', 'restaurant', 'lounge', 'ledger'] as const).map(tab => (
                 <button key={tab} onClick={() => setActiveTab(tab)}
-                  className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all capitalize ${activeTab === tab ? 'bg-[#D4A373] text-[#1A0A02]' : 'text-white/50 hover:text-white'}`}>
+                  className={`flex-1 sm:flex-none px-3 sm:px-5 py-2.5 rounded-xl text-xs font-bold transition-all capitalize ${activeTab === tab ? 'bg-[#D4A373] text-black' : 'text-white/50 hover:text-white'}`}>
                   {tab}
                 </button>
               ))}
@@ -220,7 +220,7 @@ export default function AnalyticsPage() {
             <div className="flex bg-[#0D0501] border border-white/10 rounded-2xl p-1.5 gap-1 shadow-xl">
               {(['7d', '30d', '90d', 'all'] as const).map(p => (
                 <button key={p} onClick={() => setPeriod(p)}
-                  className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all ${period === p ? 'bg-[#1A0A02] text-[#1A0A02]' : 'text-white/50 hover:text-white'}`}>
+                  className={`flex-1 sm:flex-none px-3 sm:px-5 py-2.5 rounded-xl text-[10px] sm:text-xs font-bold transition-all ${period === p ? 'bg-[#D4A373] text-black' : 'text-white/50 hover:text-white'}`}>
                   {p === '7d' ? '7 Days' : p === '30d' ? '30 Days' : p === '90d' ? '90 Days' : 'All Time'}
                 </button>
               ))}

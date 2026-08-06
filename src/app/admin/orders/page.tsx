@@ -11,9 +11,6 @@ const PAYMENT_STATUSES = ['unpaid', 'transfer_submitted', 'paid', 'refunded'];
 const STATUS_TABS = ['all', 'pending', 'confirmed', 'preparing', 'ready', 'delivered'];
 const DEPT_TABS = ['all', 'kitchen', 'bar'];
 
-const KITCHEN_CATEGORIES = ['Starters & Grills', 'Main Dishes & Swallows'];
-const BAR_CATEGORIES = ['Beers & Ciders', 'Liquors & Cognac', 'Wines & Champagnes', 'Cocktails & Mocktails', 'Soft Drinks & Water'];
-
 const getOrderStatusColor = (status: string) => {
   switch (status) {
     case 'confirmed':  return 'bg-brown-500/200/10 text-blue-400 border-blue-500/30';
@@ -102,11 +99,11 @@ export default function AdminOrdersPage() {
   }, [hotelId, supabase]);
 
   const fetchHotelAndOrders = async () => {
-    // Fetch menu items to map item IDs to categories for department filtering
-    const { data: menuData } = await supabase.from('menu_items').select('id, category');
+    // Fetch menu items to map item IDs to types for department filtering
+    const { data: menuData } = await supabase.from('menu_items').select('id, menu_categories(type)');
     if (menuData) {
       const map: Record<string, string> = {};
-      menuData.forEach((m: any) => { map[m.id] = m.category; });
+      menuData.forEach((m: any) => { map[m.id] = m.menu_categories?.type || 'food'; });
       setMenuItemsMap(map);
     }
 
@@ -160,12 +157,12 @@ export default function AdminOrdersPage() {
     let matchesDept = true;
     if (deptTab !== 'all') {
       const hasKitchen = (o.order_items || []).some((item: any) => {
-        const cat = menuItemsMap[item.menu_item_id];
-        return cat && KITCHEN_CATEGORIES.includes(cat);
+        const type = menuItemsMap[item.menu_item_id];
+        return type === 'food';
       });
       const hasBar = (o.order_items || []).some((item: any) => {
-        const cat = menuItemsMap[item.menu_item_id];
-        return cat && BAR_CATEGORIES.includes(cat);
+        const type = menuItemsMap[item.menu_item_id];
+        return type === 'drink';
       });
 
       if (deptTab === 'kitchen') matchesDept = hasKitchen;

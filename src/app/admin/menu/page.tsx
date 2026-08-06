@@ -14,12 +14,12 @@ export default function AdminMenuPage() {
   const [hotelId, setHotelId] = useState<string | null>(null);
 
   // Tab State
-  const [activeTab, setActiveTab] = useState<'kitchen' | 'bar'>('kitchen');
+  const [activeTab, setActiveTab] = useState<'food' | 'drink'>('food');
   const [activeCategory, setActiveCategory] = useState<string>('all');
 
   // Category Modal State
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
-  const [newCategory, setNewCategory] = useState({ name: '', type: 'kitchen' });
+  const [newCategory, setNewCategory] = useState({ name: '', type: 'food' });
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -60,7 +60,7 @@ export default function AdminMenuPage() {
     setIsLoading(true);
     const { data, error } = await supabase
       .from('menu_items')
-      .select('*, menu_categories(*)')
+      .select('*')
       .eq('hotel_id', hid)
       .order('display_order');
       
@@ -149,7 +149,7 @@ export default function AdminMenuPage() {
         .from('menu_items')
         .update(payload)
         .eq('id', editingItem.id)
-        .select('*, menu_categories(name)')
+        .select('*')
         .maybeSingle();
         
       if (error) toast.error(error.message);
@@ -171,7 +171,7 @@ export default function AdminMenuPage() {
       const { data, error } = await supabase
         .from('menu_items')
         .insert(payload)
-        .select('*, menu_categories(name)')
+        .select('*')
         .maybeSingle();
 
       if (error) toast.error(error.message);
@@ -205,10 +205,11 @@ export default function AdminMenuPage() {
     }
   };
 
-  const filteredItems = items.filter(i => 
-    i.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    (i.menu_categories?.name || '').toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredItems = items.filter(i => {
+    const cat = categories.find(c => c.id === i.category_id);
+    return i.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      (cat?.name || '').toLowerCase().includes(searchTerm.toLowerCase());
+  });
 
   const handleCreateCategory = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -225,7 +226,7 @@ export default function AdminMenuPage() {
     } else {
       toast.success('Category added');
       setCategories([...categories, data]);
-      setNewCategory({ name: '', type: 'kitchen' });
+      setNewCategory({ name: '', type: 'food' });
       setIsCategoryModalOpen(false);
       if (isModalOpen) {
         setFormData({ ...formData, category_id: data.id });
@@ -235,8 +236,9 @@ export default function AdminMenuPage() {
 
   // Grouping items by type and category
   const groupedItems = filteredItems.reduce((acc: any, item) => {
-    const type = item.menu_categories?.type || 'kitchen';
-    const catName = item.menu_categories?.name || 'Uncategorized';
+    const cat = categories.find(c => c.id === item.category_id);
+    const type = cat?.type || 'food';
+    const catName = cat?.name || 'Uncategorized';
     
     if (!acc[type]) acc[type] = {};
     if (!acc[type][catName]) acc[type][catName] = [];
@@ -277,12 +279,12 @@ export default function AdminMenuPage() {
         </div>
       </div>
 
-      {/* Kitchen / Bar Tabs */}
+      {/* Food / Drink Tabs */}
       <div className="flex items-center gap-2 border-b border-white/10 pb-px">
         <button
-          onClick={() => { setActiveTab('kitchen'); setActiveCategory('all'); }}
+          onClick={() => { setActiveTab('food'); setActiveCategory('all'); }}
           className={`px-6 py-3 font-bold text-sm tracking-wide transition-all border-b-2 ${
-            activeTab === 'kitchen' 
+            activeTab === 'food' 
               ? 'border-brown-600 text-[#D4A373] bg-white/5' 
               : 'border-transparent text-white/50 hover:text-white hover:bg-white/5'
           }`}
@@ -290,9 +292,9 @@ export default function AdminMenuPage() {
           🍽️ Kitchen Menu
         </button>
         <button
-          onClick={() => { setActiveTab('bar'); setActiveCategory('all'); }}
+          onClick={() => { setActiveTab('drink'); setActiveCategory('all'); }}
           className={`px-6 py-3 font-bold text-sm tracking-wide transition-all border-b-2 ${
-            activeTab === 'bar' 
+            activeTab === 'drink' 
               ? 'border-brown-600 text-[#D4A373] bg-white/5' 
               : 'border-transparent text-white/50 hover:text-white hover:bg-white/5'
           }`}
@@ -363,7 +365,7 @@ export default function AdminMenuPage() {
               (() => {
                 const typeGroups = groupedItems[activeTab];
                 if (!typeGroups || Object.keys(typeGroups).length === 0) {
-                  return <tr><td colSpan={5} className="p-8 text-center text-white/50 font-medium">No items in {activeTab === 'kitchen' ? 'Kitchen' : 'Bar'}</td></tr>;
+                  return <tr><td colSpan={5} className="p-8 text-center text-white/50 font-medium">No items in {activeTab === 'food' ? 'Kitchen' : 'Bar'}</td></tr>;
                 }
                 
                 const allCatNames = Object.keys(typeGroups).sort((a, b) => {
@@ -539,8 +541,8 @@ export default function AdminMenuPage() {
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-white/50 mb-2">Type *</label>
                 <select required className="w-full bg-[#0D0501] border border-white/10 focus:border-brown-500 text-white text-sm px-4 py-2.5 rounded-xl outline-none transition-all shadow-sm" value={newCategory.type} onChange={e => setNewCategory({...newCategory, type: e.target.value})}>
-                  <option value="kitchen">Kitchen</option>
-                  <option value="bar">Bar</option>
+                  <option value="food">Kitchen</option>
+                  <option value="drink">Bar</option>
                 </select>
               </div>
               <div className="flex justify-end gap-4 pt-4 border-t border-white/10">

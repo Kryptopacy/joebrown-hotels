@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Send, Headset, Sparkles } from 'lucide-react';
+import { X, Send, Headset, Sparkles, Loader2 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { useHotel } from '@/contexts/HotelContext';
 import toast from 'react-hot-toast';
@@ -12,8 +12,7 @@ export default function CustomerIntercom() {
   const [inputText, setInputText] = useState('');
   const [guestName, setGuestName] = useState('');
   const [roomOrTable, setRoomOrTable] = useState('');
-  const [isInitialized, setIsInitialized] = useState(false);
-  const [initialMessage, setInitialMessage] = useState('');
+  const [isAiTyping, setIsAiTyping] = useState(false);
   const [sessionId, setSessionId] = useState('');
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -46,8 +45,16 @@ export default function CustomerIntercom() {
           filter: `session_id=eq.${sid}`,
         },
         (payload) => {
-          setMessages((prev) => [...prev, payload.new]);
-          scrollToBottom();
+          // Prevent duplicating the optimistic AI messages if we already synced them,
+          // but for simplicity we let realtime handle incoming staff/AI messages
+          if (payload.new.sender_type !== 'guest') {
+            setMessages((prev) => {
+              // Ensure we don't add duplicates
+              if (prev.find(m => m.id === payload.new.id)) return prev;
+              return [...prev, payload.new];
+            });
+            scrollToBottom();
+          }
         }
       )
       .subscribe();
@@ -64,9 +71,15 @@ export default function CustomerIntercom() {
       .eq('session_id', sid)
       .order('created_at', { ascending: true });
 
-    if (data) {
+    if (data && data.length > 0) {
       setMessages(data);
-      if (data.length > 0) setIsInitialized(true);
+    } else {
+      setMessages([{
+        id: 'welcome_msg',
+        sender_type: 'ai',
+        message: 'Welcome to Joebrown Palace Hotel! How can we assist you today?',
+        created_at: new Date().toISOString()
+      }]);
     }
   };
 
@@ -74,15 +87,6 @@ export default function CustomerIntercom() {
     setTimeout(() => {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, 100);
-  };
-
-  const handleStartChat = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!guestName.trim() || !initialMessage.trim()) return;
-    localStorage.setItem('joebrown_guest_name', guestName);
-    localStorage.setItem('joebrown_guest_room', roomOrTable);
-    setIsInitialized(true);
-    sendMessage(initialMessage);
   };
 
   const sendMessage = async (customText?: string) => {
@@ -107,7 +111,8 @@ export default function CustomerIntercom() {
     };
 
     // Optimistic UI update
-    const optimisticMsg = { ...newMsg, created_at: new Date().toISOString() };
+    const optimisticId = 'opt_' + Date.now();
+    const optimisticMsg = { ...newMsg, id: optimisticId, created_at: new Date().toISOString() };
     setMessages((prev) => [...prev, optimisticMsg]);
     scrollToBottom();
 
@@ -115,6 +120,8 @@ export default function CustomerIntercom() {
 
     if (error) {
       toast.error('Failed to send message.');
+      // Rollback optimistic message
+      setMessages((prev) => prev.filter(m => m.id !== optimisticId));
     } else {
       // Trigger Web Push Notification to Admin Dashboard
       try {
@@ -131,12 +138,32 @@ export default function CustomerIntercom() {
         console.error('Failed to dispatch push notification', err);
       }
       
-      // Ping the AI Auto-Reply endpoint in the background (fire and forget)
-      fetch('/api/intercom/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sessionId: sessionId })
-      }).catch(err => console.error('AI Auto-reply ping failed', err));
+      setIsAiTyping(true);
+      scrollToBottom();
+      try {
+        const res = await fetch('/api/intercom/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sessionId: sessionId })
+        });
+        const data = await res.json();
+        
+        if (data.updatedProfile) {
+          if (data.updatedProfile.name) {
+            setGuestName(data.updatedProfile.name);
+            localStorage.setItem('joebrown_guest_name', data.updatedProfile.name);
+          }
+          if (data.updatedProfile.room) {
+            setRoomOrTable(data.updatedProfile.room);
+            localStorage.setItem('joebrown_guest_room', data.updatedProfile.room);
+          }
+        }
+      } catch (err) {
+        console.error('AI Auto-reply ping failed', err);
+      } finally {
+        setIsAiTyping(false);
+        scrollToBottom();
+      }
     }
   };
 
@@ -181,108 +208,64 @@ export default function CustomerIntercom() {
             </button>
           </div>
 
-          {/* Body */}
-          {!isInitialized ? (
-            <form onSubmit={handleStartChat} className="p-6 flex-1 flex flex-col justify-center space-y-4 bg-[#FFFCEB]">
-              <div className="text-center mb-2">
-                <h4 className="font-serif text-lg text-slate-900 font-bold">Welcome to Concierge</h4>
-                <p className="text-xs text-slate-600">Direct chat link to Front Desk staff.</p>
-              </div>
-
-              <div>
-                <label className="block text-xs uppercase tracking-wider text-slate-700 font-bold mb-1">Your Name *</label>
-                <input
-                  required
-                  type="text"
-                  className="w-full bg-white border border-brown-300 text-slate-900 text-sm px-3 py-2.5 rounded-lg focus:outline-none focus:border-brown-600 font-medium"
-                  placeholder="e.g. Chief Okon"
-                  value={guestName}
-                  onChange={(e) => setGuestName(e.target.value)}
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs uppercase tracking-wider text-slate-700 font-bold mb-1">Room or Table (Optional)</label>
-                <input
-                  type="text"
-                  className="w-full bg-white border border-brown-300 text-slate-900 text-sm px-3 py-2.5 rounded-lg focus:outline-none focus:border-brown-600 font-medium mb-4"
-                  placeholder="e.g. Suite 402 or Table 12"
-                  value={roomOrTable}
-                  onChange={(e) => setRoomOrTable(e.target.value)}
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs uppercase tracking-wider text-slate-700 font-bold mb-1">How can we help? *</label>
-                <textarea
-                  required
-                  className="w-full bg-white border border-brown-300 text-slate-900 text-sm px-3 py-2.5 rounded-lg focus:outline-none focus:border-brown-600 font-medium resize-none"
-                  placeholder="Type your message here..."
-                  rows={2}
-                  value={initialMessage}
-                  onChange={(e) => setInitialMessage(e.target.value)}
-                ></textarea>
-              </div>
-
-              <button type="submit" className="btn-primary w-full mt-2 flex justify-center items-center gap-2 py-3">
-                Start Live Chat
-              </button>
-            </form>
-          ) : (
-            <>
-              {/* Message List */}
-              <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-[#FFFCEB]">
-                {messages.length === 0 ? (
-                  <div className="text-center text-xs text-slate-500 py-8">
-                    Send a message to connect with our concierge team.
-                  </div>
-                ) : (
-                  messages.map((msg, idx) => {
-                    const isGuest = msg.sender_type === 'guest';
-                    const isAi = msg.sender_type === 'ai';
-                    return (
-                      <div
-                        key={idx}
-                        className={`flex flex-col ${isGuest ? 'items-end' : 'items-start'}`}
-                      >
-                        <div
-                          className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm whitespace-pre-wrap ${
-                            isGuest
-                              ? 'bg-brown-700 text-white font-medium rounded-br-none shadow-sm'
-                              : 'bg-white text-slate-900 rounded-bl-none border border-brown-300 shadow-sm'
-                          }`}
-                        >
-                          <p>{msg.message}</p>
-                        </div>
-                        <span className="text-[10px] text-slate-500 mt-1 px-1 font-medium flex items-center gap-1">
-                          {isGuest ? 'You' : (isAi ? <><Sparkles size={10} className="text-brown-500"/> AI Concierge</> : 'Staff Concierge')} • {new Date(msg.created_at || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </span>
-                      </div>
-                    );
-                  })
-                )}
-                <div ref={messagesEndRef} />
-              </div>
-
-              {/* Input Area */}
-              <div className="p-3 bg-[#FFFDF5] border-t border-brown-300 flex gap-2 items-center">
-                <input
-                  type="text"
-                  className="w-full bg-[#FFFCEB] border border-brown-300 text-slate-900 text-sm px-3.5 h-10 rounded-lg focus:outline-none focus:border-brown-600 font-medium"
-                  placeholder="Type message..."
-                  value={inputText}
-                  onChange={(e) => setInputText(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-                />
-                <button
-                  onClick={() => sendMessage()}
-                  className="w-10 h-10 shrink-0 rounded-lg bg-brown-700 text-white flex items-center justify-center hover:bg-brown-800 transition-colors"
+          {/* Body: Message List */}
+          <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-[#FFFCEB]">
+            {messages.map((msg, idx) => {
+              const isGuest = msg.sender_type === 'guest';
+              const isAi = msg.sender_type === 'ai';
+              return (
+                <div
+                  key={msg.id || idx}
+                  className={`flex flex-col ${isGuest ? 'items-end' : 'items-start'}`}
                 >
-                  <Send size={18} />
-                </button>
+                  <div
+                    className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm whitespace-pre-wrap ${
+                      isGuest
+                        ? 'bg-brown-700 text-white font-medium rounded-br-none shadow-sm'
+                        : 'bg-white text-slate-900 rounded-bl-none border border-brown-300 shadow-sm'
+                    }`}
+                  >
+                    <p>{msg.message}</p>
+                  </div>
+                  <span className="text-[10px] text-slate-500 mt-1 px-1 font-medium flex items-center gap-1">
+                    {isGuest ? 'You' : (isAi ? <><Sparkles size={10} className="text-brown-500"/> AI Concierge</> : 'Staff Concierge')} • {new Date(msg.created_at || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                </div>
+              );
+            })}
+            
+            {/* Typing Indicator */}
+            {isAiTyping && (
+              <div className="flex flex-col items-start">
+                <div className="max-w-[80%] rounded-2xl px-4 py-3 text-sm bg-white text-slate-900 rounded-bl-none border border-brown-300 shadow-sm flex items-center gap-2">
+                  <Loader2 size={16} className="animate-spin text-brown-500" />
+                  <span className="text-slate-500 font-medium">Concierge is typing...</span>
+                </div>
               </div>
-            </>
-          )}
+            )}
+            
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Input Area */}
+          <div className="p-3 bg-[#FFFDF5] border-t border-brown-300 flex gap-2 items-center">
+            <input
+              type="text"
+              className="w-full bg-[#FFFCEB] border border-brown-300 text-slate-900 text-sm px-3.5 h-10 rounded-lg focus:outline-none focus:border-brown-600 font-medium"
+              placeholder="Type message..."
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+              disabled={isAiTyping}
+            />
+            <button
+              onClick={() => sendMessage()}
+              disabled={!inputText.trim() || isAiTyping}
+              className="w-10 h-10 shrink-0 rounded-lg bg-brown-700 text-white flex items-center justify-center hover:bg-brown-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Send size={18} />
+            </button>
+          </div>
         </div>
       )}
     </div>

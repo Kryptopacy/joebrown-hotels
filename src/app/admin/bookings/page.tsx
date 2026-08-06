@@ -754,7 +754,7 @@ export default function AdminBookingsPage() {
               <button
                 key={dr}
                 onClick={() => setDateRange(dr as 'week' | 'month' | 'all')}
-                className={`flex-1 md:flex-none px-4 py-1.5 rounded-lg text-sm font-medium capitalize transition-colors ${dateRange === dr ? 'bg-[#D4A373] text-[#1A0A02]' : 'text-white/60 hover:bg-[#1A0A02]'}`}
+                className={`flex-1 md:flex-none whitespace-nowrap px-2 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-medium capitalize transition-colors ${dateRange === dr ? 'bg-[#D4A373] text-[#1A0A02]' : 'text-white/60 hover:bg-[#1A0A02]'}`}
               >
                 {dr === 'all' ? 'All Time' : `This ${dr}`}
               </button>

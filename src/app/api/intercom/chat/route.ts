@@ -1,14 +1,13 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { GoogleGenAI } from '@google/genai';
+import { z } from 'zod';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const client = new GoogleGenAI({});
-
-import { z } from 'zod';
 
 const ChatRequestSchema = z.object({
   sessionId: z.string().min(1, 'Session ID is required'),
@@ -52,8 +51,9 @@ export async function POST(req: Request) {
     }
 
     const hotelId = lastMessage.hotel_id;
-    const guestName = lastMessage.guest_name;
-    const roomOrTable = lastMessage.room_or_table;
+    // Note: The latest DB record holds the current known name/room for this session.
+    const currentGuestName = lastMessage.guest_name;
+    const currentRoomOrTable = lastMessage.room_or_table;
 
     // 3. Instant Keyword-Based Frustration Detection
     const userMessageStr = lastMessage.message.toLowerCase();
@@ -61,9 +61,9 @@ export async function POST(req: Request) {
     const seemsFrustrated = frustrationKeywords.some(kw => userMessageStr.includes(kw));
 
     if (seemsFrustrated) {
-      await supabase.from('customer_intercom_messages').update({ requires_human: true }).eq('id', lastMessage.id);
+      await supabase.from('customer_intercom_messages').update({ requires_human: true }).eq('session_id', sessionId);
       await supabase.from('customer_intercom_messages').insert({
-        hotel_id: hotelId, session_id: sessionId, guest_name: 'System', room_or_table: roomOrTable, sender_type: 'system', message: 'A staff member has been notified and will assist you shortly.'
+        hotel_id: hotelId, session_id: sessionId, guest_name: 'System', room_or_table: currentRoomOrTable, sender_type: 'system', message: 'A staff member has been notified and will assist you shortly.', requires_human: true
       });
       return NextResponse.json({ status: 'handed_off', text: 'I am connecting you to a staff member right away.' });
     }
@@ -76,7 +76,7 @@ export async function POST(req: Request) {
     if (!hotel) return NextResponse.json({ error: 'Hotel not found' }, { status: 404 });
 
     const systemPrompt = `You are the AI Concierge for ${hotel.name}.
-Your job is to assist guests warmly and politely. The guest you are speaking to is named "${guestName}", located at "${roomOrTable}".
+Your job is to assist guests warmly and politely. The guest you are speaking to is currently identified as "${currentGuestName}", located at "${currentRoomOrTable}".
 
 ## Knowledge Base
 Check-in/out: ${hotel.ai_checkin_policy || 'Standard hotel policies apply.'}
@@ -93,15 +93,30 @@ ${rooms?.map((r: any) => `- ${r.name}: ₦${r.price_per_night} / night (Link: /r
 ${menu?.filter((m: any) => m.is_available).map((m: any) => `- ${m.name}: ₦${m.price}`).join('\n')}
 
 ## Critical Instructions:
-1. ONLY answer questions using the knowledge base, rooms, and menu provided above. 
-2. Do NOT guess or make up information (hallucinate).
-3. If a guest asks a question you do not know the answer to, or if they are frustrated, you MUST immediately call the "handoffToHuman" tool.
-4. If a guest wants to book a room, provide them the link to the room.
-5. If a guest wants to order food, use the "placeOrder" tool.
-6. If a guest wants towels or cleaning, use the "requestService" tool.
-7. Keep responses concise, professional, and friendly.`;
+1. ONLY answer questions using the knowledge base, rooms, and menu provided above. Do NOT guess or hallucinate.
+2. If a guest asks a question you do not know the answer to, or if they are frustrated, you MUST immediately call the "handoffToHuman" tool.
+3. If a guest wants to book a room, provide them the link to the room.
+4. If a guest wants to order food, use the "placeOrder" tool.
+5. If a guest wants towels or cleaning, use the "requestService" tool.
+6. If the guest tells you their name or room number at ANY point, call the "updateGuestProfile" tool immediately to remember it.
+7. The action tools (placeOrder, requestService, handoffToHuman) REQUIRE the guest's name and room number. If you don't know them, politely ask the guest for their name and room number BEFORE calling those tools.
+8. Keep responses concise, professional, and friendly.`;
 
     // 5. Setup Tools
+    const updateProfileTool = {
+      type: 'function',
+      name: 'updateGuestProfile',
+      description: 'Update the guest\'s name and room/table number when they tell you.',
+      parameters: {
+        type: 'object',
+        properties: {
+          guestName: { type: 'string' },
+          roomNumber: { type: 'string' }
+        },
+        required: ['guestName']
+      }
+    };
+
     const requestServiceTool = {
       type: 'function',
       name: 'requestService',
@@ -109,10 +124,12 @@ ${menu?.filter((m: any) => m.is_available).map((m: any) => `- ${m.name}: ₦${m.
       parameters: {
         type: 'object',
         properties: {
+          guestName: { type: 'string', description: 'The name of the guest' },
+          roomNumber: { type: 'string', description: 'The room number of the guest' },
           requestType: { type: 'string', enum: ['cleaning', 'towels', 'late_checkout', 'other'] },
           notes: { type: 'string', description: 'Specific details from the guest' }
         },
-        required: ['requestType']
+        required: ['guestName', 'roomNumber', 'requestType']
       }
     };
 
@@ -123,10 +140,12 @@ ${menu?.filter((m: any) => m.is_available).map((m: any) => `- ${m.name}: ₦${m.
       parameters: {
         type: 'object',
         properties: {
+          guestName: { type: 'string', description: 'The name of the guest' },
+          roomNumber: { type: 'string', description: 'The room or table number of the guest' },
           items: { type: 'array', items: { type: 'string' }, description: 'List of exact menu item names' },
           specialInstructions: { type: 'string' }
         },
-        required: ['items']
+        required: ['guestName', 'roomNumber', 'items']
       }
     };
 
@@ -137,13 +156,15 @@ ${menu?.filter((m: any) => m.is_available).map((m: any) => `- ${m.name}: ₦${m.
       parameters: {
         type: 'object',
         properties: {
+          guestName: { type: 'string' },
+          roomNumber: { type: 'string' },
           reason: { type: 'string', description: 'Reason for handoff' }
         },
         required: ['reason']
       }
     };
 
-    const tools = [requestServiceTool, placeOrderTool, handoffTool];
+    const tools = [updateProfileTool, requestServiceTool, placeOrderTool, handoffTool];
 
     // 6. Format History for Interactions API
     const history = messages.map((m: any) => ({
@@ -163,18 +184,38 @@ ${menu?.filter((m: any) => m.is_available).map((m: any) => `- ${m.name}: ₦${m.
     history.push(...interaction.steps);
 
     // 8. Tool Execution Loop
-    let maxToolTurns = 2;
+    let maxToolTurns = 3;
+    let updatedProfile: { name: string, room: string } | null = null;
+
     while (maxToolTurns > 0) {
       const fcStep = interaction.steps.find((s: any) => s.type === 'function_call');
       if (!fcStep) break;
 
       let resultText = '';
       try {
-        if (fcStep.name === 'requestService') {
+        // Extract updated profile details if present in ANY tool call
+        const { guestName: pName, roomNumber: pRoom } = fcStep.arguments;
+        if ((pName && pName !== 'Guest' && pName !== currentGuestName) || (pRoom && pRoom !== 'Lobby/Web' && pRoom !== currentRoomOrTable)) {
+          updatedProfile = { 
+            name: pName || currentGuestName, 
+            room: pRoom || currentRoomOrTable 
+          };
+          // Sync to all previous messages in session so Admin sees correct name
+          await supabase.from('customer_intercom_messages')
+            .update({ guest_name: updatedProfile.name, room_or_table: updatedProfile.room })
+            .eq('session_id', sessionId);
+        }
+
+        const activeName = updatedProfile?.name || currentGuestName;
+        const activeRoom = updatedProfile?.room || currentRoomOrTable;
+
+        if (fcStep.name === 'updateGuestProfile') {
+          resultText = `Profile updated successfully. Acknowledge and continue assisting.`;
+        }
+        else if (fcStep.name === 'requestService') {
           const { requestType, notes } = fcStep.arguments;
-          const actualRoom = roomOrTable && roomOrTable !== 'Lobby/Web' ? roomOrTable : 'Unknown Room';
           await supabase.from('service_requests').insert({
-            hotel_id: hotelId, room_number: actualRoom, request_type: requestType, status: 'pending'
+            hotel_id: hotelId, room_number: activeRoom, request_type: requestType, status: 'pending', notes: notes
           });
           resultText = `Service request for ${requestType} created successfully.`;
         } 
@@ -185,7 +226,7 @@ ${menu?.filter((m: any) => m.is_available).map((m: any) => `- ${m.name}: ₦${m.
           else {
             const total = dbItems.reduce((sum: number, item: any) => sum + Number(item.price), 0);
             const { data: order } = await supabase.from('orders').insert({
-              hotel_id: hotelId, guest_name: guestName, room_or_table: roomOrTable, status: 'pending', payment_status: 'unpaid', total_amount: total, special_instructions: specialInstructions
+              hotel_id: hotelId, guest_name: activeName, room_or_table: activeRoom, status: 'pending', payment_status: 'unpaid', total_amount: total, special_instructions: specialInstructions
             }).select('id').single();
             if (order) {
                const orderItems = dbItems.map((item: any) => ({
@@ -197,7 +238,7 @@ ${menu?.filter((m: any) => m.is_available).map((m: any) => `- ${m.name}: ₦${m.
           }
         } 
         else if (fcStep.name === 'handoffToHuman') {
-          await supabase.from('customer_intercom_messages').update({ requires_human: true }).eq('id', lastMessage.id);
+          await supabase.from('customer_intercom_messages').update({ requires_human: true }).eq('session_id', sessionId);
           resultText = 'Successfully handed off to human. Tell the guest you have connected them to a staff member.';
         }
       } catch (err: any) {
@@ -236,7 +277,7 @@ ${menu?.filter((m: any) => m.is_available).map((m: any) => `- ${m.name}: ₦${m.
       });
     }
 
-    return NextResponse.json({ status: 'success', text: outputText });
+    return NextResponse.json({ status: 'success', text: outputText, updatedProfile });
 
   } catch (error: any) {
     console.error('AI Chat Error:', error);
