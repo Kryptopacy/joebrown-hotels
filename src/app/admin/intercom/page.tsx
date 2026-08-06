@@ -48,6 +48,11 @@ export default function AdminIntercomPage() {
   const guestMsgEndRef = useRef<HTMLDivElement>(null);
   const staffMsgEndRef = useRef<HTMLDivElement>(null);
   
+  // Typing Indicator State
+  const [activeTypers, setActiveTypers] = useState<string[]>([]);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const presenceChannelRef = useRef<any>(null);
+  
   const [hotelId, setHotelId] = useState<string>('joebrown-default-id');
   const supabase = createClient();
 
@@ -105,6 +110,61 @@ export default function AdminIntercomPage() {
       supabase.removeChannel(staffChannel);
     };
   }, [supabase, activeSessionId]);
+
+  // Setup Presence for Typing Indicators
+  useEffect(() => {
+    const channelName = `presence_staff_${staffDeptFilter}`;
+    const presenceChannel = supabase.channel(channelName, {
+      config: { presence: { key: currentStaffName } }
+    });
+
+    presenceChannel
+      .on('presence', { event: 'sync' }, () => {
+        const state = presenceChannel.presenceState();
+        const typers: string[] = [];
+        
+        Object.values(state).forEach((presences: any) => {
+          presences.forEach((p: any) => {
+            if (p.isTyping && p.user !== currentStaffName) {
+              if (!typers.includes(p.user)) {
+                typers.push(p.user);
+              }
+            }
+          });
+        });
+        
+        setActiveTypers(typers);
+      })
+      .subscribe();
+
+    presenceChannelRef.current = presenceChannel;
+
+    return () => {
+      supabase.removeChannel(presenceChannel);
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+      setActiveTypers([]);
+    };
+  }, [supabase, staffDeptFilter, currentStaffName]);
+
+  const handleStaffInput = (val: string) => {
+    setStaffInputText(val);
+    
+    if (presenceChannelRef.current) {
+      presenceChannelRef.current.track({
+        user: currentStaffName,
+        isTyping: val.length > 0
+      });
+
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+      
+      typingTimeoutRef.current = setTimeout(() => {
+        presenceChannelRef.current?.track({
+          user: currentStaffName,
+          isTyping: false
+        });
+      }, 2000);
+    }
+  };
 
   const fetchGuestThreads = async () => {
     const { data } = await supabase
@@ -219,6 +279,15 @@ export default function AdminIntercomPage() {
           })
         });
       } catch (err) {}
+      
+      if (presenceChannelRef.current) {
+        presenceChannelRef.current.track({
+          user: currentStaffName,
+          isTyping: false
+        });
+        if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+      }
+      
       setStaffInputText('');
       scrollStaffBottom();
     } else {
@@ -516,6 +585,18 @@ export default function AdminIntercomPage() {
             <div ref={staffMsgEndRef} />
           </div>
 
+          {/* Active Typers Indicator */}
+          {activeTypers.length > 0 && (
+            <div className="px-6 py-2 text-xs font-medium text-[#D4A373] italic flex items-center gap-2 bg-[#1A0A02]">
+              <span className="flex gap-1">
+                <span className="w-1.5 h-1.5 bg-[#D4A373] rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                <span className="w-1.5 h-1.5 bg-[#D4A373] rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                <span className="w-1.5 h-1.5 bg-[#D4A373] rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+              </span>
+              {activeTypers.join(', ')} {activeTypers.length === 1 ? 'is' : 'are'} typing...
+            </div>
+          )}
+
           {/* Broadcast Input */}
           <div className="p-4 bg-[#1A0A02] border-t border-white/10 flex gap-3">
             <input
@@ -523,7 +604,7 @@ export default function AdminIntercomPage() {
               className="w-full bg-[#0D0501] border border-white/10 focus:border-brown-500 text-white text-sm px-4 py-2.5 rounded-xl outline-none transition-all flex-1 shadow-sm"
               placeholder={`Broadcast message to #${staffDeptFilter.replace('_', ' ')} channel...`}
               value={staffInputText}
-              onChange={(e) => setStaffInputText(e.target.value)}
+              onChange={(e) => handleStaffInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && sendStaffMessage()}
             />
             <button

@@ -1,1 +1,851 @@
-{"types":"export type Json =\n  | string\n  | number\n  | boolean\n  | null\n  | { [key: string]: Json | undefined }\n  | Json[]\n\nexport type Database = {\n  // Allows to automatically instantiate createClient with right options\n  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)\n  __InternalSupabase: {\n    PostgrestVersion: \"14.15\"\n  }\n  public: {\n    Tables: {\n      bookings: {\n        Row: {\n          check_in: string\n          check_out: string\n          created_at: string | null\n          guest_email: string | null\n          guest_name: string\n          guest_phone: string\n          guests_count: number | null\n          hotel_id: string | null\n          id: string\n          payment_status: string\n          room_id: string | null\n          special_requests: string | null\n          status: string | null\n          total_amount: number\n          updated_at: string | null\n        }\n        Insert: {\n          check_in: string\n          check_out: string\n          created_at?: string | null\n          guest_email?: string | null\n          guest_name: string\n          guest_phone: string\n          guests_count?: number | null\n          hotel_id?: string | null\n          id?: string\n          payment_status?: string\n          room_id?: string | null\n          special_requests?: string | null\n          status?: string | null\n          total_amount: number\n          updated_at?: string | null\n        }\n        Update: {\n          check_in?: string\n          check_out?: string\n          created_at?: string | null\n          guest_email?: string | null\n          guest_name?: string\n          guest_phone?: string\n          guests_count?: number | null\n          hotel_id?: string | null\n          id?: string\n          payment_status?: string\n          room_id?: string | null\n          special_requests?: string | null\n          status?: string | null\n          total_amount?: number\n          updated_at?: string | null\n        }\n        Relationships: [\n          {\n            foreignKeyName: \"bookings_hotel_id_fkey\"\n            columns: [\"hotel_id\"]\n            isOneToOne: false\n            referencedRelation: \"hotels\"\n            referencedColumns: [\"id\"]\n          },\n          {\n            foreignKeyName: \"bookings_room_id_fkey\"\n            columns: [\"room_id\"]\n            isOneToOne: false\n            referencedRelation: \"rooms\"\n            referencedColumns: [\"id\"]\n          },\n        ]\n      }\n      customer_intercom_messages: {\n        Row: {\n          created_at: string\n          guest_name: string\n          hotel_id: string | null\n          id: string\n          is_read: boolean | null\n          message: string\n          requires_human: boolean | null\n          room_or_table: string | null\n          sender_role: string | null\n          sender_type: string\n          session_id: string\n          status: string\n        }\n        Insert: {\n          created_at?: string\n          guest_name: string\n          hotel_id?: string | null\n          id?: string\n          is_read?: boolean | null\n          message: string\n          requires_human?: boolean | null\n          room_or_table?: string | null\n          sender_role?: string | null\n          sender_type: string\n          session_id: string\n          status?: string\n        }\n        Update: {\n          created_at?: string\n          guest_name?: string\n          hotel_id?: string | null\n          id?: string\n          is_read?: boolean | null\n          message?: string\n          requires_human?: boolean | null\n          room_or_table?: string | null\n          sender_role?: string | null\n          sender_type?: string\n          session_id?: string\n          status?: string\n        }\n        Relationships: [\n          {\n            foreignKeyName: \"customer_intercom_messages_hotel_id_fkey\"\n            columns: [\"hotel_id\"]\n            isOneToOne: false\n            referencedRelation: \"hotels\"\n            referencedColumns: [\"id\"]\n          },\n        ]\n      }\n      feedback: {\n        Row: {\n          category: string\n          comments: string | null\n          created_at: string | null\n          guest_email: string | null\n          guest_name: string | null\n          hotel_id: string | null\n          id: string\n          rating: number\n        }\n        Insert: {\n          category: string\n          comments?: string | null\n          created_at?: string | null\n          guest_email?: string | null\n          guest_name?: string | null\n          hotel_id?: string | null\n          id?: string\n          rating: number\n        }\n        Update: {\n          category?: string\n          comments?: string | null\n          created_at?: string | null\n          guest_email?: string | null\n          guest_name?: string | null\n          hotel_id?: string | null\n          id?: string\n          rating?: number\n        }\n        Relationships: [\n          {\n            foreignKeyName: \"feedback_hotel_id_fkey\"\n            columns: [\"hotel_id\"]\n            isOneToOne: false\n            referencedRelation: \"hotels\"\n            referencedColumns: [\"id\"]\n          },\n        ]\n      }\n      gallery_images: {\n        Row: {\n          created_at: string | null\n          display_order: number | null\n          hotel_id: string\n          id: string\n          is_active: boolean | null\n          title: string | null\n          url: string\n        }\n        Insert: {\n          created_at?: string | null\n          display_order?: number | null\n          hotel_id: string\n          id?: string\n          is_active?: boolean | null\n          title?: string | null\n          url: string\n        }\n        Update: {\n          created_at?: string | null\n          display_order?: number | null\n          hotel_id?: string\n          id?: string\n          is_active?: boolean | null\n          title?: string | null\n          url?: string\n        }\n        Relationships: [\n          {\n            foreignKeyName: \"gallery_images_hotel_id_fkey\"\n            columns: [\"hotel_id\"]\n            isOneToOne: false\n            referencedRelation: \"hotels\"\n            referencedColumns: [\"id\"]\n          },\n        ]\n      }\n      guests: {\n        Row: {\n          created_at: string | null\n          hotel_id: string | null\n          id: string\n          loyalty_points: number | null\n          name: string\n          phone_number: string\n          total_spend: number | null\n          updated_at: string | null\n          visit_count: number | null\n        }\n        Insert: {\n          created_at?: string | null\n          hotel_id?: string | null\n          id?: string\n          loyalty_points?: number | null\n          name: string\n          phone_number: string\n          total_spend?: number | null\n          updated_at?: string | null\n          visit_count?: number | null\n        }\n        Update: {\n          created_at?: string | null\n          hotel_id?: string | null\n          id?: string\n          loyalty_points?: number | null\n          name?: string\n          phone_number?: string\n          total_spend?: number | null\n          updated_at?: string | null\n          visit_count?: number | null\n        }\n        Relationships: [\n          {\n            foreignKeyName: \"guests_hotel_id_fkey\"\n            columns: [\"hotel_id\"]\n            isOneToOne: false\n            referencedRelation: \"hotels\"\n            referencedColumns: [\"id\"]\n          },\n        ]\n      }\n      hotels: {\n        Row: {\n          ai_amenities: string | null\n          ai_checkin_policy: string | null\n          ai_custom_faq: string | null\n          ai_parking_info: string | null\n          ai_pet_smoking_policy: string | null\n          ai_wifi_info: string | null\n          bank_account_name: string | null\n          bank_account_number: string | null\n          bank_name: string | null\n          brand_color_primary: string | null\n          created_at: string | null\n          description: string | null\n          gallery_randomize: boolean | null\n          hero_image_url: string | null\n          id: string\n          logo_url: string | null\n          loyalty_milestone_threshold: number | null\n          naira_per_loyalty_point: number | null\n          name: string\n          slug: string\n          tagline: string | null\n          updated_at: string | null\n          whatsapp_number: string | null\n        }\n        Insert: {\n          ai_amenities?: string | null\n          ai_checkin_policy?: string | null\n          ai_custom_faq?: string | null\n          ai_parking_info?: string | null\n          ai_pet_smoking_policy?: string | null\n          ai_wifi_info?: string | null\n          bank_account_name?: string | null\n          bank_account_number?: string | null\n          bank_name?: string | null\n          brand_color_primary?: string | null\n          created_at?: string | null\n          description?: string | null\n          gallery_randomize?: boolean | null\n          hero_image_url?: string | null\n          id?: string\n          logo_url?: string | null\n          loyalty_milestone_threshold?: number | null\n          naira_per_loyalty_point?: number | null\n          name: string\n          slug: string\n          tagline?: string | null\n          updated_at?: string | null\n          whatsapp_number?: string | null\n        }\n        Update: {\n          ai_amenities?: string | null\n          ai_checkin_policy?: string | null\n          ai_custom_faq?: string | null\n          ai_parking_info?: string | null\n          ai_pet_smoking_policy?: string | null\n          ai_wifi_info?: string | null\n          bank_account_name?: string | null\n          bank_account_number?: string | null\n          bank_name?: string | null\n          brand_color_primary?: string | null\n          created_at?: string | null\n          description?: string | null\n          gallery_randomize?: boolean | null\n          hero_image_url?: string | null\n          id?: string\n          logo_url?: string | null\n          loyalty_milestone_threshold?: number | null\n          naira_per_loyalty_point?: number | null\n          name?: string\n          slug?: string\n          tagline?: string | null\n          updated_at?: string | null\n          whatsapp_number?: string | null\n        }\n        Relationships: []\n      }\n      menu_categories: {\n        Row: {\n          display_order: number | null\n          hotel_id: string | null\n          id: string\n          is_active: boolean | null\n          name: string\n          type: string | null\n        }\n        Insert: {\n          display_order?: number | null\n          hotel_id?: string | null\n          id?: string\n          is_active?: boolean | null\n          name: string\n          type?: string | null\n        }\n        Update: {\n          display_order?: number | null\n          hotel_id?: string | null\n          id?: string\n          is_active?: boolean | null\n          name?: string\n          type?: string | null\n        }\n        Relationships: [\n          {\n            foreignKeyName: \"menu_categories_hotel_id_fkey\"\n            columns: [\"hotel_id\"]\n            isOneToOne: false\n            referencedRelation: \"hotels\"\n            referencedColumns: [\"id\"]\n          },\n        ]\n      }\n      menu_items: {\n        Row: {\n          category_id: string | null\n          created_at: string | null\n          description: string | null\n          display_order: number | null\n          hotel_id: string | null\n          id: string\n          image_url: string | null\n          is_available: boolean | null\n          name: string\n          price: number\n          updated_at: string | null\n        }\n        Insert: {\n          category_id?: string | null\n          created_at?: string | null\n          description?: string | null\n          display_order?: number | null\n          hotel_id?: string | null\n          id?: string\n          image_url?: string | null\n          is_available?: boolean | null\n          name: string\n          price?: number\n          updated_at?: string | null\n        }\n        Update: {\n          category_id?: string | null\n          created_at?: string | null\n          description?: string | null\n          display_order?: number | null\n          hotel_id?: string | null\n          id?: string\n          image_url?: string | null\n          is_available?: boolean | null\n          name?: string\n          price?: number\n          updated_at?: string | null\n        }\n        Relationships: [\n          {\n            foreignKeyName: \"menu_items_category_id_fkey\"\n            columns: [\"category_id\"]\n            isOneToOne: false\n            referencedRelation: \"menu_categories\"\n            referencedColumns: [\"id\"]\n          },\n          {\n            foreignKeyName: \"menu_items_hotel_id_fkey\"\n            columns: [\"hotel_id\"]\n            isOneToOne: false\n            referencedRelation: \"hotels\"\n            referencedColumns: [\"id\"]\n          },\n        ]\n      }\n      order_items: {\n        Row: {\n          id: string\n          item_name: string\n          item_price: number\n          menu_item_id: string | null\n          order_id: string | null\n          quantity: number\n        }\n        Insert: {\n          id?: string\n          item_name: string\n          item_price: number\n          menu_item_id?: string | null\n          order_id?: string | null\n          quantity?: number\n        }\n        Update: {\n          id?: string\n          item_name?: string\n          item_price?: number\n          menu_item_id?: string | null\n          order_id?: string | null\n          quantity?: number\n        }\n        Relationships: [\n          {\n            foreignKeyName: \"order_items_menu_item_id_fkey\"\n            columns: [\"menu_item_id\"]\n            isOneToOne: false\n            referencedRelation: \"menu_items\"\n            referencedColumns: [\"id\"]\n          },\n          {\n            foreignKeyName: \"order_items_order_id_fkey\"\n            columns: [\"order_id\"]\n            isOneToOne: false\n            referencedRelation: \"orders\"\n            referencedColumns: [\"id\"]\n          },\n        ]\n      }\n      orders: {\n        Row: {\n          created_at: string | null\n          guest_name: string\n          hotel_id: string | null\n          id: string\n          order_number: string\n          payment_method: string | null\n          payment_screenshot_url: string | null\n          payment_status: string\n          room_or_table: string | null\n          special_instructions: string | null\n          status: string\n          stream: string | null\n          total_amount: number\n          updated_at: string | null\n        }\n        Insert: {\n          created_at?: string | null\n          guest_name: string\n          hotel_id?: string | null\n          id?: string\n          order_number?: string\n          payment_method?: string | null\n          payment_screenshot_url?: string | null\n          payment_status?: string\n          room_or_table?: string | null\n          special_instructions?: string | null\n          status?: string\n          stream?: string | null\n          total_amount?: number\n          updated_at?: string | null\n        }\n        Update: {\n          created_at?: string | null\n          guest_name?: string\n          hotel_id?: string | null\n          id?: string\n          order_number?: string\n          payment_method?: string | null\n          payment_screenshot_url?: string | null\n          payment_status?: string\n          room_or_table?: string | null\n          special_instructions?: string | null\n          status?: string\n          stream?: string | null\n          total_amount?: number\n          updated_at?: string | null\n        }\n        Relationships: [\n          {\n            foreignKeyName: \"orders_hotel_id_fkey\"\n            columns: [\"hotel_id\"]\n            isOneToOne: false\n            referencedRelation: \"hotels\"\n            referencedColumns: [\"id\"]\n          },\n        ]\n      }\n      push_subscriptions: {\n        Row: {\n          auth: string\n          created_at: string\n          endpoint: string\n          id: string\n          p256dh: string\n          user_id: string | null\n        }\n        Insert: {\n          auth: string\n          created_at?: string\n          endpoint: string\n          id?: string\n          p256dh: string\n          user_id?: string | null\n        }\n        Update: {\n          auth?: string\n          created_at?: string\n          endpoint?: string\n          id?: string\n          p256dh?: string\n          user_id?: string | null\n        }\n        Relationships: []\n      }\n      rooms: {\n        Row: {\n          amenities: string[] | null\n          created_at: string | null\n          description: string | null\n          display_order: number | null\n          hotel_id: string | null\n          id: string\n          images: string[] | null\n          is_available: boolean | null\n          is_featured: boolean | null\n          max_guests: number | null\n          name: string\n          price_per_night: number\n          size_sqm: number | null\n          slug: string\n          updated_at: string | null\n        }\n        Insert: {\n          amenities?: string[] | null\n          created_at?: string | null\n          description?: string | null\n          display_order?: number | null\n          hotel_id?: string | null\n          id?: string\n          images?: string[] | null\n          is_available?: boolean | null\n          is_featured?: boolean | null\n          max_guests?: number | null\n          name: string\n          price_per_night?: number\n          size_sqm?: number | null\n          slug: string\n          updated_at?: string | null\n        }\n        Update: {\n          amenities?: string[] | null\n          created_at?: string | null\n          description?: string | null\n          display_order?: number | null\n          hotel_id?: string | null\n          id?: string\n          images?: string[] | null\n          is_available?: boolean | null\n          is_featured?: boolean | null\n          max_guests?: number | null\n          name?: string\n          price_per_night?: number\n          size_sqm?: number | null\n          slug?: string\n          updated_at?: string | null\n        }\n        Relationships: [\n          {\n            foreignKeyName: \"rooms_hotel_id_fkey\"\n            columns: [\"hotel_id\"]\n            isOneToOne: false\n            referencedRelation: \"hotels\"\n            referencedColumns: [\"id\"]\n          },\n        ]\n      }\n      service_requests: {\n        Row: {\n          created_at: string | null\n          hotel_id: string | null\n          id: string\n          request_type: string\n          room_number: string\n          status: string | null\n          updated_at: string | null\n        }\n        Insert: {\n          created_at?: string | null\n          hotel_id?: string | null\n          id?: string\n          request_type: string\n          room_number: string\n          status?: string | null\n          updated_at?: string | null\n        }\n        Update: {\n          created_at?: string | null\n          hotel_id?: string | null\n          id?: string\n          request_type?: string\n          room_number?: string\n          status?: string | null\n          updated_at?: string | null\n        }\n        Relationships: [\n          {\n            foreignKeyName: \"service_requests_hotel_id_fkey\"\n            columns: [\"hotel_id\"]\n            isOneToOne: false\n            referencedRelation: \"hotels\"\n            referencedColumns: [\"id\"]\n          },\n        ]\n      }\n      site_settings: {\n        Row: {\n          hotel_id: string | null\n          id: string\n          setting_key: string\n          setting_value: Json\n        }\n        Insert: {\n          hotel_id?: string | null\n          id?: string\n          setting_key: string\n          setting_value: Json\n        }\n        Update: {\n          hotel_id?: string | null\n          id?: string\n          setting_key?: string\n          setting_value?: Json\n        }\n        Relationships: [\n          {\n            foreignKeyName: \"site_settings_hotel_id_fkey\"\n            columns: [\"hotel_id\"]\n            isOneToOne: false\n            referencedRelation: \"hotels\"\n            referencedColumns: [\"id\"]\n          },\n        ]\n      }\n      staff_users: {\n        Row: {\n          created_at: string\n          email: string\n          id: string\n          role: string\n          status: string\n        }\n        Insert: {\n          created_at?: string\n          email: string\n          id?: string\n          role: string\n          status?: string\n        }\n        Update: {\n          created_at?: string\n          email?: string\n          id?: string\n          role?: string\n          status?: string\n        }\n        Relationships: []\n      }\n    }\n    Views: {\n      [_ in never]: never\n    }\n    Functions: {\n      is_approved_staff: { Args: never; Returns: boolean }\n      is_dev_or_owner: { Args: never; Returns: boolean }\n    }\n    Enums: {\n      [_ in never]: never\n    }\n    CompositeTypes: {\n      [_ in never]: never\n    }\n  }\n}\n\ntype DatabaseWithoutInternals = Omit<Database, \"__InternalSupabase\">\n\ntype DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, \"public\">]\n\nexport type Tables<\n  DefaultSchemaTableNameOrOptions extends\n    | keyof (DefaultSchema[\"Tables\"] & DefaultSchema[\"Views\"])\n    | { schema: keyof DatabaseWithoutInternals },\n  TableName extends DefaultSchemaTableNameOrOptions extends {\n    schema: keyof DatabaseWithoutInternals\n  }\n    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions[\"schema\"]][\"Tables\"] &\n        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions[\"schema\"]][\"Views\"])\n    : never = never,\n> = DefaultSchemaTableNameOrOptions extends {\n  schema: keyof DatabaseWithoutInternals\n}\n  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions[\"schema\"]][\"Tables\"] &\n      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions[\"schema\"]][\"Views\"])[TableName] extends {\n      Row: infer R\n    }\n    ? R\n    : never\n  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema[\"Tables\"] &\n        DefaultSchema[\"Views\"])\n    ? (DefaultSchema[\"Tables\"] &\n        DefaultSchema[\"Views\"])[DefaultSchemaTableNameOrOptions] extends {\n        Row: infer R\n      }\n      ? R\n      : never\n    : never\n\nexport type TablesInsert<\n  DefaultSchemaTableNameOrOptions extends\n    | keyof DefaultSchema[\"Tables\"]\n    | { schema: keyof DatabaseWithoutInternals },\n  TableName extends DefaultSchemaTableNameOrOptions extends {\n    schema: keyof DatabaseWithoutInternals\n  }\n    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions[\"schema\"]][\"Tables\"]\n    : never = never,\n> = DefaultSchemaTableNameOrOptions extends {\n  schema: keyof DatabaseWithoutInternals\n}\n  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions[\"schema\"]][\"Tables\"][TableName] extends {\n      Insert: infer I\n    }\n    ? I\n    : never\n  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema[\"Tables\"]\n    ? DefaultSchema[\"Tables\"][DefaultSchemaTableNameOrOptions] extends {\n        Insert: infer I\n      }\n      ? I\n      : never\n    : never\n\nexport type TablesUpdate<\n  DefaultSchemaTableNameOrOptions extends\n    | keyof DefaultSchema[\"Tables\"]\n    | { schema: keyof DatabaseWithoutInternals },\n  TableName extends DefaultSchemaTableNameOrOptions extends {\n    schema: keyof DatabaseWithoutInternals\n  }\n    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions[\"schema\"]][\"Tables\"]\n    : never = never,\n> = DefaultSchemaTableNameOrOptions extends {\n  schema: keyof DatabaseWithoutInternals\n}\n  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions[\"schema\"]][\"Tables\"][TableName] extends {\n      Update: infer U\n    }\n    ? U\n    : never\n  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema[\"Tables\"]\n    ? DefaultSchema[\"Tables\"][DefaultSchemaTableNameOrOptions] extends {\n        Update: infer U\n      }\n      ? U\n      : never\n    : never\n\nexport type Enums<\n  DefaultSchemaEnumNameOrOptions extends\n    | keyof DefaultSchema[\"Enums\"]\n    | { schema: keyof DatabaseWithoutInternals },\n  EnumName extends DefaultSchemaEnumNameOrOptions extends {\n    schema: keyof DatabaseWithoutInternals\n  }\n    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions[\"schema\"]][\"Enums\"]\n    : never = never,\n> = DefaultSchemaEnumNameOrOptions extends {\n  schema: keyof DatabaseWithoutInternals\n}\n  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions[\"schema\"]][\"Enums\"][EnumName]\n  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema[\"Enums\"]\n    ? DefaultSchema[\"Enums\"][DefaultSchemaEnumNameOrOptions]\n    : never\n\nexport type CompositeTypes<\n  PublicCompositeTypeNameOrOptions extends\n    | keyof DefaultSchema[\"CompositeTypes\"]\n    | { schema: keyof DatabaseWithoutInternals },\n  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {\n    schema: keyof DatabaseWithoutInternals\n  }\n    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions[\"schema\"]][\"CompositeTypes\"]\n    : never = never,\n> = PublicCompositeTypeNameOrOptions extends {\n  schema: keyof DatabaseWithoutInternals\n}\n  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions[\"schema\"]][\"CompositeTypes\"][CompositeTypeName]\n  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema[\"CompositeTypes\"]\n    ? DefaultSchema[\"CompositeTypes\"][PublicCompositeTypeNameOrOptions]\n    : never\n\nexport const Constants = {\n  public: {\n    Enums: {},\n  },\n} as const\n"}
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
+
+export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.15"
+  }
+  public: {
+    Tables: {
+      bookings: {
+        Row: {
+          check_in: string
+          check_out: string
+          created_at: string | null
+          guest_email: string | null
+          guest_name: string
+          guest_phone: string
+          guests_count: number | null
+          hotel_id: string | null
+          id: string
+          payment_status: string
+          room_id: string | null
+          special_requests: string | null
+          status: string | null
+          total_amount: number
+          updated_at: string | null
+        }
+        Insert: {
+          check_in: string
+          check_out: string
+          created_at?: string | null
+          guest_email?: string | null
+          guest_name: string
+          guest_phone: string
+          guests_count?: number | null
+          hotel_id?: string | null
+          id?: string
+          payment_status?: string
+          room_id?: string | null
+          special_requests?: string | null
+          status?: string | null
+          total_amount: number
+          updated_at?: string | null
+        }
+        Update: {
+          check_in?: string
+          check_out?: string
+          created_at?: string | null
+          guest_email?: string | null
+          guest_name?: string
+          guest_phone?: string
+          guests_count?: number | null
+          hotel_id?: string | null
+          id?: string
+          payment_status?: string
+          room_id?: string | null
+          special_requests?: string | null
+          status?: string | null
+          total_amount?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_hotel_id_fkey"
+            columns: ["hotel_id"]
+            isOneToOne: false
+            referencedRelation: "hotels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customer_intercom_messages: {
+        Row: {
+          created_at: string
+          guest_name: string
+          hotel_id: string | null
+          id: string
+          is_read: boolean | null
+          message: string
+          requires_human: boolean | null
+          room_or_table: string | null
+          sender_role: string | null
+          sender_type: string
+          session_id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          guest_name: string
+          hotel_id?: string | null
+          id?: string
+          is_read?: boolean | null
+          message: string
+          requires_human?: boolean | null
+          room_or_table?: string | null
+          sender_role?: string | null
+          sender_type: string
+          session_id: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          guest_name?: string
+          hotel_id?: string | null
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          requires_human?: boolean | null
+          room_or_table?: string | null
+          sender_role?: string | null
+          sender_type?: string
+          session_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_intercom_messages_hotel_id_fkey"
+            columns: ["hotel_id"]
+            isOneToOne: false
+            referencedRelation: "hotels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      feedback: {
+        Row: {
+          category: string
+          comments: string | null
+          created_at: string | null
+          guest_email: string | null
+          guest_name: string | null
+          hotel_id: string | null
+          id: string
+          rating: number
+        }
+        Insert: {
+          category: string
+          comments?: string | null
+          created_at?: string | null
+          guest_email?: string | null
+          guest_name?: string | null
+          hotel_id?: string | null
+          id?: string
+          rating: number
+        }
+        Update: {
+          category?: string
+          comments?: string | null
+          created_at?: string | null
+          guest_email?: string | null
+          guest_name?: string | null
+          hotel_id?: string | null
+          id?: string
+          rating?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feedback_hotel_id_fkey"
+            columns: ["hotel_id"]
+            isOneToOne: false
+            referencedRelation: "hotels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      gallery_images: {
+        Row: {
+          created_at: string | null
+          display_order: number | null
+          hotel_id: string
+          id: string
+          is_active: boolean | null
+          title: string | null
+          url: string
+        }
+        Insert: {
+          created_at?: string | null
+          display_order?: number | null
+          hotel_id: string
+          id?: string
+          is_active?: boolean | null
+          title?: string | null
+          url: string
+        }
+        Update: {
+          created_at?: string | null
+          display_order?: number | null
+          hotel_id?: string
+          id?: string
+          is_active?: boolean | null
+          title?: string | null
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gallery_images_hotel_id_fkey"
+            columns: ["hotel_id"]
+            isOneToOne: false
+            referencedRelation: "hotels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      guests: {
+        Row: {
+          created_at: string | null
+          hotel_id: string | null
+          id: string
+          loyalty_points: number | null
+          name: string
+          phone_number: string
+          total_spend: number | null
+          updated_at: string | null
+          visit_count: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          hotel_id?: string | null
+          id?: string
+          loyalty_points?: number | null
+          name: string
+          phone_number: string
+          total_spend?: number | null
+          updated_at?: string | null
+          visit_count?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          hotel_id?: string | null
+          id?: string
+          loyalty_points?: number | null
+          name?: string
+          phone_number?: string
+          total_spend?: number | null
+          updated_at?: string | null
+          visit_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guests_hotel_id_fkey"
+            columns: ["hotel_id"]
+            isOneToOne: false
+            referencedRelation: "hotels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hotels: {
+        Row: {
+          ai_amenities: string | null
+          ai_checkin_policy: string | null
+          ai_custom_faq: string | null
+          ai_parking_info: string | null
+          ai_pet_smoking_policy: string | null
+          ai_wifi_info: string | null
+          bank_account_name: string | null
+          bank_account_number: string | null
+          bank_name: string | null
+          brand_color_primary: string | null
+          created_at: string | null
+          description: string | null
+          gallery_randomize: boolean | null
+          hero_image_url: string | null
+          id: string
+          logo_url: string | null
+          loyalty_milestone_threshold: number | null
+          naira_per_loyalty_point: number | null
+          name: string
+          slug: string
+          tagline: string | null
+          updated_at: string | null
+          whatsapp_number: string | null
+        }
+        Insert: {
+          ai_amenities?: string | null
+          ai_checkin_policy?: string | null
+          ai_custom_faq?: string | null
+          ai_parking_info?: string | null
+          ai_pet_smoking_policy?: string | null
+          ai_wifi_info?: string | null
+          bank_account_name?: string | null
+          bank_account_number?: string | null
+          bank_name?: string | null
+          brand_color_primary?: string | null
+          created_at?: string | null
+          description?: string | null
+          gallery_randomize?: boolean | null
+          hero_image_url?: string | null
+          id?: string
+          logo_url?: string | null
+          loyalty_milestone_threshold?: number | null
+          naira_per_loyalty_point?: number | null
+          name: string
+          slug: string
+          tagline?: string | null
+          updated_at?: string | null
+          whatsapp_number?: string | null
+        }
+        Update: {
+          ai_amenities?: string | null
+          ai_checkin_policy?: string | null
+          ai_custom_faq?: string | null
+          ai_parking_info?: string | null
+          ai_pet_smoking_policy?: string | null
+          ai_wifi_info?: string | null
+          bank_account_name?: string | null
+          bank_account_number?: string | null
+          bank_name?: string | null
+          brand_color_primary?: string | null
+          created_at?: string | null
+          description?: string | null
+          gallery_randomize?: boolean | null
+          hero_image_url?: string | null
+          id?: string
+          logo_url?: string | null
+          loyalty_milestone_threshold?: number | null
+          naira_per_loyalty_point?: number | null
+          name?: string
+          slug?: string
+          tagline?: string | null
+          updated_at?: string | null
+          whatsapp_number?: string | null
+        }
+        Relationships: []
+      }
+      menu_categories: {
+        Row: {
+          display_order: number | null
+          hotel_id: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          type: string | null
+        }
+        Insert: {
+          display_order?: number | null
+          hotel_id?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          type?: string | null
+        }
+        Update: {
+          display_order?: number | null
+          hotel_id?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "menu_categories_hotel_id_fkey"
+            columns: ["hotel_id"]
+            isOneToOne: false
+            referencedRelation: "hotels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      menu_items: {
+        Row: {
+          category_id: string | null
+          created_at: string | null
+          description: string | null
+          display_order: number | null
+          hotel_id: string | null
+          id: string
+          image_url: string | null
+          is_available: boolean | null
+          name: string
+          price: number
+          updated_at: string | null
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          hotel_id?: string | null
+          id?: string
+          image_url?: string | null
+          is_available?: boolean | null
+          name: string
+          price?: number
+          updated_at?: string | null
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          hotel_id?: string | null
+          id?: string
+          image_url?: string | null
+          is_available?: boolean | null
+          name?: string
+          price?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "menu_items_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "menu_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menu_items_hotel_id_fkey"
+            columns: ["hotel_id"]
+            isOneToOne: false
+            referencedRelation: "hotels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      order_items: {
+        Row: {
+          id: string
+          item_name: string
+          item_price: number
+          menu_item_id: string | null
+          order_id: string | null
+          quantity: number
+        }
+        Insert: {
+          id?: string
+          item_name: string
+          item_price: number
+          menu_item_id?: string | null
+          order_id?: string | null
+          quantity?: number
+        }
+        Update: {
+          id?: string
+          item_name?: string
+          item_price?: number
+          menu_item_id?: string | null
+          order_id?: string | null
+          quantity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_menu_item_id_fkey"
+            columns: ["menu_item_id"]
+            isOneToOne: false
+            referencedRelation: "menu_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          created_at: string | null
+          guest_name: string
+          hotel_id: string | null
+          id: string
+          order_number: string
+          payment_method: string | null
+          payment_screenshot_url: string | null
+          payment_status: string
+          room_or_table: string | null
+          special_instructions: string | null
+          status: string
+          stream: string | null
+          total_amount: number
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          guest_name: string
+          hotel_id?: string | null
+          id?: string
+          order_number?: string
+          payment_method?: string | null
+          payment_screenshot_url?: string | null
+          payment_status?: string
+          room_or_table?: string | null
+          special_instructions?: string | null
+          status?: string
+          stream?: string | null
+          total_amount?: number
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          guest_name?: string
+          hotel_id?: string | null
+          id?: string
+          order_number?: string
+          payment_method?: string | null
+          payment_screenshot_url?: string | null
+          payment_status?: string
+          room_or_table?: string | null
+          special_instructions?: string | null
+          status?: string
+          stream?: string | null
+          total_amount?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_hotel_id_fkey"
+            columns: ["hotel_id"]
+            isOneToOne: false
+            referencedRelation: "hotels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      push_subscriptions: {
+        Row: {
+          auth: string
+          created_at: string
+          endpoint: string
+          id: string
+          p256dh: string
+          user_id: string | null
+        }
+        Insert: {
+          auth: string
+          created_at?: string
+          endpoint: string
+          id?: string
+          p256dh: string
+          user_id?: string | null
+        }
+        Update: {
+          auth?: string
+          created_at?: string
+          endpoint?: string
+          id?: string
+          p256dh?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      rooms: {
+        Row: {
+          amenities: string[] | null
+          created_at: string | null
+          description: string | null
+          display_order: number | null
+          hotel_id: string | null
+          id: string
+          images: string[] | null
+          is_available: boolean | null
+          is_featured: boolean | null
+          max_guests: number | null
+          name: string
+          price_per_night: number
+          size_sqm: number | null
+          slug: string
+          updated_at: string | null
+        }
+        Insert: {
+          amenities?: string[] | null
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          hotel_id?: string | null
+          id?: string
+          images?: string[] | null
+          is_available?: boolean | null
+          is_featured?: boolean | null
+          max_guests?: number | null
+          name: string
+          price_per_night?: number
+          size_sqm?: number | null
+          slug: string
+          updated_at?: string | null
+        }
+        Update: {
+          amenities?: string[] | null
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          hotel_id?: string | null
+          id?: string
+          images?: string[] | null
+          is_available?: boolean | null
+          is_featured?: boolean | null
+          max_guests?: number | null
+          name?: string
+          price_per_night?: number
+          size_sqm?: number | null
+          slug?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rooms_hotel_id_fkey"
+            columns: ["hotel_id"]
+            isOneToOne: false
+            referencedRelation: "hotels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_requests: {
+        Row: {
+          created_at: string | null
+          hotel_id: string | null
+          id: string
+          request_type: string
+          room_number: string
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          hotel_id?: string | null
+          id?: string
+          request_type: string
+          room_number: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          hotel_id?: string | null
+          id?: string
+          request_type?: string
+          room_number?: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_requests_hotel_id_fkey"
+            columns: ["hotel_id"]
+            isOneToOne: false
+            referencedRelation: "hotels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      site_settings: {
+        Row: {
+          hotel_id: string | null
+          id: string
+          setting_key: string
+          setting_value: Json
+        }
+        Insert: {
+          hotel_id?: string | null
+          id?: string
+          setting_key: string
+          setting_value: Json
+        }
+        Update: {
+          hotel_id?: string | null
+          id?: string
+          setting_key?: string
+          setting_value?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "site_settings_hotel_id_fkey"
+            columns: ["hotel_id"]
+            isOneToOne: false
+            referencedRelation: "hotels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      staff_users: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          role: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          role: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          role?: string
+          status?: string
+        }
+        Relationships: []
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      is_approved_staff: { Args: never; Returns: boolean }
+      is_dev_or_owner: { Args: never; Returns: boolean }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
+}
+
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
+
+export const Constants = {
+  public: {
+    Enums: {},
+  },
+} as const
