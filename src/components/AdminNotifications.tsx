@@ -54,7 +54,7 @@ export default function AdminNotifications() {
 
       const { data: pendingChats } = await supabase
         .from('customer_intercom_messages')
-        .select('id, guest_name, room_or_table, created_at')
+        .select('id, session_id, guest_name, room_or_table, created_at')
         .eq('hotel_id', hotel.id)
         .eq('requires_human', true);
 
@@ -65,7 +65,7 @@ export default function AdminNotifications() {
         .eq('status', 'pending');
 
       // We only want to show unique sessions for chats
-      const uniquePendingChats = pendingChats ? Array.from(new Map(pendingChats.map(item => [item.guest_name, item])).values()) : [];
+      const uniquePendingChats = pendingChats ? Array.from(new Map(pendingChats.map(item => [item.session_id, item])).values()) : [];
 
       const notifs: any[] = [];
       
