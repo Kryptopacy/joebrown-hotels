@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { BedDouble, CheckCircle2, XCircle, Search, Edit, Plus, X, Trash2 } from 'lucide-react';
+import { BedDouble, CheckCircle2, XCircle, Search, Edit, Plus, X, Trash2, ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ImageUpload from '@/components/admin/ImageUpload';
 
@@ -206,6 +206,25 @@ export default function AdminRoomsPage() {
     const newImages = [...formData.images];
     newImages.splice(index, 1);
     setFormData({ ...formData, images: newImages });
+  };
+
+  const moveImage = (index: number, direction: 'left' | 'right') => {
+    const newImages = [...formData.images];
+    const targetIndex = direction === 'left' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= newImages.length) return;
+    const temp = newImages[index];
+    newImages[index] = newImages[targetIndex];
+    newImages[targetIndex] = temp;
+    setFormData({ ...formData, images: newImages });
+  };
+
+  const makeCoverImage = (index: number) => {
+    if (index === 0) return;
+    const newImages = [...formData.images];
+    const selected = newImages.splice(index, 1)[0];
+    newImages.unshift(selected);
+    setFormData({ ...formData, images: newImages });
+    toast.success('Set as primary cover photo');
   };
 
   const deleteRoom = async (id: string) => {
@@ -465,15 +484,67 @@ export default function AdminRoomsPage() {
                 </div>
 
                 {formData.images.length > 0 && (
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-                    {formData.images.map((img, idx) => (
-                      <div key={idx} className="relative aspect-video rounded-lg overflow-hidden border border-white/10 shadow-sm group">
-                        <img src={img} alt="Room preview" className="w-full h-full object-cover" />
-                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <button type="button" onClick={() => removeImage(idx)} className="bg-brown-500/200 text-white p-2 rounded hover:bg-red-600"><Trash2 size={16} /></button>
+                  <div className="space-y-3 mt-6">
+                    <div className="flex items-center justify-between text-xs text-white/50">
+                      <span>The 1st photo is automatically the <strong>Primary Cover Image</strong> across the website.</span>
+                      <span>{formData.images.length} photo{formData.images.length > 1 ? 's' : ''} uploaded</span>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {formData.images.map((img, idx) => (
+                        <div key={idx} className={`relative aspect-video rounded-xl overflow-hidden border ${idx === 0 ? 'border-[#D4A373] ring-2 ring-[#D4A373]/30' : 'border-white/10'} shadow-sm group bg-white/5`}>
+                          <img src={img} alt={`Room preview ${idx + 1}`} className="w-full h-full object-cover" />
+                          
+                          {idx === 0 && (
+                            <div className="absolute top-2 left-2 bg-[#D4A373] text-[#1A0A02] text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-md z-10 flex items-center gap-1">
+                              <Star size={10} className="fill-current" /> Cover
+                            </div>
+                          )}
+
+                          <div className="absolute inset-0 bg-black/75 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-2 z-20">
+                            <div className="flex items-center gap-1.5">
+                              {idx > 0 && (
+                                <button 
+                                  type="button" 
+                                  onClick={() => moveImage(idx, 'left')} 
+                                  title="Move Left" 
+                                  className="bg-white/20 hover:bg-white/40 text-white p-1.5 rounded-lg transition-colors"
+                                >
+                                  <ChevronLeft size={14} />
+                                </button>
+                              )}
+                              {idx !== 0 && (
+                                <button 
+                                  type="button" 
+                                  onClick={() => makeCoverImage(idx)} 
+                                  title="Set as Main Cover Photo" 
+                                  className="bg-[#D4A373] hover:bg-[#b45309] text-[#1A0A02] p-1.5 rounded-lg font-bold transition-colors flex items-center gap-1 text-[11px]"
+                                >
+                                  <Star size={12} />
+                                </button>
+                              )}
+                              {idx < formData.images.length - 1 && (
+                                <button 
+                                  type="button" 
+                                  onClick={() => moveImage(idx, 'right')} 
+                                  title="Move Right" 
+                                  className="bg-white/20 hover:bg-white/40 text-white p-1.5 rounded-lg transition-colors"
+                                >
+                                  <ChevronRight size={14} />
+                                </button>
+                              )}
+                            </div>
+                            <button 
+                              type="button" 
+                              onClick={() => removeImage(idx)} 
+                              title="Delete Photo" 
+                              className="bg-red-500/80 hover:bg-red-600 text-white px-2.5 py-1 rounded-lg text-xs flex items-center gap-1 transition-colors"
+                            >
+                              <Trash2 size={12} /> Remove
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
