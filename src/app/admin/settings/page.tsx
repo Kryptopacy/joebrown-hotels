@@ -346,7 +346,7 @@ export default function AdminSettingsPage() {
             <KbField
               icon={ParkingCircle}
               label="Parking Information"
-              placeholder="e.g. Complimentary parking is available for all hotel guests in the basement car park. Valet parking is available at the main entrance for ₦2,000 per day."
+              placeholder="e.g. Complimentary secure on-site parking is available for all hotel and lounge guests 24/7."
               hint="Parking availability, charges, and location."
               value={kb.ai_parking_info}
               onChange={v => setKb({ ...kb, ai_parking_info: v })}
@@ -362,7 +362,7 @@ export default function AdminSettingsPage() {
             <KbField
               icon={Sparkles}
               label="Amenities & Facilities"
-              placeholder="e.g. We offer a rooftop pool (open 7 AM – 9 PM), a fully equipped gym, a business centre, a spa with appointment-based services, and 24-hour room service."
+              placeholder="e.g. We offer complimentary secure parking, an on-site guest laundromat, 24-hour security, 24-hour room service, and a stylish restaurant & lounge featuring a championship pool table and lounge games. Note: We do not have a swimming pool or fitness center."
               hint="Describe your facilities so the AI can confidently answer amenity questions."
               value={kb.ai_amenities}
               onChange={v => setKb({ ...kb, ai_amenities: v })}

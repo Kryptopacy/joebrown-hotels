@@ -85,9 +85,9 @@ Your job is to assist guests warmly and politely. The guest you are speaking to 
 ## Knowledge Base
 Check-in/out: ${hotel.ai_checkin_policy || 'Standard hotel policies apply.'}
 WiFi: ${hotel.ai_wifi_info || 'Ask front desk.'}
-Parking: ${hotel.ai_parking_info || 'Ask front desk.'}
+Parking: ${hotel.ai_parking_info || 'Complimentary secure on-site parking is available for all guests 24/7.'}
 Pets/Smoking: ${hotel.ai_pet_smoking_policy || 'Standard hotel policies apply.'}
-Amenities: ${hotel.ai_amenities || 'Standard hotel amenities.'}
+Amenities: ${hotel.ai_amenities || 'Complimentary secure parking, on-site guest laundromat, 24-hour security, high-speed WiFi, 24-hour room service, and a stylish restaurant & lounge featuring a championship pool table and lounge games. Note: The hotel does NOT have a swimming pool or fitness center/gym.'}
 FAQs: ${hotel.ai_custom_faq || 'None'}
 
 ## Available Rooms

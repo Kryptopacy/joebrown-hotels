@@ -18,7 +18,7 @@ import WhatsAppButton from '@/components/WhatsAppButton';
 import CustomerIntercom from '@/components/CustomerIntercom';
 import RoomCardCarousel from '@/components/RoomCardCarousel';
 import PremiumGallery from '@/components/PremiumGallery';
-import { BedDouble, Calendar, Users, ArrowRight, Award, CheckCircle2, Utensils, ShieldCheck, Dumbbell, Waves } from 'lucide-react';
+import { BedDouble, Calendar, Users, ArrowRight, Award, CheckCircle2, Utensils, ShieldCheck, Gamepad2, Car } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 
 
@@ -188,30 +188,30 @@ export default async function LandingPage({
               </div>
             </div>
 
-            {/* Card 3: Fitness Center */}
+            {/* Card 3: Lounge Games & Billiards */}
             <div className="bg-[#1A0A02] rounded-[2rem] text-center flex flex-col items-center border border-[#5D3A1A]/40 shadow-2xl transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(212,163,115,0.15)] hover:border-[#D4A373]/50 relative overflow-hidden pb-10 group">
               <div className="absolute top-0 left-0 right-0 h-[120px] bg-[#0D0501] rounded-b-[100%] scale-x-150 origin-top border-b border-[#5D3A1A]/30 transition-colors group-hover:border-[#D4A373]/30"></div>
               <div className="relative z-10 w-[100px] h-[100px] bg-[#1A0A02] rounded-full flex items-center justify-center mt-[70px] mb-6 border-[6px] border-[#1A0A02] mx-auto shadow-[0_10px_30px_rgba(0,0,0,0.5)] group-hover:shadow-[0_10px_30px_rgba(212,163,115,0.15)] transition-shadow duration-300">
-                <Dumbbell size={40} className="text-[#D4A373] group-hover:scale-110 transition-transform duration-300" strokeWidth={1.5} />
+                <Gamepad2 size={40} className="text-[#D4A373] group-hover:scale-110 transition-transform duration-300" strokeWidth={1.5} />
               </div>
               <div className="relative z-10 px-8">
-                <h3 className="text-2xl font-serif text-white mb-4 group-hover:text-[#D4A373] transition-colors">Fitness Center</h3>
+                <h3 className="text-2xl font-serif text-white mb-4 group-hover:text-[#D4A373] transition-colors">Lounge & Games</h3>
                 <p className="text-[#A1887F] text-sm leading-relaxed font-light">
-                  Stay active during your trip with our modern fitness center equipped with premium machines and trainers.
+                  Unwind in our vibrant lounge featuring a championship pool table, games, and a warm ambiance for socializing.
                 </p>
               </div>
             </div>
 
-            {/* Card 4: Swimming Pool */}
+            {/* Card 4: Free Parking & Laundromat */}
             <div className="bg-[#1A0A02] rounded-[2rem] text-center flex flex-col items-center border border-[#5D3A1A]/40 shadow-2xl transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(212,163,115,0.15)] hover:border-[#D4A373]/50 relative overflow-hidden pb-10 group">
               <div className="absolute top-0 left-0 right-0 h-[120px] bg-[#0D0501] rounded-b-[100%] scale-x-150 origin-top border-b border-[#5D3A1A]/30 transition-colors group-hover:border-[#D4A373]/30"></div>
               <div className="relative z-10 w-[100px] h-[100px] bg-[#1A0A02] rounded-full flex items-center justify-center mt-[70px] mb-6 border-[6px] border-[#1A0A02] mx-auto shadow-[0_10px_30px_rgba(0,0,0,0.5)] group-hover:shadow-[0_10px_30px_rgba(212,163,115,0.15)] transition-shadow duration-300">
-                <Waves size={40} className="text-[#D4A373] group-hover:scale-110 transition-transform duration-300" strokeWidth={1.5} />
+                <Car size={40} className="text-[#D4A373] group-hover:scale-110 transition-transform duration-300" strokeWidth={1.5} />
               </div>
               <div className="relative z-10 px-8">
-                <h3 className="text-2xl font-serif text-white mb-4 group-hover:text-[#D4A373] transition-colors">Swimming Pool</h3>
+                <h3 className="text-2xl font-serif text-white mb-4 group-hover:text-[#D4A373] transition-colors">Free Parking & Laundry</h3>
                 <p className="text-[#A1887F] text-sm leading-relaxed font-light">
-                  Relax and unwind in our crystal-clear swimming pool, perfect for leisure, fun, and refreshing moments.
+                  Enjoy complimentary secure on-site parking and convenient access to our modern guest laundromat.
                 </p>
               </div>
             </div>
