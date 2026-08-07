@@ -89,6 +89,7 @@ export default function AdminSettingsPage() {
     description: '',
     address: '',
     whatsapp_number: '',
+    is_desk_online: true,
   });
 
   /* ── Payment / bank ── */
@@ -127,6 +128,7 @@ export default function AdminSettingsPage() {
         description: data.description || '',
         address: data.address || '',
         whatsapp_number: data.whatsapp_number || '',
+        is_desk_online: data.is_desk_online ?? true,
       });
       setPayment({
         bank_name: data.bank_name || '',
@@ -249,12 +251,35 @@ export default function AdminSettingsPage() {
             <Field label="Full Description" hint="Shown on the public landing page." >
               <textarea rows={3} className={textareaCls} value={core.description} onChange={e => setCore({ ...core, description: e.target.value })} placeholder="Tell guests about the experience at your property…" />
             </Field>
-            <div className="space-y-5">
-              <Field label="Physical Address" hint="Shown in the footer and booking confirmation emails.">
-                <textarea rows={3} className={textareaCls} value={core.address} onChange={e => setCore({ ...core, address: e.target.value })} placeholder="123 Ocean Drive, Victoria Island, Lagos" />
+            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-5">
+              <Field label="Address" hint="Physical location.">
+                <div className="relative">
+                  <MapPin size={16} className="absolute left-3 top-3.5 text-white/40" />
+                  <input className={`${inputCls} pl-10`} value={core.address} onChange={e => setCore({ ...core, address: e.target.value })} placeholder="123 Luxury Way" />
+                </div>
               </Field>
-              <Field label="WhatsApp Number" hint="Powers the floating WhatsApp widget and booking redirect.">
-                <input className={inputCls} value={core.whatsapp_number} onChange={e => setCore({ ...core, whatsapp_number: e.target.value })} placeholder="+2348012345678" />
+              <Field label="WhatsApp Number" hint="Format: +2348000000000">
+                <div className="relative">
+                  <Phone size={16} className="absolute left-3 top-3.5 text-white/40" />
+                  <input className={`${inputCls} pl-10`} value={core.whatsapp_number} onChange={e => setCore({ ...core, whatsapp_number: e.target.value })} placeholder="+234..." />
+                </div>
+              </Field>
+            </div>
+            
+            <div className="md:col-span-2 pt-4 border-t border-white/10">
+              <Field label="Live Human Desk Status" hint="Turn this off during night shifts. Guests will be informed that the human desk is offline and their request will be reviewed in the morning.">
+                <div className="flex items-center gap-4 mt-2">
+                  <button
+                    type="button"
+                    onClick={() => setCore({ ...core, is_desk_online: !core.is_desk_online })}
+                    className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors ${core.is_desk_online ? 'bg-[#D4A373]' : 'bg-white/20'}`}
+                  >
+                    <span className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${core.is_desk_online ? 'translate-x-6' : 'translate-x-1'}`} />
+                  </button>
+                  <span className="text-sm font-bold text-white">
+                    {core.is_desk_online ? 'Online (Accepting Handoffs)' : 'Offline (Night Mode)'}
+                  </span>
+                </div>
               </Field>
             </div>
           </div>

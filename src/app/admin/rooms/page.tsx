@@ -79,6 +79,23 @@ export default function AdminRoomsPage() {
     }
   };
 
+  const toggleCleaningStatus = async (id: string, currentStatus: string) => {
+    const newStatus = currentStatus === 'dirty' ? 'clean' : 'dirty';
+    setRooms(rooms.map(r => r.id === id ? { ...r, cleaning_status: newStatus } : r));
+    
+    const { error } = await supabase
+      .from('rooms')
+      .update({ cleaning_status: newStatus })
+      .eq('id', id);
+
+    if (error) {
+      toast.error('Failed to update cleaning status.');
+      setRooms(rooms.map(r => r.id === id ? { ...r, cleaning_status: currentStatus } : r));
+    } else {
+      toast.success(`Room marked as ${newStatus}`);
+    }
+  };
+
   const handleOpenModal = (room?: any) => {
     if (room) {
       setEditingRoom(room);
@@ -293,7 +310,8 @@ export default function AdminRoomsPage() {
               <th className="p-4 text-xs tracking-wider uppercase text-white/50 font-bold sticky left-0 bg-[#1A0A02] z-10 border-r border-white/10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] whitespace-nowrap">Room Info</th>
               <th className="p-4 text-xs tracking-wider uppercase text-white/50 font-bold">Price / Night</th>
               <th className="p-4 text-xs tracking-wider uppercase text-white/50 font-bold">Capacity</th>
-              <th className="p-4 text-xs tracking-wider uppercase text-white/50 font-bold text-center">Status</th>
+              <th className="p-4 text-xs tracking-wider uppercase text-white/50 font-bold text-center">Availability</th>
+              <th className="p-4 text-xs tracking-wider uppercase text-white/50 font-bold text-center">Cleaning</th>
               <th className="p-4 text-xs tracking-wider uppercase text-white/50 font-bold text-right">Actions</th>
             </tr>
           </thead>
@@ -340,6 +358,18 @@ export default function AdminRoomsPage() {
                     >
                       {room.is_available ? <CheckCircle2 size={14} /> : <XCircle size={14} />}
                       {room.is_available ? 'Available' : 'Hidden'}
+                    </button>
+                  </td>
+                  <td className="p-4 text-center">
+                    <button 
+                      onClick={() => toggleCleaningStatus(room.id, room.cleaning_status || 'clean')}
+                      className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold rounded-full border transition-all ${
+                        (!room.cleaning_status || room.cleaning_status === 'clean') 
+                          ? 'bg-white/10 text-white border-white/20 hover:bg-white/20' 
+                          : 'bg-brown-500/200/20 text-orange-300 border-orange-500/30 hover:bg-brown-500/200/30'
+                      }`}
+                    >
+                      {(!room.cleaning_status || room.cleaning_status === 'clean') ? 'Clean' : 'Dirty'}
                     </button>
                   </td>
                   <td className="p-4 text-right">

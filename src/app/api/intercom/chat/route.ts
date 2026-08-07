@@ -55,25 +55,29 @@ export async function POST(req: Request) {
     const currentGuestName = lastMessage.guest_name;
     const currentRoomOrTable = lastMessage.room_or_table;
 
-    // 3. Instant Keyword-Based Frustration Detection
+    // 3. Fetch Dynamic Knowledge Base and Settings
+    const { data: hotel } = await supabase.from('hotels').select('*').eq('id', hotelId).single();
+    if (!hotel) return NextResponse.json({ error: 'Hotel not found' }, { status: 404 });
+
+    const { data: rooms } = await supabase.from('rooms').select('name, price_per_night, slug').eq('hotel_id', hotelId);
+    const { data: menu } = await supabase.from('menu_items').select('name, price, is_available').eq('hotel_id', hotelId);
+
+    // 4. Instant Keyword-Based Frustration Detection
     const userMessageStr = lastMessage.message.toLowerCase();
     const frustrationKeywords = ['human', 'manager', 'person', 'angry', 'upset', 'complaint', 'stupid bot', 'real person', 'staff', 'help'];
     const seemsFrustrated = frustrationKeywords.some(kw => userMessageStr.includes(kw));
 
     if (seemsFrustrated) {
       await supabase.from('customer_intercom_messages').update({ requires_human: true }).eq('session_id', sessionId);
+      const msg = hotel.is_desk_online 
+        ? 'A staff member has been notified and will assist you shortly.' 
+        : 'Our human desk is currently offline (night mode), but a staff member will review your request as soon as they return.';
+      
       await supabase.from('customer_intercom_messages').insert({
-        hotel_id: hotelId, session_id: sessionId, guest_name: 'System', room_or_table: currentRoomOrTable, sender_type: 'system', message: 'A staff member has been notified and will assist you shortly.', requires_human: true
+        hotel_id: hotelId, session_id: sessionId, guest_name: 'System', room_or_table: currentRoomOrTable, sender_type: 'system', message: msg, requires_human: true
       });
-      return NextResponse.json({ status: 'handed_off', text: 'I am connecting you to a staff member right away.' });
+      return NextResponse.json({ status: 'handed_off', text: msg });
     }
-
-    // 4. Fetch Dynamic Knowledge Base
-    const { data: hotel } = await supabase.from('hotels').select('*').eq('id', hotelId).single();
-    const { data: rooms } = await supabase.from('rooms').select('name, price_per_night, slug').eq('hotel_id', hotelId);
-    const { data: menu } = await supabase.from('menu_items').select('name, price, is_available').eq('hotel_id', hotelId);
-
-    if (!hotel) return NextResponse.json({ error: 'Hotel not found' }, { status: 404 });
 
     const systemPrompt = `You are the AI Concierge for ${hotel.name}.
 Your job is to assist guests warmly and politely. The guest you are speaking to is currently identified as "${currentGuestName}", located at "${currentRoomOrTable}".
@@ -239,7 +243,9 @@ ${menu?.filter((m: any) => m.is_available).map((m: any) => `- ${m.name}: ₦${m.
         } 
         else if (fcStep.name === 'handoffToHuman') {
           await supabase.from('customer_intercom_messages').update({ requires_human: true }).eq('session_id', sessionId);
-          resultText = 'Successfully handed off to human. Tell the guest you have connected them to a staff member.';
+          resultText = hotel.is_desk_online 
+            ? 'Successfully handed off to human. Tell the guest you have connected them to a staff member.'
+            : 'Successfully handed off, but desk is offline. Tell the guest the human desk is currently offline and staff will review their request in the morning.';
         }
       } catch (err: any) {
         resultText = `Error executing tool: ${err.message}`;

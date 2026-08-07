@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Bell, ShoppingBag, Shield, BellRing, X } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
@@ -9,8 +9,34 @@ import { useHotel } from '@/contexts/HotelContext';
 export default function AdminNotifications() {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<any[]>([]);
+  const [activeFilter, setActiveFilter] = useState<'all' | 'order' | 'booking' | 'request' | 'chat'>('all');
+  const prevCountRef = useRef(0);
   const { hotel } = useHotel();
   const supabase = createClient();
+
+  const playChime = () => {
+    try {
+      if (typeof window === 'undefined') return;
+      const AudioContext = window.AudioContext || (window as unknown as { webkitAudioContext: typeof window.AudioContext }).webkitAudioContext;
+      if (!AudioContext) return;
+      const ctx = new AudioContext();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15);
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.4);
+    } catch {
+      // Ignore if autoplay blocked
+    }
+  };
 
   useEffect(() => {
     if (!hotel) return;
@@ -21,7 +47,7 @@ export default function AdminNotifications() {
       if (!user?.email) return;
 
       const { data: staff } = await supabase
-        .from('staff')
+        .from('staff_users')
         .select('role')
         .eq('email', user.email)
         .eq('hotel_id', hotel.id)
@@ -41,7 +67,7 @@ export default function AdminNotifications() {
         .eq('status', 'pending');
 
       const { data: pendingStaff } = await supabase
-        .from('staff')
+        .from('staff_users')
         .select('id, email, created_at')
         .eq('hotel_id', hotel.id)
         .eq('role', 'pending');
@@ -107,6 +133,11 @@ export default function AdminNotifications() {
       }
 
       notifs.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
+      
+      if (notifs.length > prevCountRef.current) {
+        playChime();
+      }
+      prevCountRef.current = notifs.length;
       setNotifications(notifs);
     };
 
@@ -116,7 +147,7 @@ export default function AdminNotifications() {
     const channel = supabase.channel('admin_notifications')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, fetchNotifications)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'service_requests' }, fetchNotifications)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'staff' }, fetchNotifications)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'staff_users' }, fetchNotifications)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'customer_intercom_messages' }, fetchNotifications)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, fetchNotifications)
       .subscribe();
@@ -131,6 +162,8 @@ export default function AdminNotifications() {
     if (type === 'staff') return <Shield size={16} className="text-emerald-600" />;
     return <BellRing size={16} className="text-blue-600" />;
   };
+
+  const filteredNotifications = notifications.filter(n => activeFilter === 'all' || n.type === activeFilter);
 
   return (
     <div className="relative z-50">
@@ -147,23 +180,46 @@ export default function AdminNotifications() {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-3 w-80 bg-white border border-brown-200 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh]">
-          <div className="flex items-center justify-between p-4 border-b border-brown-100 bg-brown-50/50">
-            <h3 className="font-serif font-bold text-slate-900 flex items-center gap-2">
-              <Bell size={18} className="text-brown-700" /> Notifications
-            </h3>
-            <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-slate-900">
-              <X size={18} />
-            </button>
+        <div className="absolute right-0 mt-3 w-[350px] bg-white border border-brown-200 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh]">
+          <div className="p-4 border-b border-brown-100 bg-brown-50/50">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-serif font-bold text-slate-900 flex items-center gap-2">
+                <Bell size={18} className="text-brown-700" /> Notifications
+              </h3>
+              <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-slate-900">
+                <X size={18} />
+              </button>
+            </div>
+            <div className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-1">
+              {[
+                { id: 'all', label: 'All' },
+                { id: 'order', label: 'Orders' },
+                { id: 'booking', label: 'Bookings' },
+                { id: 'request', label: 'Concierge' },
+                { id: 'chat', label: 'Intercom' }
+              ].map(f => (
+                <button
+                  key={f.id}
+                  onClick={() => setActiveFilter(f.id as any)}
+                  className={`px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap transition-colors ${
+                    activeFilter === f.id
+                      ? 'bg-brown-600 text-white'
+                      : 'bg-white text-slate-500 border border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
           </div>
           <div className="overflow-y-auto flex-1">
-            {notifications.length === 0 ? (
+            {filteredNotifications.length === 0 ? (
               <div className="p-8 text-center text-slate-500 text-sm">
-                No new notifications. You're all caught up!
+                No notifications in this category. You're all caught up!
               </div>
             ) : (
               <div className="divide-y divide-brown-100">
-                {notifications.map(n => (
+                {filteredNotifications.map(n => (
                   <Link 
                     href={n.link} 
                     key={n.id}

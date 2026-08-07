@@ -15,6 +15,7 @@ export default function AdminConciergePage() {
   const [requests, setRequests] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hotelId, setHotelId] = useState<string | null>(null);
+  const [staffId, setStaffId] = useState<string | null>(null);
   const supabase = createClient();
 
   const playChime = () => {
@@ -51,6 +52,11 @@ export default function AdminConciergePage() {
     if (hotelData) {
       setHotelId(hotelData.id);
       fetchRequests(hotelData.id);
+    }
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user?.email) {
+      const { data: staffData } = await supabase.from('staff_users').select('id').eq('email', user.email).maybeSingle();
+      if (staffData) setStaffId(staffData.id);
     }
   };
 
@@ -89,6 +95,17 @@ export default function AdminConciergePage() {
     setRequests(prev => prev.map(r => r.id === id ? { ...r, status: 'fulfilled' } : r));
     const { error } = await supabase.from('service_requests').update({ status: 'fulfilled' }).eq('id', id);
     if (!error) toast.success('Marked as fulfilled');
+  };
+
+  const claimRequest = async (id: string) => {
+    if (!staffId) return;
+    const { error } = await supabase.from('service_requests').update({ handled_by: staffId }).eq('id', id);
+    if (error) {
+      toast.error('Failed to claim request');
+    } else {
+      toast.success('Request claimed');
+      setRequests(prev => prev.map(r => r.id === id ? { ...r, handled_by: staffId } : r));
+    }
   };
 
   return (
@@ -136,10 +153,19 @@ export default function AdminConciergePage() {
                   </div>
                 </div>
                 
-                {req.status === 'pending' && (
+                {req.status === 'pending' && !req.handled_by && (
+                  <button 
+                    onClick={() => claimRequest(req.id)}
+                    className="self-start sm:self-center bg-[#D4A373] text-[#1A0A02] hover:bg-[#b45309] font-bold px-6 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2 text-sm border border-[#D4A373]/30"
+                  >
+                    Claim Request
+                  </button>
+                )}
+                
+                {req.status === 'pending' && req.handled_by && (
                   <button 
                     onClick={() => markFulfilled(req.id)}
-                    className="self-start sm:self-center bg-[#D4A373] text-[#1A0A02] hover:bg-[#b45309] font-bold px-6 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2 text-sm border border-[#D4A373]/30"
+                    className="self-start sm:self-center bg-brown-500/200/20 text-emerald-300 hover:bg-emerald-900/50 font-bold px-6 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2 text-sm border border-emerald-500/30"
                   >
                     <CheckCircle size={16} /> Mark Fulfilled
                   </button>

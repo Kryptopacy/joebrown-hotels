@@ -42,6 +42,7 @@ export default function AdminOrdersPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('all'); // Status tab
+  const [staffId, setStaffId] = useState<string | null>(null);
   const [deptTab, setDeptTab] = useState('all'); // Department tab
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [hotelId, setHotelId] = useState<string | null>(null);
@@ -112,6 +113,11 @@ export default function AdminOrdersPage() {
       setHotelId(hotelData.id);
       fetchOrders(hotelData.id);
     }
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user?.email) {
+      const { data: staffData } = await supabase.from('staff_users').select('id').eq('email', user.email).maybeSingle();
+      if (staffData) setStaffId(staffData.id);
+    }
   };
 
   const fetchOrders = async (hid: string) => {
@@ -144,6 +150,17 @@ export default function AdminOrdersPage() {
       toast.error('Failed to update payment status');
     } else {
       toast.success(`Payment marked as ${newStatus.replace('_', ' ')}`);
+    }
+  };
+
+  const claimOrder = async (orderId: string) => {
+    if (!staffId) return;
+    const { error } = await supabase.from('orders').update({ handled_by: staffId }).eq('id', orderId);
+    if (error) {
+      toast.error('Failed to claim order');
+    } else {
+      toast.success('Order claimed');
+      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, handled_by: staffId } : o));
     }
   };
 
@@ -282,28 +299,39 @@ export default function AdminOrdersPage() {
                       </span>
                     </td>
                     <td className="p-4 text-white font-serif font-bold">₦{Number(order.total_amount).toLocaleString()}</td>
-                    <td className="p-4">
-                      <select
-                        value={order.payment_status}
-                        onChange={e => updatePaymentStatus(order.id, e.target.value)}
-                        className={`text-xs font-bold appearance-none cursor-pointer w-full text-center py-1.5 px-2 rounded-full border transition-all hover:brightness-95 focus:outline-none ${getPaymentStatusColor(order.payment_status)}`}
-                      >
-                        {PAYMENT_STATUSES.map(s => (
-                          <option key={s} value={s} className="bg-[#0D0501] text-white capitalize">{s.replace('_', ' ')}</option>
-                        ))}
-                      </select>
+                    <td className="p-4 text-center">
+                      {order.handled_by ? (
+                        <div className="flex gap-2">
+                          <select
+                            value={order.payment_status}
+                            onChange={e => updatePaymentStatus(order.id, e.target.value)}
+                            className={`text-[10px] font-bold appearance-none cursor-pointer w-full text-center py-1 px-1 rounded border transition-all hover:brightness-95 focus:outline-none ${getPaymentStatusColor(order.payment_status)}`}
+                          >
+                            {PAYMENT_STATUSES.map(s => (
+                              <option key={s} value={s} className="bg-[#0D0501] text-white capitalize">{s.replace('_', ' ')}</option>
+                            ))}
+                          </select>
+                          <select
+                            value={order.status}
+                            onChange={e => updateOrderStatus(order.id, e.target.value)}
+                            className={`text-[10px] font-bold appearance-none cursor-pointer w-full text-center py-1 px-1 rounded border transition-all hover:brightness-95 focus:outline-none ${getOrderStatusColor(order.status)}`}
+                          >
+                            {ORDER_STATUSES.map(s => (
+                              <option key={s} value={s} className="bg-[#0D0501] text-white capitalize">{s}</option>
+                            ))}
+                          </select>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); claimOrder(order.id); }}
+                          className="bg-[#D4A373] hover:bg-[#b45309] text-[#1A0A02] text-[10px] font-bold py-1 px-3 rounded-full flex items-center justify-center gap-1 mx-auto transition-colors"
+                        >
+                          Claim
+                        </button>
+                      )}
                     </td>
-                    <td className="p-4">
-                      <select
-                        value={order.status}
-                        onChange={e => updateOrderStatus(order.id, e.target.value)}
-                        className={`text-xs font-bold appearance-none cursor-pointer w-full text-center py-1.5 px-2 rounded-full border transition-all hover:brightness-95 focus:outline-none ${getOrderStatusColor(order.status)}`}
-                      >
-                        {ORDER_STATUSES.map(s => (
-                          <option key={s} value={s} className="bg-[#0D0501] text-white capitalize">{s}</option>
-                        ))}
-                      </select>
-                    </td>
+                    {/* Empty cells since we merged status and payment */}
+                    <td className="p-4"></td>
                     <td className="p-4 text-white/50 font-medium text-xs whitespace-nowrap">
                       <div className="flex items-center gap-1"><Clock size={12} /> {formatTime(order.created_at)}</div>
                     </td>

@@ -77,7 +77,7 @@ export default function AdminBookingsPage() {
   };
 
   const fetchRooms = async (hid: string) => {
-    const { data } = await supabase.from('rooms').select('id, name, price_per_night').eq('hotel_id', hid);
+    const { data } = await supabase.from('rooms').select('id, name, price_per_night, cleaning_status').eq('hotel_id', hid);
     if (data) setRooms(data);
   };
 
@@ -85,7 +85,7 @@ export default function AdminBookingsPage() {
     setIsLoading(true);
     const { data, error } = await supabase
       .from('bookings')
-      .select('*, rooms(name)')
+      .select('*, rooms(name, cleaning_status)')
       .eq('hotel_id', hid)
       .order('check_in', { ascending: false });
       
@@ -94,12 +94,30 @@ export default function AdminBookingsPage() {
   };
 
   const updateStatus = async (id: string, newStatus: string) => {
+    if (newStatus === 'checked_in') {
+      const booking = bookings.find(b => b.id === id);
+      if (booking?.rooms?.cleaning_status === 'dirty') {
+        toast.error('Cannot check in: Room is currently marked as Dirty.');
+        return;
+      }
+    }
+
     setBookings(bookings.map(b => b.id === id ? { ...b, status: newStatus } : b));
     const { error } = await supabase.from('bookings').update({ status: newStatus }).eq('id', id);
     if (error) {
       toast.error('Failed to update booking status.');
     } else {
       toast.success(`Booking marked as ${newStatus.replace('_', ' ')}`);
+      
+      // If completed (checked out), mark room as dirty
+      if (newStatus === 'completed') {
+        const booking = bookings.find(b => b.id === id);
+        if (booking?.room_id) {
+          await supabase.from('rooms').update({ cleaning_status: 'dirty' }).eq('id', booking.room_id);
+          // Also update local state for the room so it reflects immediately for subsequent checks
+          setBookings(bookings.map(b => b.room_id === booking.room_id && b.rooms ? { ...b, rooms: { ...b.rooms, cleaning_status: 'dirty' } } : b));
+        }
+      }
     }
   };
 

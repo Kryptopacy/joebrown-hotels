@@ -37,6 +37,7 @@ export default function AdminIntercomPage() {
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
   const [guestMessages, setGuestMessages] = useState<any[]>([]);
   const [guestReplyText, setGuestReplyText] = useState('');
+  const [intercomStatusFilter, setIntercomStatusFilter] = useState<'active' | 'archived'>('active');
 
   // Staff Internal Intercom State
   const [staffDeptFilter, setStaffDeptFilter] = useState<'all' | 'front_desk' | 'lounge' | 'kitchen' | 'housekeeping'>('all');
@@ -44,6 +45,7 @@ export default function AdminIntercomPage() {
   const [staffInputText, setStaffInputText] = useState('');
   const [currentStaffName, setCurrentStaffName] = useState('Front Desk Duty Officer');
   const [currentRole, setCurrentRole] = useState<StaffRole>('receptionist');
+  const [staffId, setStaffId] = useState<string | null>(null);
 
   const guestMsgEndRef = useRef<HTMLDivElement>(null);
   const staffMsgEndRef = useRef<HTMLDivElement>(null);
@@ -57,11 +59,16 @@ export default function AdminIntercomPage() {
   const supabase = createClient();
 
   useEffect(() => {
-    async function initHotelId() {
+    async function initUserAndHotel() {
       const { data } = await supabase.from('hotels').select('id').eq('slug', 'joebrown').maybeSingle();
       if (data) setHotelId(data.id);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user?.email) {
+        const { data: staffData } = await supabase.from('staff_users').select('id').eq('email', user.email).maybeSingle();
+        if (staffData) setStaffId(staffData.id);
+      }
     }
-    initHotelId();
+    initUserAndHotel();
     fetchGuestThreads();
     fetchStaffMessages();
 
@@ -109,7 +116,12 @@ export default function AdminIntercomPage() {
       supabase.removeChannel(customerChannel);
       supabase.removeChannel(staffChannel);
     };
-  }, [supabase, activeSessionId]);
+  }, [supabase, activeSessionId]); // Note: activeSessionId here could be removed if we use functional state updates, but we'll leave it for now.
+
+  // Fetch threads when the tab filter changes
+  useEffect(() => {
+    fetchGuestThreads();
+  }, [intercomStatusFilter]);
 
   // Setup Presence for Typing Indicators
   useEffect(() => {
@@ -170,6 +182,7 @@ export default function AdminIntercomPage() {
     const { data } = await supabase
       .from('customer_intercom_messages')
       .select('*')
+      .eq('status', intercomStatusFilter)
       .order('created_at', { ascending: false });
 
     if (data) {
@@ -185,9 +198,11 @@ export default function AdminIntercomPage() {
             created_at: msg.created_at,
             unread: !msg.is_read && msg.sender_type === 'guest',
             requires_human: msg.requires_human || false,
+            handled_by: msg.handled_by
           };
-        } else if (msg.requires_human) {
-          sessionsMap[msg.session_id].requires_human = true;
+        } else {
+          if (msg.requires_human) sessionsMap[msg.session_id].requires_human = true;
+          if (msg.handled_by) sessionsMap[msg.session_id].handled_by = msg.handled_by;
         }
       });
       const threadsArray = Object.values(sessionsMap).sort((a: any, b: any) => {
@@ -259,6 +274,29 @@ export default function AdminIntercomPage() {
     };
     await supabase.from('customer_intercom_messages').insert(payload);
     toast.success('Handoff resolved, AI is back in control.');
+  };
+
+  const claimThread = async () => {
+    if (!activeSessionId || !staffId) return;
+    const { error } = await supabase.from('customer_intercom_messages').update({ handled_by: staffId }).eq('session_id', activeSessionId);
+    if (error) {
+      toast.error('Failed to claim thread');
+    } else {
+      toast.success('Thread claimed');
+      fetchGuestThreads();
+    }
+  };
+
+  const archiveThread = async () => {
+    if (!activeSessionId) return;
+    const { error } = await supabase.from('customer_intercom_messages').update({ status: 'archived' }).eq('session_id', activeSessionId);
+    if (error) {
+      toast.error('Failed to archive thread');
+    } else {
+      toast.success('Thread archived');
+      setActiveSessionId(null);
+      fetchGuestThreads();
+    }
   };
 
   const fetchStaffMessages = async () => {
@@ -422,7 +460,30 @@ export default function AdminIntercomPage() {
           <div className="border-r border-white/10 flex flex-col h-full bg-[#1A0A02]">
             <div className="p-4 border-b border-white/10 bg-[#1A0A02]">
               <h3 className="font-serif text-white font-bold text-base">Active Calls & Messages</h3>
-              <p className="text-xs text-white/50">Real-time guest inquiries</p>
+              <p className="text-xs text-white/50 mb-4">Real-time guest inquiries</p>
+              
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setIntercomStatusFilter('active')}
+                  className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-colors border ${
+                    intercomStatusFilter === 'active'
+                      ? 'bg-[#D4A373] text-[#1A0A02] border-[#D4A373]'
+                      : 'bg-[#0D0501] text-white/50 border-white/10 hover:border-white/20'
+                  }`}
+                >
+                  Active
+                </button>
+                <button
+                  onClick={() => setIntercomStatusFilter('archived')}
+                  className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-colors border ${
+                    intercomStatusFilter === 'archived'
+                      ? 'bg-white/20 text-white border-white/30'
+                      : 'bg-[#0D0501] text-white/50 border-white/10 hover:border-white/20'
+                  }`}
+                >
+                  Archived
+                </button>
+              </div>
             </div>
             <div className="flex-1 overflow-y-auto divide-y divide-white/5">
               {guestThreads.length === 0 ? (
@@ -450,11 +511,18 @@ export default function AdminIntercomPage() {
                         )}
                       </div>
                       <p className="text-xs text-white/60 line-clamp-1 mt-1">{t.last_message}</p>
-                      {t.requires_human && (
-                        <div className="mt-2 inline-flex items-center gap-1 text-[10px] uppercase tracking-widest font-bold bg-red-600 text-white px-2 py-0.5 rounded-full animate-pulse border border-red-400">
-                          <AlertCircle size={10} /> Human Assistance Req
-                        </div>
-                      )}
+                      <div className="flex gap-2 items-center flex-wrap">
+                        {t.requires_human && (
+                          <div className="mt-2 inline-flex items-center gap-1 text-[10px] uppercase tracking-widest font-bold bg-red-600 text-white px-2 py-0.5 rounded-full animate-pulse border border-red-400">
+                            <AlertCircle size={10} /> Human Assistance Req
+                          </div>
+                        )}
+                        {t.handled_by && (
+                          <div className="mt-2 inline-flex items-center gap-1 text-[10px] uppercase tracking-widest font-bold bg-emerald-600 text-white px-2 py-0.5 rounded-full">
+                            <CheckCircle size={10} /> Claimed
+                          </div>
+                        )}
+                      </div>
                     </div>
                     <span className="text-[10px] text-white/40 font-medium whitespace-nowrap">
                       {new Date(t.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -465,9 +533,10 @@ export default function AdminIntercomPage() {
             </div>
           </div>
 
-          {/* Active Conversation Desk */}
           <div className="md:col-span-2 flex flex-col h-full bg-[#0D0501]">
-            {activeSessionId ? (
+            {activeSessionId ? (() => {
+              const activeThread = guestThreads.find((t) => t.session_id === activeSessionId);
+              return (
               <>
                 <div className="p-4 border-b border-white/10 bg-[#1A0A02] flex justify-between items-center">
                   <div>
@@ -486,6 +555,14 @@ export default function AdminIntercomPage() {
                         className="text-xs bg-[#D4A373] hover:bg-[#b45309] text-[#1A0A02] px-3 py-1 rounded-full font-bold shadow-sm transition-colors"
                       >
                         Resolve Handoff (Return to AI)
+                      </button>
+                    )}
+                    {intercomStatusFilter === 'active' && (
+                      <button
+                        onClick={archiveThread}
+                        className="text-xs bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded-full font-bold shadow-sm transition-colors border border-white/20"
+                      >
+                        Archive Thread
                       </button>
                     )}
                     <span className="text-xs text-emerald-300 bg-brown-500/200/20 border border-emerald-500/30 px-3 py-1 rounded-full flex items-center gap-1 font-bold">
@@ -521,24 +598,32 @@ export default function AdminIntercomPage() {
                   <div ref={guestMsgEndRef} />
                 </div>
 
-                <div className="p-4 bg-[#0D0501] border-t border-white/10 flex gap-3">
-                  <input
-                    type="text"
-                    className="w-full bg-white/5 border border-white/10 focus:border-brown-500 text-white text-sm px-4 py-2.5 rounded-xl outline-none transition-all flex-1 shadow-sm"
-                    placeholder="Type reply to guest..."
-                    value={guestReplyText}
-                    onChange={(e) => setGuestReplyText(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && sendGuestReply()}
-                  />
-                  <button
-                    onClick={sendGuestReply}
-                    className="bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-6 rounded-xl transition-colors flex items-center gap-2 shadow-sm"
-                  >
-                    <Send size={16} /> Send Reply
-                  </button>
-                </div>
+                {activeThread?.handled_by ? (
+                  <div className="p-4 bg-[#0D0501] border-t border-white/10 flex gap-3">
+                    <input
+                      type="text"
+                      className="w-full bg-white/5 border border-white/10 focus:border-brown-500 text-white text-sm px-4 py-2.5 rounded-xl outline-none transition-all flex-1 shadow-sm"
+                      placeholder="Type reply to guest..."
+                      value={guestReplyText}
+                      onChange={(e) => setGuestReplyText(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && sendGuestReply()}
+                    />
+                    <button
+                      onClick={sendGuestReply}
+                      className="bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-6 rounded-xl transition-colors flex items-center gap-2 shadow-sm"
+                    >
+                      <Send size={16} /> Send Reply
+                    </button>
+                  </div>
+                ) : (
+                  <div className="p-4 bg-[#0D0501] border-t border-white/10 flex justify-center">
+                    <button onClick={claimThread} className="bg-[#D4A373] text-[#1A0A02] hover:bg-[#b45309] font-bold py-3 px-8 rounded-xl flex items-center gap-2 shadow-xl hover:scale-105 transition-transform">
+                      <Shield size={18} /> Claim Request to Reply
+                    </button>
+                  </div>
+                )}
               </>
-            ) : (
+            )})() : (
               <div className="flex-1 flex items-center justify-center text-white/40 font-medium text-sm">
                 Select a guest call thread from the left list.
               </div>
