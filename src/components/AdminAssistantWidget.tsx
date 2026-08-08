@@ -119,7 +119,7 @@ export default function AdminAssistantWidget() {
         className={`fixed bottom-6 right-6 z-50 p-4 bg-gradient-to-r from-brown-600 to-brown-500 text-white rounded-full shadow-2xl hover:shadow-brown-500/50 hover:scale-105 transition-all focus:outline-none ${isOpen ? 'hidden' : 'flex items-center gap-2'}`}
       >
         <Sparkles size={24} />
-        <span className="font-bold hidden md:inline">Ask AI</span>
+        <span className="font-bold hidden md:inline">JoeBrown AI</span>
       </button>
 
       {/* Assistant Modal */}
@@ -129,7 +129,7 @@ export default function AdminAssistantWidget() {
           <div className="flex items-center justify-between p-4 bg-gradient-to-r from-brown-900 to-[#3B1904] text-white">
             <div className="flex items-center gap-2">
               <Sparkles size={20} className="text-brown-400" />
-              <h3 className="font-serif font-bold text-lg">Staff Assistant</h3>
+              <h3 className="font-serif font-bold text-lg">JoeBrown AI</h3>
             </div>
             <button onClick={() => setIsOpen(false)} className="text-brown-200 hover:text-white transition-colors focus:outline-none">
               <X size={20} />
