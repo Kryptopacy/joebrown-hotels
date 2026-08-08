@@ -6,6 +6,8 @@ import { createClient } from '@/lib/supabase/client';
 import toast from 'react-hot-toast';
 import { StaffRole, ROLE_PERMISSIONS } from '@/lib/auth/rbac';
 import AdminPageHeader from '@/components/AdminPageHeader';
+import { Skeleton } from '@/components/ui/Skeleton';
+import { EmptyState } from '@/components/ui/EmptyState';
 
 interface StaffUser {
   id: string;
@@ -179,15 +181,15 @@ export default function AdminStaffPage() {
             <tbody className="divide-y divide-white/5">
               {isLoading ? (
                 [...Array(3)].map((_, i) => (
-                  <tr key={i} className="animate-pulse border-b border-white/10">
-                    <td className="p-4"><div className="h-4 bg-white/10 rounded w-48"></div></td>
-                    <td className="p-4"><div className="h-4 bg-white/10 rounded w-32"></div></td>
-                    <td className="p-4"><div className="h-4 bg-white/10 rounded w-24"></div></td>
-                    <td className="p-4"><div className="flex justify-end"><div className="w-8 h-8 bg-white/10 rounded-lg"></div></div></td>
+                  <tr key={i} className="border-b border-white/10">
+                    <td className="p-4"><Skeleton className="h-4 w-48" /></td>
+                    <td className="p-4"><Skeleton className="h-4 w-32" /></td>
+                    <td className="p-4"><Skeleton className="h-4 w-24" /></td>
+                    <td className="p-4"><div className="flex justify-end"><Skeleton className="w-8 h-8 rounded-lg" /></div></td>
                   </tr>
                 ))
               ) : approvedStaff.length === 0 ? (
-                 <tr><td colSpan={4} className="p-8 text-center text-white/50 font-medium">No approved staff found.</td></tr>
+                 <tr><td colSpan={4}><EmptyState icon={Shield} title="No Approved Staff" description="There are no approved staff members yet." /></td></tr>
               ) : (
                 approvedStaff.map(staff => (
                   <tr key={staff.id} className="hover:bg-white/5">

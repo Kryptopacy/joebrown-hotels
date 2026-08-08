@@ -5,6 +5,8 @@ import { createClient } from '@/lib/supabase/client';
 import { ShoppingBag, Search, User, Clock, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
 import toast from 'react-hot-toast';
 import AdminPageHeader from '@/components/AdminPageHeader';
+import { Skeleton } from '@/components/ui/Skeleton';
+import { EmptyState } from '@/components/ui/EmptyState';
 
 const ORDER_STATUSES = ['pending', 'confirmed', 'preparing', 'ready', 'delivered', 'cancelled'];
 const PAYMENT_STATUSES = ['unpaid', 'transfer_submitted', 'paid', 'refunded'];
@@ -267,20 +269,20 @@ export default function AdminOrdersPage() {
           <tbody className="divide-y divide-white/5">
             {isLoading ? (
               [...Array(6)].map((_, i) => (
-                <tr key={i} className="animate-pulse border-b border-white/10">
-                  <td className="p-4"><div className="h-4 bg-white/10 rounded w-16"></div></td>
-                  <td className="p-4"><div className="h-4 bg-white/10 rounded w-32 mb-1"></div><div className="h-3 bg-white/5 rounded w-24"></div></td>
-                  <td className="p-4"><div className="h-4 bg-white/10 rounded w-20"></div></td>
-                  <td className="p-4"><div className="h-6 w-6 bg-white/10 rounded-full mx-auto"></div></td>
-                  <td className="p-4"><div className="h-4 bg-white/10 rounded w-16"></div></td>
-                  <td className="p-4"><div className="h-6 bg-white/10 rounded-full w-24 mx-auto"></div></td>
-                  <td className="p-4"><div className="h-6 bg-white/10 rounded-full w-24 mx-auto"></div></td>
-                  <td className="p-4"><div className="h-4 bg-white/10 rounded w-24"></div></td>
-                  <td className="p-4"><div className="h-4 w-4 bg-white/10 rounded mx-auto"></div></td>
+                <tr key={i} className="border-b border-white/10">
+                  <td className="p-4"><Skeleton className="h-4 w-16" /></td>
+                  <td className="p-4"><Skeleton className="h-4 w-32 mb-1" /><Skeleton className="h-3 w-24" /></td>
+                  <td className="p-4"><Skeleton className="h-4 w-20" /></td>
+                  <td className="p-4"><Skeleton className="h-6 w-6 rounded-full mx-auto" /></td>
+                  <td className="p-4"><Skeleton className="h-4 w-16" /></td>
+                  <td className="p-4"><Skeleton className="h-6 w-24 rounded-full mx-auto" /></td>
+                  <td className="p-4"><Skeleton className="h-6 w-24 rounded-full mx-auto" /></td>
+                  <td className="p-4"><Skeleton className="h-4 w-24" /></td>
+                  <td className="p-4"><Skeleton className="h-4 w-4 rounded mx-auto" /></td>
                 </tr>
               ))
             ) : filtered.length === 0 ? (
-              <tr><td colSpan={9} className="p-8 text-center text-white/50 font-medium">No orders found.</td></tr>
+              <tr><td colSpan={9}><EmptyState icon={ShoppingBag} title="No Orders Found" description="There are no orders matching your current filters." /></td></tr>
             ) : (
               filtered.map(order => (
                 <React.Fragment key={order.id}>

@@ -7,6 +7,7 @@ import {
   Percent, DollarSign, Download, ArrowUpRight, ArrowDownRight, FileText
 } from 'lucide-react';
 import AdminPageHeader from '@/components/AdminPageHeader';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 const toYMD = (d: Date) => d.toISOString().split('T')[0];
@@ -194,6 +195,51 @@ export default function AnalyticsPage() {
     return ledgerEntries.filter(e => e.stream === ledgerFilter);
   }, [ledgerEntries, ledgerFilter]);
 
+  // ── Chart Data Calculation ───────────────────────────────────────────────────
+  const chartData = useMemo(() => {
+    if (!bookings.length && !orders.length) return [];
+    
+    const dataMap: Record<string, any> = {};
+    const d = new Date(periodStart);
+    for (let i = 0; i < daysInPeriod; i++) {
+      const dateStr = toYMD(d);
+      dataMap[dateStr] = {
+        date: dateStr,
+        displayDate: d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }),
+        roomRev: 0,
+        restRev: 0,
+        loungeRev: 0,
+        totalRev: 0,
+      };
+      d.setDate(d.getDate() + 1);
+    }
+
+    bookings.forEach(b => {
+      const dStr = b.created_at.split('T')[0];
+      if (dataMap[dStr] && b.status !== 'cancelled') {
+        dataMap[dStr].roomRev += Number(b.total_amount || 0);
+        dataMap[dStr].totalRev += Number(b.total_amount || 0);
+      }
+    });
+
+    orders.forEach(o => {
+      if (o.payment_status === 'paid') {
+        const dStr = o.created_at.split('T')[0];
+        if (dataMap[dStr]) {
+          const stream = o.stream || 'restaurant';
+          let amt = 0;
+          orderItems.filter(oi => oi.order_id === o.id).forEach(oi => {
+            amt += Number(oi.item_price) * Number(oi.quantity);
+          });
+          if (stream === 'restaurant') dataMap[dStr].restRev += amt;
+          else dataMap[dStr].loungeRev += amt;
+          dataMap[dStr].totalRev += amt;
+        }
+      }
+    });
+
+    return Object.values(dataMap);
+  }, [periodStart, daysInPeriod, bookings, orders, orderItems]);
 
   // ── Render Helpers ────────────────────────────────────────────────────────
 

@@ -9,6 +9,8 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import AdminPageHeader from '@/components/AdminPageHeader';
+import { Skeleton } from '@/components/ui/Skeleton';
+import { EmptyState } from '@/components/ui/EmptyState';
 
 export default function AdminBookingsPage() {
   const [bookings, setBookings] = useState<any[]>([]);
@@ -363,10 +365,7 @@ export default function AdminBookingsPage() {
   const AgendaView = () => (
     <div className="space-y-4">
       {filteredBookings.length === 0 ? (
-        <div className="text-center p-12 bg-[#0D0501] border border-white/10 rounded-2xl shadow-sm">
-          <BookOpen className="mx-auto text-white/20 mb-4" size={48} />
-          <p className="text-white/60">No bookings found for this period.</p>
-        </div>
+        <EmptyState icon={BookOpen} title="No Bookings Found" description="There are no bookings for the selected period." />
       ) : (
         filteredBookings.map(b => (
           <div key={b.id} onClick={() => setSelectedBooking(b)} className="bg-[#0D0501] border border-white/10 rounded-2xl p-4 flex flex-col md:flex-row justify-between gap-4 cursor-pointer hover:border-[#D4A373]/50 transition-colors shadow-sm">
@@ -413,17 +412,17 @@ export default function AdminBookingsPage() {
         <tbody className="divide-y divide-white/5">
           {isLoading ? (
             [...Array(6)].map((_, i) => (
-              <tr key={i} className="animate-pulse border-b border-white/10">
-                <td className="p-4"><div className="h-4 bg-white/10 rounded w-32 mb-2"></div><div className="h-3 bg-white/5 rounded w-24"></div></td>
-                <td className="p-4"><div className="h-4 bg-white/10 rounded w-28 mb-2"></div><div className="h-3 bg-white/5 rounded w-20"></div></td>
-                <td className="p-4"><div className="h-4 bg-white/10 rounded w-24 mb-2"></div><div className="h-4 bg-white/5 rounded w-16"></div></td>
-                <td className="p-4"><div className="h-6 bg-white/10 rounded-full w-16"></div></td>
-                <td className="p-4"><div className="h-4 bg-white/10 rounded w-16 mb-2"></div><div className="h-3 bg-white/5 rounded w-32"></div></td>
-                <td className="p-4"><div className="h-6 bg-white/10 rounded-full w-24 mx-auto"></div></td>
+              <tr key={i} className="border-b border-white/10">
+                <td className="p-4"><Skeleton className="h-4 w-32 mb-2" /><Skeleton className="h-3 w-24" /></td>
+                <td className="p-4"><Skeleton className="h-4 w-28 mb-2" /><Skeleton className="h-3 w-20" /></td>
+                <td className="p-4"><Skeleton className="h-4 w-24 mb-2" /><Skeleton className="h-4 w-16" /></td>
+                <td className="p-4"><Skeleton className="h-6 w-16 rounded-full" /></td>
+                <td className="p-4"><Skeleton className="h-4 w-16 mb-2" /><Skeleton className="h-3 w-32" /></td>
+                <td className="p-4"><Skeleton className="h-6 w-24 rounded-full mx-auto" /></td>
               </tr>
             ))
           ) : filteredBookings.length === 0 ? (
-            <tr><td colSpan={6} className="p-8 text-center text-white/50 font-medium">No bookings found.</td></tr>
+            <tr><td colSpan={6}><EmptyState icon={BookOpen} title="No Bookings Found" description="There are no bookings for the selected filters." /></td></tr>
           ) : (
             filteredBookings.map((booking) => (
               <tr key={booking.id} onClick={() => setSelectedBooking(booking)} className="hover:bg-white/5 transition-colors relative group cursor-pointer">

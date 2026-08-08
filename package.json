@@ -27,6 +27,7 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-hot-toast": "^2.6.0",
+    "recharts": "^3.10.1",
     "resend": "^6.18.0",
     "serwist": "^9.5.12",
     "web-push": "^3.6.7"

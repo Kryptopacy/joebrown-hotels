@@ -88,9 +88,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   );
 
   return (
-    <div className="flex min-h-screen text-white bg-[#0A0401]">
+    <div className="flex min-h-screen text-white bg-[#050200] relative">
+      {/* Ambient Radial Glow */}
+      <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-[#D4A373]/[0.03] blur-[120px] rounded-full pointer-events-none z-0" />
+      
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex flex-col w-64 fixed h-full z-40 transition-all bg-[#1A0A02] border-r border-white/10 shadow-[4px_0_24px_-12px_rgba(0,0,0,0.5)]">
+      <aside className="hidden md:flex flex-col w-64 fixed h-full z-40 transition-all bg-[#1A0A02] border-r border-white/5 shadow-[4px_0_24px_-12px_rgba(0,0,0,0.5)]">
         <SidebarContent />
       </aside>
 

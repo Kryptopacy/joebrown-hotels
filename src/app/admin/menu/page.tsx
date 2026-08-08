@@ -6,6 +6,8 @@ import { UtensilsCrossed, CheckCircle2, XCircle, Search, Edit, Plus, X, Trash2 }
 import toast from 'react-hot-toast';
 import ImageUpload from '@/components/admin/ImageUpload';
 import AdminPageHeader from '@/components/AdminPageHeader';
+import { Skeleton } from '@/components/ui/Skeleton';
+import { EmptyState } from '@/components/ui/EmptyState';
 
 export default function AdminMenuPage() {
   const [items, setItems] = useState<any[]>([]);
@@ -354,20 +356,20 @@ export default function AdminMenuPage() {
           <tbody className="divide-y divide-white/5">
             {isLoading ? (
               [...Array(5)].map((_, i) => (
-                <tr key={i} className="animate-pulse border-b border-white/10">
-                  <td className="p-4"><div className="flex items-center gap-4"><div className="w-12 h-12 bg-white/10 rounded-xl shrink-0"></div><div><div className="h-4 bg-white/10 rounded w-32 mb-2"></div><div className="h-3 bg-white/5 rounded w-24"></div></div></div></td>
-                  <td className="p-4"><div className="h-4 bg-white/10 rounded w-16"></div></td>
-                  <td className="p-4"><div className="h-6 bg-white/10 rounded-full w-20 mx-auto"></div></td>
-                  <td className="p-4"><div className="flex gap-2 justify-end"><div className="w-8 h-8 bg-white/10 rounded-lg"></div><div className="w-8 h-8 bg-white/10 rounded-lg"></div></div></td>
+                <tr key={i} className="border-b border-white/10">
+                  <td className="p-4"><div className="flex items-center gap-4"><Skeleton className="w-12 h-12 rounded-xl shrink-0" /><div><Skeleton className="h-4 w-32 mb-2" /><Skeleton className="h-3 w-24" /></div></div></td>
+                  <td className="p-4"><Skeleton className="h-4 w-16" /></td>
+                  <td className="p-4"><Skeleton className="h-6 w-20 rounded-full mx-auto" /></td>
+                  <td className="p-4"><div className="flex gap-2 justify-end"><Skeleton className="w-8 h-8 rounded-lg" /><Skeleton className="w-8 h-8 rounded-lg" /></div></td>
                 </tr>
               ))
             ) : filteredItems.length === 0 ? (
-               <tr><td colSpan={5} className="p-8 text-center text-white/50 font-medium">No items found matching "{searchTerm}"</td></tr>
+               <tr><td colSpan={5}><EmptyState icon={UtensilsCrossed} title="No Items Found" description={`No menu items match "${searchTerm}".`} /></td></tr>
             ) : (
               (() => {
                 const typeGroups = groupedItems[activeTab];
                 if (!typeGroups || Object.keys(typeGroups).length === 0) {
-                  return <tr><td colSpan={5} className="p-8 text-center text-white/50 font-medium">No items in {activeTab === 'food' ? 'Kitchen' : 'Bar'}</td></tr>;
+                  return <tr><td colSpan={5}><EmptyState icon={UtensilsCrossed} title={`No ${activeTab === 'food' ? 'Kitchen' : 'Bar'} Items`} description="There are no items in this section yet." /></td></tr>;
                 }
                 
                 const allCatNames = Object.keys(typeGroups).sort((a, b) => {
