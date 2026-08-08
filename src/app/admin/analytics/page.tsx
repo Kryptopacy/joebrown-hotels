@@ -197,8 +197,6 @@ export default function AnalyticsPage() {
 
   // ── Chart Data Calculation ───────────────────────────────────────────────────
   const chartData = useMemo(() => {
-    if (!bookings.length && !orders.length) return [];
-    
     const dataMap: Record<string, any> = {};
     const d = new Date(periodStart);
     for (let i = 0; i < daysInPeriod; i++) {
