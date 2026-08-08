@@ -209,7 +209,7 @@ export default async function LandingPage({
                 <Car size={40} className="text-[#D4A373] group-hover:scale-110 transition-transform duration-300" strokeWidth={1.5} />
               </div>
               <div className="relative z-10 px-8">
-                <h3 className="text-2xl font-serif text-white mb-4 group-hover:text-[#D4A373] transition-colors">Free Parking & Laundry</h3>
+                <h3 className="text-2xl font-serif text-white mb-4 group-hover:text-[#D4A373] transition-colors">Parking & Laundromat</h3>
                 <p className="text-[#A1887F] text-sm leading-relaxed font-light">
                   Enjoy complimentary secure on-site parking and convenient access to our modern guest laundromat.
                 </p>
