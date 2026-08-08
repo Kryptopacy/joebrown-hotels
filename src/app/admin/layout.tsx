@@ -88,9 +88,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   );
 
   return (
-    <div className="flex min-h-screen text-white bg-[#050200] relative overflow-hidden">
-      {/* Ambient Radial Glow */}
-      <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[1200px] h-[800px] bg-[#D4A373]/[0.15] blur-[140px] rounded-full pointer-events-none z-0" />
+    <div className="flex min-h-screen text-white bg-[#0A0503] relative overflow-hidden">
+      {/* Dynamic Mesh Gradient Background */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#1f1005] via-[#0A0503] to-[#050200] z-0 pointer-events-none" />
+      
+      {/* Ambient Radial Glow (Primary) */}
+      <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[1200px] h-[800px] bg-[#D4A373]/[0.08] blur-[120px] rounded-full pointer-events-none z-0" />
+      
+      {/* Noise Texture Overlay for Premium Matte Finish */}
+      <div className="absolute inset-0 bg-noise opacity-[0.04] mix-blend-overlay pointer-events-none z-0" />
       
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex flex-col w-64 fixed h-full z-40 transition-all bg-[#1A0A02] border-r border-white/5 shadow-[4px_0_24px_-12px_rgba(0,0,0,0.5)]">
