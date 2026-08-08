@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { ShoppingBag, Search, User, Clock, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
 import toast from 'react-hot-toast';
+import AdminPageHeader from '@/components/AdminPageHeader';
 
 const ORDER_STATUSES = ['pending', 'confirmed', 'preparing', 'ready', 'delivered', 'cancelled'];
 const PAYMENT_STATUSES = ['unpaid', 'transfer_submitted', 'paid', 'refunded'];
@@ -192,22 +193,23 @@ export default function AdminOrdersPage() {
   return (
     <div className="animate-fade-in-up">
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-        <div className="flex items-center gap-3">
-          <ShoppingBag size={28} className="text-[#D4A373]" />
-          <h1 className="text-3xl font-serif text-white font-bold">Restaurant & Lounge Orders</h1>
-        </div>
-        <div className="relative w-full md:w-72">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={16} />
-          <input
-            type="text"
-            placeholder="Search by guest or order #..."
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            className="w-full pl-10 h-10 py-0 bg-[#0D0501] border border-white/10 focus:border-brown-500 text-white text-sm rounded-lg outline-none shadow-sm transition-all"
-          />
-        </div>
-      </div>
+      <AdminPageHeader
+        title="Restaurant & Lounge Orders"
+        icon={ShoppingBag}
+        breadcrumbs={[{ label: 'Dashboard', href: '/admin' }, { label: 'Orders' }]}
+        action={
+          <div className="relative w-full md:w-72 mt-4 md:mt-0">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={16} />
+            <input
+              type="text"
+              placeholder="Search by guest or order #..."
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              className="w-full pl-10 h-10 py-0 bg-white/5 border border-white/10 focus:border-brown-500 text-white text-sm rounded-xl outline-none shadow-sm transition-all"
+            />
+          </div>
+        }
+      />
 
       {/* Department & Status Tabs */}
       <div className="flex flex-col sm:flex-row gap-4 mb-6">

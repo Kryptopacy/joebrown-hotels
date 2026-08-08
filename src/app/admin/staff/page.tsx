@@ -5,6 +5,7 @@ import { Shield, CheckCircle2, Search, Clock, Trash2 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import toast from 'react-hot-toast';
 import { StaffRole, ROLE_PERMISSIONS } from '@/lib/auth/rbac';
+import AdminPageHeader from '@/components/AdminPageHeader';
 
 interface StaffUser {
   id: string;
@@ -86,28 +87,28 @@ export default function AdminStaffPage() {
 
   return (
     <div className="animate-fade-in-up">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-        <div>
-          <h1 className="text-3xl font-serif text-white font-bold flex items-center gap-3">
-            <Shield className="text-[#D4A373]" size={32} /> Staff Roles & Permissions
-          </h1>
-          <p className="text-sm font-medium text-white/50 mt-2">
-            Approve new staff members and manage roles for Joebrown Palace Hotels.
-          </p>
-        </div>
-        <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto mt-4 md:mt-0">
-          <div className="relative flex-1 md:w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={16} />
-            <input 
-              type="text" 
-              placeholder="Search email..." 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 h-10 py-0 bg-[#0D0501] border border-white/10 focus:border-[#D4A373] text-white text-sm rounded-lg outline-none shadow-sm transition-all"
-            />
+      <AdminPageHeader
+        title="Staff Roles & Permissions"
+        icon={Shield}
+        breadcrumbs={[{ label: 'Dashboard', href: '/admin' }, { label: 'Staff' }]}
+        action={
+          <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto mt-4 md:mt-0">
+            <div className="relative flex-1 md:w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={16} />
+              <input 
+                type="text" 
+                placeholder="Search email..." 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 h-10 py-0 bg-white/5 border border-white/10 focus:border-[#D4A373] text-white text-sm rounded-lg outline-none shadow-sm transition-all"
+              />
+            </div>
           </div>
-        </div>
-      </div>
+        }
+      />
+      <p className="text-sm font-medium text-white/50 mb-8 -mt-2 md:-mt-4 relative z-10">
+        Approve new staff members and manage roles for Joebrown Palace Hotels.
+      </p>
 
       {pendingStaff.length > 0 && (
         <div className="mb-8">

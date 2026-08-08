@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client';
 import { BedDouble, CheckCircle2, XCircle, Search, Edit, Plus, X, Trash2, ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ImageUpload from '@/components/admin/ImageUpload';
+import AdminPageHeader from '@/components/AdminPageHeader';
 
 export default function AdminRoomsPage() {
   const [rooms, setRooms] = useState<any[]>([]);
@@ -273,30 +274,31 @@ export default function AdminRoomsPage() {
 
   return (
     <div className="animate-fade-in-up">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-        <div className="flex items-center gap-3">
-          <BedDouble size={28} className="text-[#D4A373]" />
-          <h1 className="text-3xl font-serif text-white font-bold">Rooms Manager</h1>
-        </div>
-        <div className="flex gap-4 w-full md:w-auto">
-          <div className="relative flex-1 md:w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={16} />
-            <input 
-              type="text" 
-              placeholder="Search rooms..." 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 h-10 py-0 bg-[#0D0501] border border-white/10 focus:border-brown-500 text-white text-sm rounded-lg outline-none shadow-sm transition-all"
-            />
+      <AdminPageHeader
+        title="Rooms Manager"
+        icon={BedDouble}
+        breadcrumbs={[{ label: 'Dashboard', href: '/admin' }, { label: 'Rooms' }]}
+        action={
+          <div className="flex gap-4 w-full md:w-auto mt-4 md:mt-0">
+            <div className="relative flex-1 md:w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={16} />
+              <input 
+                type="text" 
+                placeholder="Search rooms..." 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 h-10 py-0 bg-white/5 border border-white/10 focus:border-brown-500 text-white text-sm rounded-lg outline-none shadow-sm transition-all"
+              />
+            </div>
+            <button 
+              onClick={() => handleOpenModal()}
+              className="flex items-center justify-center gap-2 text-sm bg-[#D4A373] text-[#1A0A02] hover:bg-[#b45309] font-bold h-10 px-6 rounded-xl shadow-sm transition-colors whitespace-nowrap"
+            >
+              <Plus size={16} /> Add Room
+            </button>
           </div>
-          <button 
-            onClick={() => handleOpenModal()}
-            className="flex items-center justify-center gap-2 text-sm bg-[#D4A373] text-[#1A0A02] hover:bg-[#b45309] font-bold h-10 px-6 rounded-xl shadow-sm transition-colors whitespace-nowrap"
-          >
-            <Plus size={16} /> Add Room
-          </button>
-        </div>
-      </div>
+        }
+      />
 
       {/* Status Chip Filter */}
       <div className="flex items-center gap-2 mb-6 overflow-x-auto scrollbar-none">

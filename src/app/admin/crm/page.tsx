@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Users, Crown, Phone, Mail, Search, Star, RefreshCw, TrendingUp, Filter, ShoppingBag } from 'lucide-react';
+import AdminPageHeader from '@/components/AdminPageHeader';
 
 const NAIRA_PER_POINT = 1000;
 
@@ -172,15 +173,16 @@ export default function CRMPage() {
     <div className="animate-fade-in-up space-y-6">
 
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <Users size={28} className="text-[#D4A373]" />
-          <h1 className="text-3xl font-serif text-white font-bold">CRM — Guest Intelligence</h1>
-        </div>
-        <button onClick={fetchAll} className="flex items-center gap-2 text-sm text-white/50 hover:text-[#D4A373] transition-colors font-bold self-start">
-          <RefreshCw size={14} /> Refresh
-        </button>
-      </div>
+      <AdminPageHeader
+        title="CRM — Guest Intelligence"
+        icon={Users}
+        breadcrumbs={[{ label: 'Dashboard', href: '/admin' }, { label: 'CRM' }]}
+        action={
+          <button onClick={fetchAll} className="flex items-center gap-2 text-sm text-white/50 hover:text-[#D4A373] transition-colors font-bold self-start mt-2 md:mt-0">
+            <RefreshCw size={14} /> Refresh
+          </button>
+        }
+      />
 
       {/* Summary KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

@@ -5,6 +5,7 @@ import { Headset, Users, Send, MessageSquare, Check, Bell, AlertCircle, Shield, 
 import { createClient } from '@/lib/supabase/client';
 import toast from 'react-hot-toast';
 import { StaffRole, ROLE_PERMISSIONS } from '@/lib/auth/rbac';
+import AdminPageHeader from '@/components/AdminPageHeader';
 
 const playChime = () => {
   try {
@@ -408,50 +409,45 @@ export default function AdminIntercomPage() {
   return (
     <div className="animate-fade-in-up flex flex-col h-[calc(100vh-140px)]">
       {/* Top Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-        <div>
-          <h1 className="text-3xl font-serif text-white font-bold flex items-center gap-3">
-            <Headset className="text-[#D4A373]" size={32} /> Intercom Control Desk
-          </h1>
-          <p className="text-xs text-white/50 font-medium">
-            Live Customer Concierge & Real-time Staff Departmental Intercom.
-          </p>
-        </div>
-
-        {/* Tab Switcher and Push Button */}
-        <div className="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto">
-          <button
-            onClick={subscribeToPush}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold bg-white/10 text-white hover:bg-slate-900 transition-colors shadow-sm"
-          >
-            <Bell size={16} /> Enable Push Alerts
-          </button>
-          
-          <div className="flex bg-[#0D0501] border border-white/10 shadow-sm rounded-xl p-1 w-full md:w-auto">
-
-          <button
-            onClick={() => setActiveTab('guests')}
-            className={`flex-1 md:flex-initial flex items-center gap-2 px-5 py-2 rounded-lg text-xs uppercase tracking-wider font-bold transition-all ${
-              activeTab === 'guests'
-                ? 'bg-red-600 text-white shadow-md border border-red-500'
-                : 'text-white/50 hover:text-white'
-            }`}
-          >
-            <Headset size={16} /> Guest Live Desk
-          </button>
-          <button
-            onClick={() => setActiveTab('staff')}
-            className={`flex-1 md:flex-initial flex items-center gap-2 px-5 py-2 rounded-lg text-xs uppercase tracking-wider font-bold transition-all ${
-              activeTab === 'staff'
-                ? 'bg-[#D4A373] text-[#1A0A02] border border-white/10 shadow-sm'
-                : 'text-white/50 hover:text-white'
-            }`}
-          >
-            <Users size={16} /> Staff Internal Intercom
-          </button>
-        </div>
-        </div>
-      </div>
+      <AdminPageHeader
+        title="Intercom Control Desk"
+        icon={Headset}
+        subtitle="Live Customer Concierge & Real-time Staff Departmental Intercom."
+        breadcrumbs={[{ label: 'Dashboard', href: '/admin' }, { label: 'Intercom' }]}
+        action={
+          <div className="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto mt-4 md:mt-0">
+            <button
+              onClick={subscribeToPush}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold bg-white/10 text-white hover:bg-slate-900 transition-colors shadow-sm"
+            >
+              <Bell size={16} /> Enable Push Alerts
+            </button>
+            
+            <div className="flex bg-[#1A0A02] border border-white/10 shadow-inner rounded-xl p-1 w-full md:w-auto">
+              <button
+                onClick={() => setActiveTab('guests')}
+                className={`flex-1 md:flex-initial flex items-center justify-center gap-2 px-5 py-2 rounded-lg text-xs uppercase tracking-wider font-bold transition-all ${
+                  activeTab === 'guests'
+                    ? 'bg-red-600 text-white shadow-md border border-red-500'
+                    : 'text-white/50 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <Headset size={16} /> Guest Live Desk
+              </button>
+              <button
+                onClick={() => setActiveTab('staff')}
+                className={`flex-1 md:flex-initial flex items-center justify-center gap-2 px-5 py-2 rounded-lg text-xs uppercase tracking-wider font-bold transition-all ${
+                  activeTab === 'staff'
+                    ? 'bg-[#D4A373] text-[#1A0A02] border border-[#D4A373] shadow-sm'
+                    : 'text-white/50 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <Users size={16} /> Staff Internal
+              </button>
+            </div>
+          </div>
+        }
+      />
 
       {/* GUEST CONCIERGE INTERCOM TAB */}
       {activeTab === 'guests' && (

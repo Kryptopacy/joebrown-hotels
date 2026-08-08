@@ -62,13 +62,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <Link
                   href={link.href}
                   onClick={() => setIsMobileOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all ${
+                  className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all relative ${
                     isActive 
-                      ? 'bg-[#D4A373] text-[#1A0A02] font-bold shadow-[0_4px_12px_rgba(212,163,115,0.3)]' 
-                      : 'text-white/60 hover:bg-white/5 hover:text-[#D4A373] font-medium'
+                      ? 'bg-[#D4A373]/10 text-[#D4A373] font-bold shadow-[0_4px_12px_rgba(0,0,0,0.1)] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-8 before:w-1 before:bg-[#D4A373] before:rounded-r-full' 
+                      : 'text-white/60 hover:bg-white/5 hover:text-white font-medium'
                   }`}
                 >
-                  <Icon size={18} />
+                  <Icon size={18} className={isActive ? 'text-[#D4A373]' : ''} />
                   {link.name}
                 </Link>
               </li>
@@ -122,16 +122,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       {/* Main Content Area */}
       <main className="flex-1 md:ml-64 flex flex-col min-h-screen bg-transparent min-w-0">
-        {/* Desktop Top Header Bar (Only visible on md and up) */}
-        <header className="hidden md:flex items-center justify-between px-10 py-4 w-full z-30 bg-[#1A0A02] border-b border-white/10 shadow-sm">
-          <div className="flex items-center gap-4">
-             <h1 className="text-xl font-serif text-white tracking-wide">Staff Portal Dashboard</h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <AdminNotifications />
-          </div>
-        </header>
-        
+        {/* Desktop Top Nav (Floating) */}
+        <div className="hidden md:flex justify-end p-6 absolute top-0 right-0 z-50">
+          <AdminNotifications />
+        </div>
         {/* Page Content */}
         <div className="pt-24 md:pt-4 p-6 md:p-10 flex-1 overflow-x-hidden">
           {children}

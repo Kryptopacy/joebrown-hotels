@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic';
 import { createClient } from '@/lib/supabase/server';
 import { LayoutDashboard, BedDouble, UtensilsCrossed, Settings, QrCode, BookOpen, Headset, Shield, TrendingUp, DollarSign, ShoppingBag } from 'lucide-react';
 import Link from 'next/link';
+import AdminPageHeader from '@/components/AdminPageHeader';
 
 export default async function AdminDashboard() {
   const supabase = await createClient();
@@ -18,6 +19,7 @@ export default async function AdminDashboard() {
     intercomCalls: 0,
     occupancyRate: 0,
     pendingOrders: 0,
+    totalRevenue: 0,
   };
 
   if (hotel) {
@@ -65,20 +67,20 @@ export default async function AdminDashboard() {
   return (
     <div className="animate-fade-in-up space-y-8">
       {/* Header */}
-      <div className="flex items-center gap-3">
-        <LayoutDashboard size={28} className="text-[#D4A373]" />
-        <div>
-          <h1 className="text-3xl font-serif text-white font-bold">Management Portal</h1>
-          <p className="text-xs text-brown-400 font-medium">Operational overview for {hotel?.name || 'Joebrown Palace Hotel and Suites'}</p>
-        </div>
-      </div>
+      <AdminPageHeader
+        title="Management Portal"
+        icon={LayoutDashboard}
+        subtitle={`Operational overview for ${hotel?.name || 'Joebrown Palace Hotel and Suites'}`}
+        breadcrumbs={[{ label: 'Dashboard' }, { label: 'Overview' }]}
+      />
 
       {/* Welcome Banner */}
-      <div className="p-8 bg-[#0D0501] border border-[#D4A373]/30 border-l-4 border-l-[#D4A373] rounded-3xl shadow-2xl">
+      <div className="p-8 bg-white/[0.02] border border-white/10 rounded-2xl shadow-xl relative overflow-hidden backdrop-blur-md">
+        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-[#D4A373]/80 via-transparent to-transparent"></div>
         <h2 className="text-2xl font-serif text-white mb-2 font-semibold">
           {hotel?.name || 'Joebrown Palace Hotel and Suites'} Staff Dashboard
         </h2>
-        <p className="text-sm text-white/70 font-normal">
+        <p className="text-sm text-white/60 font-normal">
           Monitor guest bookings, live intercom inquiries, menu items, and room status in real-time.
         </p>
       </div>

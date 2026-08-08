@@ -6,6 +6,7 @@ import {
   BarChart3, TrendingUp, BedDouble, Utensils, GlassWater,
   Percent, DollarSign, Download, ArrowUpRight, ArrowDownRight, FileText
 } from 'lucide-react';
+import AdminPageHeader from '@/components/AdminPageHeader';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 const toYMD = (d: Date) => d.toISOString().split('T')[0];
@@ -195,39 +196,39 @@ export default function AnalyticsPage() {
 
 
   // ── Render Helpers ────────────────────────────────────────────────────────
+
   if (isLoading) return <div className="p-8 text-center animate-pulse text-brown-500">Loading Analytics...</div>;
 
   return (
     <div className="animate-fade-in-up space-y-8">
       {/* Header */}
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <BarChart3 size={28} className="text-[#D4A373]" />
-            <h1 className="text-3xl font-serif text-white font-bold">Analytics & Revenue</h1>
-          </div>
+      <AdminPageHeader
+        title="Analytics & Revenue"
+        icon={BarChart3}
+        breadcrumbs={[{ label: 'Dashboard', href: '/admin' }, { label: 'Analytics' }]}
+        action={
           <div className="flex items-center gap-3 flex-wrap">
             {/* Tabs */}
-            <div className="flex flex-wrap bg-[#0D0501] border border-white/10 rounded-2xl p-1.5 gap-1 shadow-xl">
+            <div className="flex flex-wrap bg-[#1A0A02] border border-white/10 rounded-2xl p-1 shadow-inner">
               {(['overview', 'bookings', 'restaurant', 'lounge', 'ledger'] as const).map(tab => (
                 <button key={tab} onClick={() => setActiveTab(tab)}
-                  className={`flex-1 sm:flex-none px-3 sm:px-5 py-2.5 rounded-xl text-xs font-bold transition-all capitalize ${activeTab === tab ? 'bg-[#D4A373] text-black' : 'text-white/50 hover:text-white'}`}>
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all capitalize ${activeTab === tab ? 'bg-[#D4A373] text-black shadow-md' : 'text-white/50 hover:text-white hover:bg-white/5'}`}>
                   {tab}
                 </button>
               ))}
             </div>
             {/* Timeframe */}
-            <div className="flex bg-[#0D0501] border border-white/10 rounded-2xl p-1.5 gap-1 shadow-xl">
+            <div className="flex bg-[#1A0A02] border border-white/10 rounded-2xl p-1 shadow-inner">
               {(['7d', '30d', '90d', 'all'] as const).map(p => (
                 <button key={p} onClick={() => setPeriod(p)}
-                  className={`flex-1 sm:flex-none px-3 sm:px-5 py-2.5 rounded-xl text-[10px] sm:text-xs font-bold transition-all ${period === p ? 'bg-[#D4A373] text-black' : 'text-white/50 hover:text-white'}`}>
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${period === p ? 'bg-[#D4A373] text-black shadow-md' : 'text-white/50 hover:text-white hover:bg-white/5'}`}>
                   {p === '7d' ? '7 Days' : p === '30d' ? '30 Days' : p === '90d' ? '90 Days' : 'All Time'}
                 </button>
               ))}
             </div>
           </div>
-        </div>
-      </div>
+        }
+      />
 
       {/* ── KPI Grid ── */}
       {activeTab !== 'ledger' && (

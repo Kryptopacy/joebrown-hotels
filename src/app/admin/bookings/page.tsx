@@ -8,6 +8,7 @@ import {
   ChevronLeft, ChevronRight, X, BarChart3, List, Wrench, CreditCard, Award, Info, LayoutList
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import AdminPageHeader from '@/components/AdminPageHeader';
 
 export default function AdminBookingsPage() {
   const [bookings, setBookings] = useState<any[]>([]);
@@ -670,26 +671,27 @@ export default function AdminBookingsPage() {
 
   return (
     <div className="animate-fade-in-up pb-20">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-        <div className="flex items-center gap-3">
-          <BookOpen size={28} className="text-[#D4A373]" />
-          <h1 className="text-3xl font-serif text-white font-bold">Bookings Manager</h1>
-        </div>
-        <div className="flex gap-3 w-full md:w-auto">
-          <button 
-            onClick={() => setIsMaintenanceModalOpen(true)}
-            className="flex items-center gap-2 bg-[#0D0501] hover:bg-[#1A0A02] text-white/80 px-4 py-2.5 rounded-xl font-medium transition-colors shadow-sm border border-white/10"
-          >
-            <Wrench size={18} /> Block Room
-          </button>
-          <button 
-            onClick={() => setIsBookingModalOpen(true)}
-            className="flex items-center gap-2 bg-[#D4A373] hover:bg-[#b45309] text-[#1A0A02] px-4 py-2.5 rounded-xl font-medium transition-colors shadow-sm"
-          >
-            <Plus size={18} /> New Booking
-          </button>
-        </div>
-      </div>
+      <AdminPageHeader
+        title="Bookings Manager"
+        icon={BookOpen}
+        breadcrumbs={[{ label: 'Dashboard', href: '/admin' }, { label: 'Bookings' }]}
+        action={
+          <div className="flex gap-3 w-full md:w-auto mt-4 md:mt-0">
+            <button 
+              onClick={() => setIsMaintenanceModalOpen(true)}
+              className="flex items-center gap-2 bg-[#0D0501] hover:bg-[#1A0A02] text-white/80 px-4 py-2.5 rounded-xl font-medium transition-colors shadow-sm border border-white/10"
+            >
+              <Wrench size={18} /> Block Room
+            </button>
+            <button 
+              onClick={() => setIsBookingModalOpen(true)}
+              className="flex items-center gap-2 bg-[#D4A373] hover:bg-[#b45309] text-[#1A0A02] px-4 py-2.5 rounded-xl font-medium transition-colors shadow-sm"
+            >
+              <Plus size={18} /> New Booking
+            </button>
+          </div>
+        }
+      />
 
       {/* TODAY PANEL */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">

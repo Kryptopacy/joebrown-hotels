@@ -8,6 +8,7 @@ import {
   CheckCircle2, Hotel, Bell, Users, Wrench
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import AdminPageHeader from '@/components/AdminPageHeader';
 
 /* ─── tiny helpers ─────────────────────────────────────────── */
 const SectionCard = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
@@ -229,13 +230,12 @@ export default function AdminSettingsPage() {
   return (
     <div className="animate-fade-in-up md:max-w-4xl space-y-6">
       {/* ── Page Header ── */}
-      <div className="flex items-center gap-3 mb-2">
-        <Settings size={28} className="text-[#D4A373]" />
-        <div>
-          <h1 className="text-3xl font-serif text-white font-bold">Hotel Settings</h1>
-          <p className="text-sm text-white/50 font-medium mt-0.5">Configure all operational settings for your property.</p>
-        </div>
-      </div>
+      <AdminPageHeader
+        title="Hotel Settings"
+        icon={Settings}
+        breadcrumbs={[{ label: 'Dashboard', href: '/admin' }, { label: 'Settings' }]}
+      />
+      <p className="text-sm text-white/50 font-medium mb-8 -mt-4 relative z-10">Configure all operational settings for your property.</p>
 
       <form onSubmit={handleSave} className="space-y-6">
         {/* ── 1. Property Info ── */}
