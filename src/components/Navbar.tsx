@@ -38,8 +38,8 @@ export default function Navbar() {
         <div className="px-5 md:px-8 flex justify-between items-center gap-4">
           {/* Brand */}
           <Link href="/" className="flex items-center gap-3 shrink-0 group">
-            <div className="relative h-8 md:h-10 w-8 md:w-10">
-              <Image src="/jb_logo_transparent.PNG" alt="Joebrown Logo" fill className="object-contain" sizes="(max-width: 768px) 32px, 40px" />
+            <div className="relative h-8 md:h-10 w-8 md:w-10 rounded overflow-hidden">
+              <Image src="/jb_logo_background.jpg" alt="Joebrown Logo" fill className="object-cover" sizes="(max-width: 768px) 32px, 40px" />
             </div>
             <div className="flex flex-col shrink-0">
               <span className="text-[20px] md:text-[22px] font-serif tracking-tight whitespace-nowrap leading-none mb-1 text-white">

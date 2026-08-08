@@ -44,8 +44,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <>
       <a href="/" target="_blank" rel="noopener noreferrer" className="block p-6 border-b border-white/10 flex items-center gap-3 relative hover:bg-[#38251a] bg-[#2c1b11] transition-colors group cursor-pointer" title="Open public site in new tab">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120px] h-[60px] bg-[#D4A373]/10 blur-[30px] pointer-events-none rounded-full transition-all" />
-        <div className="w-12 h-12 flex items-center justify-center shrink-0">
-          <Image src="/jb_logo_transparent.PNG" alt="Joebrown Logo" width={48} height={48} className="w-full h-full object-contain" />
+        <div className="w-12 h-12 flex items-center justify-center shrink-0 rounded overflow-hidden">
+          <Image src="/jb_logo_background.jpg" alt="Joebrown Logo" width={48} height={48} className="w-full h-full object-cover" />
         </div>
         <div className="relative z-10">
           <h2 className="text-xl font-serif text-white tracking-tight font-bold transition-colors">Joebrown</h2>
@@ -97,8 +97,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Mobile Header */}
       <div className="md:hidden fixed top-0 w-full z-40 flex items-center justify-between p-4 shadow-md border-b border-white/10 bg-[#1A0A02]">
         <a href="/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
-          <div className="h-8 shrink-0 flex items-center">
-            <img src="/jb_logo_transparent.PNG" alt="Joebrown Logo" className="w-full h-full object-contain brightness-0 invert" />
+          <div className="h-8 w-8 shrink-0 flex items-center justify-center rounded overflow-hidden">
+            <img src="/jb_logo_background.jpg" alt="Joebrown Logo" className="w-full h-full object-cover" />
           </div>
           <h2 className="font-serif text-white font-bold text-lg tracking-tight">Joebrown Portal</h2>
         </a>
